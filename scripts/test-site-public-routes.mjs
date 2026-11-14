@@ -256,7 +256,7 @@ test('stable installer downloads and metadata keep precedence and their existing
  const upstream=url=>String(url).endsWith('/releases/latest')?json(release):new Response('INSTALLER');
  const meta=await request('/download/meta.json',{upstream});assert.equal(meta.response.status,200);assert.equal(JSON.parse(meta.text).version,'v0.4.88');assert.equal(meta.assets.length,0);assert.equal(meta.calls.length,1);
  const download=await request('/download/windows',{upstream});assert.equal(download.response.status,200);assert.equal(download.text,'INSTALLER');assert.equal(download.calls.length,2);assert.equal(download.assets.length,0);
- assert.match(download.calls[0].url,/api.github.com\/repos\/Boomin-Ai\/producer\/releases\/latest$/);assert.match(download.calls[1].url,/\?ck=11$/);
+ assert.match(download.calls[0].url,/api.github.com\/repos\/313imverymellodet\/liveroom\/releases\/latest$/);assert.match(download.calls[1].url,/\?ck=11$/);
  assert.equal(download.response.headers.get('content-disposition'),'attachment; filename="Liveroom-Setup.exe"');assert.equal(download.response.headers.get('cache-control'),'no-store');
  const preview=await request('/download/meta.json',{upstream:()=>json({...release,prerelease:true})});assert.equal(preview.response.status,503);
 });

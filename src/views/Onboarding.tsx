@@ -393,20 +393,27 @@ export function BoominLogin({
   );
 }
 
+/** A server is named after its address; the host is what tells two apart. */
+function serverName(baseUrl: string): string {
+  try {
+    return new URL(baseUrl).host || "My server";
+  } catch {
+    return "My server";
+  }
+}
+
 function ServerForm({ onBack, onConnected, onModLink, backLabel = "Back" }: { onBack?: () => void; onConnected: () => void; onModLink?: (link: ModLink) => void; backLabel?: string }) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [modOpen, setModOpen] = useState(false);
+  const modId = useId();
 
   async function submit(form: FormData) {
     setBusy(true);
     setError(null);
     try {
-      await ipc.addEndpoint(
-        "independent",
-        String(form.get("name") || "My server"),
-        String(form.get("base_url") || ""),
-        String(form.get("token") || ""),
-      );
+      const baseUrl = String(form.get("base_url") || "").trim();
+      await ipc.addEndpoint("independent", serverName(baseUrl), baseUrl, String(form.get("token") || ""));
       onConnected();
     } catch (e) {
       setError(String(e));
@@ -426,10 +433,6 @@ function ServerForm({ onBack, onConnected, onModLink, backLabel = "Back" }: { on
           submit(new FormData(e.currentTarget));
         }}
       >
-        <label>
-          Name
-          <input name="name" placeholder={`My ${SERVER_NAME}`} />
-        </label>
         <label>
           Server URL
           <input name="base_url" placeholder={`https://${SERVER_NAME}.yourname.workers.dev`} required />
@@ -458,9 +461,11 @@ function ServerForm({ onBack, onConnected, onModLink, backLabel = "Back" }: { on
       </div>
       {/* No server needed to help run someone else's show. */}
       {onModLink && (
-        <div className="onboarding-modlink">
-          <span>Helping run someone else&rsquo;s show?</span>
-          <ModLinkDrop compact onOpen={onModLink} />
+        <div className="entry-invitation">
+          <button type="button" disabled={busy} aria-expanded={modOpen} aria-controls={modId} onClick={() => setModOpen((v) => !v)}>
+            <span aria-hidden="true">›</span>Open a mod link
+          </button>
+          {modOpen && <fieldset id={modId} disabled={busy} className="entry-invitation-fields"><p className="entry-note">Helping run someone else&rsquo;s show? Paste the invitation you received.</p><ModLinkDrop compact onOpen={link => { if (!busy) onModLink(link); }} /></fieldset>}
         </div>
       )}
     </EntryFrame>

@@ -84,24 +84,17 @@ try {
     assert(dimensions.scrollWidth <= dimensions.width, `${label}: horizontal overflow ${JSON.stringify(dimensions)}`);
     assert(dimensions.scrollHeight <= dimensions.height, `${label}: desktop controls require page scrolling ${JSON.stringify(dimensions)}`);
   }
-  const signIn = await pageFor('signin'); await signIn.getByRole('heading', { name: 'Sign in to Liveroom', exact: true }).waitFor();
-  await bounds(signIn, '1280×800 sign in'); await capture(signIn, '01-sign-in');
-  assert.equal(await signIn.getByRole('button', { name: 'Email me a code', exact: true }).count(), 1);
-  assert(await signIn.getByLabel('Email', { exact: true }).evaluate(el => el === document.activeElement));
+  const signIn = await pageFor('signin'); await signIn.getByRole('heading', { name: 'Connect your server', exact: true }).waitFor();
+  await bounds(signIn, '1280×800 server form'); await capture(signIn, '01-server-form');
+  for (const label of ['Server URL', 'Primary token']) assert.equal(await signIn.getByLabel(label, { exact: true }).count(), 1);
+  assert.equal(await signIn.getByRole('button', { name: 'Verify & connect', exact: true }).count(), 1);
+  assert.equal(await signIn.getByLabel('Email', { exact: true }).count(), 0);
   for (const viewport of [{ width: 960, height: 600 }, { width: 1440, height: 900 }, { width: 390, height: 844 }]) {
-    await signIn.setViewportSize(viewport); await bounds(signIn, `${viewport.width}×${viewport.height} sign in`);
+    await signIn.setViewportSize(viewport); await bounds(signIn, `${viewport.width}×${viewport.height} server form`);
   }
-  await capture(signIn, '02-sign-in-narrow'); await signIn.setViewportSize({ width: 1280, height: 800 });
-  await signIn.getByLabel('Email', { exact: true }).fill('creator@example.test'); await signIn.getByRole('button', { name: 'Email me a code', exact: true }).click();
-  await signIn.getByRole('heading', { name: 'Check your inbox', exact: true }).waitFor();
-  assert.equal(await signIn.getByLabel('Email', { exact: true }).isVisible(), false);
-  assert(await signIn.getByLabel('Sign-in code', { exact: true }).evaluate(el => el === document.activeElement));
-  await bounds(signIn, '1280×800 code'); await capture(signIn, '03-code');
-  await signIn.getByLabel('Sign-in code', { exact: true }).fill('000000'); await signIn.getByRole('button', { name: 'Verify & connect', exact: true }).click();
-  await signIn.getByRole('heading', { name: 'Choose a workspace', exact: true }).waitFor(); await capture(signIn, '04-workspaces');
-  await signIn.getByRole('button', { name: /Studio North/ }).click(); await signIn.getByRole('heading', { name: 'Meet your network', exact: true }).waitFor();
-  assert.equal(await signIn.getByRole('checkbox').isChecked(), false); await capture(signIn, '05-network');
-  results.push('real sign-in, OTP, workspace and optional listing layouts; no desktop overflow at four sizes');
+  await capture(signIn, '02-server-form-narrow');
+  assert(await signIn.evaluate(() => window.calls.every(c => !c.command.startsWith('boomin_'))));
+  results.push('real self-hosted server form layout; no desktop overflow at four sizes');
   await signIn.close();
   const welcome = await pageFor('welcome'); await welcome.getByRole('heading', { name: 'Your studio starts here.', exact: true }).waitFor(); await capture(welcome, '06-welcome');
   assert.equal(await welcome.locator('.fl-intro').count(), 0); await welcome.getByRole('button', { name: 'Continue to setup', exact: true }).click();
