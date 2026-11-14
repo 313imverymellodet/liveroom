@@ -1,7 +1,7 @@
 {
   "name": "producer",
   "private": true,
-  "version": "0.4.90",
+  "version": "0.1.0",
   "description": "Liveroom \u2014 the open-source studio for creators: post everywhere, stream everywhere.",
   "license": "AGPL-3.0-only",
   "repository": {

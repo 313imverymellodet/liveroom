@@ -24,9 +24,10 @@ state where this code comes from.
   is kept so upstream changes merge cleanly.
 - Bug reports are no longer sent to Boomin's API when no server accepts them;
   the user copies the report instead.
-- Disabled auto-update, which pointed at Boomin's release feed, until
-  Liveroom publishes its own signed feed (`UPDATES_ENABLED` in `src/brand.ts`).
-- Replaced Boomin's Apple team ID in signing files with a placeholder.
+- Pointed auto-update at Liveroom's own release feed, signed with a new
+  updater key, instead of Boomin's.
+- Replaced Boomin's Apple team ID in signing files with Liveroom's.
+- Restarted version numbering at 0.1.0.
 - New placeholder app icon.
 - Replaced the contributor license agreement with plain AGPL-3.0 terms.
 

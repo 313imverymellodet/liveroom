@@ -1,6 +1,6 @@
 [package]
 name = "producer"
-version = "0.4.90"
+version = "0.1.0"
 description = "Liveroom — the open-source studio for creators: post everywhere, stream everywhere."
 authors = ["Boomin"]
 license = "AGPL-3.0-only"
