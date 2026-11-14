@@ -396,7 +396,7 @@ jobs:
           PY
           mkdir -p /tmp/producer-symbols
           ditto "$SYMBOLS" /tmp/producer-symbols/Liveroom.app.dSYM
-          xcrun dwarfdump --uuid "$APP/Contents/MacOS/Liveroom" > /tmp/producer-symbols/binary-uuid.txt
+          xcrun dwarfdump --uuid "$APP/Contents/MacOS/producer" > /tmp/producer-symbols/binary-uuid.txt
           xcrun dwarfdump --uuid /tmp/producer-symbols/Liveroom.app.dSYM > /tmp/producer-symbols/symbol-uuid.txt
           python3 - <<'PY'
           import pathlib, re
@@ -418,7 +418,7 @@ jobs:
         run: |
           APP="src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Liveroom.app"
           test -d "$APP" || { echo "FATAL: app bundle not found" >&2; exit 1; }
-          otool -L "$APP/Contents/MacOS/Liveroom" | grep -q libobs \
+          otool -L "$APP/Contents/MacOS/producer" | grep -q libobs \
             || { echo "FATAL: binary not linked against libobs — stub build (have_engine cfg absent)" >&2; exit 1; }
           echo "APP=$APP" >> "$GITHUB_ENV"
 
@@ -485,7 +485,7 @@ jobs:
           set -euo pipefail
           UPD="Liveroom_${VERSION}_aarch64.app.tar.gz"
           tar -czf "$UPD" -C "$(dirname "$APP")" "$(basename "$APP")"
-          bun run tauri signer sign "$UPD" --password "" >/dev/null
+          bun run tauri signer sign "$UPD" >/dev/null  # key + password from TAURI_SIGNING_* env
           test -f "$UPD.sig" || { echo "FATAL: updater signature not produced" >&2; exit 1; }
           gh release upload "v$VERSION" "$UPD" "$UPD.sig" --clobber
 
@@ -626,7 +626,7 @@ jobs:
           PY
           mkdir -p /tmp/producer-symbols
           ditto "$SYMBOLS" /tmp/producer-symbols/Liveroom.app.dSYM
-          xcrun dwarfdump --uuid "$APP/Contents/MacOS/Liveroom" > /tmp/producer-symbols/binary-uuid.txt
+          xcrun dwarfdump --uuid "$APP/Contents/MacOS/producer" > /tmp/producer-symbols/binary-uuid.txt
           xcrun dwarfdump --uuid /tmp/producer-symbols/Liveroom.app.dSYM > /tmp/producer-symbols/symbol-uuid.txt
           python3 - <<'PY'
           import pathlib, re
@@ -648,7 +648,7 @@ jobs:
         run: |
           APP="src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Liveroom.app"
           test -d "$APP" || { echo "FATAL: app bundle not found" >&2; exit 1; }
-          otool -L "$APP/Contents/MacOS/Liveroom" | grep -q libobs \
+          otool -L "$APP/Contents/MacOS/producer" | grep -q libobs \
             || { echo "FATAL: binary not linked against libobs — stub build (have_engine cfg absent)" >&2; exit 1; }
           echo "APP=$APP" >> "$GITHUB_ENV"
 
@@ -715,7 +715,7 @@ jobs:
           set -euo pipefail
           UPD="Liveroom_x64.app.tar.gz"
           tar -czf "$UPD" -C "$(dirname "$APP")" "$(basename "$APP")"
-          bun run tauri signer sign "$UPD" --password "" >/dev/null
+          bun run tauri signer sign "$UPD" >/dev/null  # key + password from TAURI_SIGNING_* env
           test -f "$UPD.sig" || { echo "FATAL: updater signature not produced" >&2; exit 1; }
           gh release upload "v$VERSION" "$UPD" "$UPD.sig" --clobber
 

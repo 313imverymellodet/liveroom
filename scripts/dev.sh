@@ -33,7 +33,7 @@ pkill -f "bundle/macos/Liveroom.app" 2>/dev/null && sleep 1
 
 APP="src-tauri/target/debug/bundle/macos/Liveroom.app"
 [[ -d $APP ]] || { echo "FATAL: $APP missing after build" >&2; exit 1; }
-otool -L "$APP/Contents/MacOS/Liveroom" | grep -q libobs \
+otool -L "$APP/Contents/MacOS/producer" | grep -q libobs \
   || { echo "FATAL: app was built without the live engine" >&2; exit 1; }
 
 # Sign with the real Developer ID when the keychain holds one — a STABLE
