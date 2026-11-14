@@ -3,7 +3,7 @@ import "./GuestRoomPage.css";
 //
 // Route: /connect/guest/room/:code
 //
-// The audience is someone who has never heard of Producer and was sent a link by a
+// The audience is someone who has never heard of Liveroom and was sent a link by a
 // friend who is about to go live. No account, no install: see yourself, type a
 // name, press one button.
 //
@@ -114,7 +114,7 @@ export default function GuestRoomPage({ code }: { code: string }) {
   const selfRef = useRef<HTMLVideoElement | null>(null);
   const showRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  /** Every connection that ends in Producer: camera peer, and the screen
+  /** Every connection that ends in Liveroom: camera peer, and the screen
    * peer while sharing. */
   const linkRef = useRef<HostLink | null>(null);
   const [sharing, setSharing] = useState(false);
@@ -290,7 +290,7 @@ export default function GuestRoomPage({ code }: { code: string }) {
         const msg = raw as { kind?: string; on_stage?: string[]; version?: number; listening?: boolean };
         if (msg.kind === "stage" && Array.isArray(msg.on_stage) && typeof msg.version === "number") {
           const update: StageUpdate = { on_stage: msg.on_stage, version: msg.version, audible: (msg as StageUpdate).audible };
-          // "host": live truth from Producer, which is what unlocks publishing.
+          // "host": live truth from Liveroom, which is what unlocks publishing.
           meshRef.current?.applyStage(update, "host");
           setOnStage(msg.on_stage.includes(guestIdRef.current ?? ""));
         } else if (msg.kind === "cue") {
@@ -339,7 +339,7 @@ export default function GuestRoomPage({ code }: { code: string }) {
   /** The ROOM channel: guest↔guest introduction only.
    *
    *  Stage state does NOT come from here — it arrives over the host's data
-   *  channel, because Producer is the authority and reaching us directly is both
+   *  channel, because Liveroom is the authority and reaching us directly is both
    *  faster and one fewer moving part. This socket exists solely because two
    *  guests cannot be introduced to each other any other way: each guest's
    *  render page is a separate browser process, so the host cannot relay between
@@ -616,7 +616,7 @@ export default function GuestRoomPage({ code }: { code: string }) {
         </p>
         <p className="guest-room-fine" style={S.fine}>
           Powered by{" "}
-          <a href="https://producer.dev" target="_blank" rel="noreferrer" style={S.plug}>Producer</a>
+          <a href="https://producer.dev" target="_blank" rel="noreferrer" style={S.plug}>Liveroom</a>
         </p>
       </div>
       {/* Host mic only — never the program mix, which would carry your own

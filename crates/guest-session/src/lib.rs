@@ -13,14 +13,14 @@ const CLOCK_SKEW_MS: u64 = 30_000;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Role {
-    Producer,
+    Liveroom,
     Guest,
     Monitor,
 }
 impl Role {
     fn label(self) -> &'static str {
         match self {
-            Self::Producer => "producer",
+            Self::Liveroom => "producer",
             Self::Guest => "guest",
             Self::Monitor => "monitor",
         }
@@ -478,7 +478,7 @@ impl Session {
             (Scope::Stage, None) => "stage".to_owned(),
             (Scope::Private, Some(id))
                 if wire.role != Role::Monitor
-                    && (wire.role == Role::Producer || id == wire.participant_id) =>
+                    && (wire.role == Role::Liveroom || id == wire.participant_id) =>
             {
                 format!("private_{id}")
             }
@@ -549,7 +549,7 @@ impl Session {
         {
             return Err(SessionError::InvalidSources);
         }
-        if wire.role == Role::Producer {
+        if wire.role == Role::Liveroom {
             let allowed = if wire.scope == Scope::Stage {
                 vec![PublishSource::Camera, PublishSource::Microphone]
             } else {
@@ -575,12 +575,12 @@ impl Session {
         self.0.expires_at_ms
     }
     pub fn can_publish_program(&self) -> bool {
-        self.0.role == Role::Producer && self.0.scope == Scope::Stage
+        self.0.role == Role::Liveroom && self.0.scope == Scope::Stage
             && self.0.publish_sources.contains(&PublishSource::Camera)
             && self.0.publish_sources.contains(&PublishSource::Microphone)
     }
 
-    /// Preserve Producer's existing guest source ID across token/track changes.
+    /// Preserve Liveroom's existing guest source ID across token/track changes.
     /// Monitors and the program publisher never become guest canvas sources.
     pub fn guest_source_id(&self) -> Option<String> {
         (self.0.role == Role::Guest).then(|| format!("guest-{}", self.0.participant_id))

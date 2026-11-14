@@ -483,7 +483,7 @@ impl DetachedRoomMic {
         // for a prompt or create an OBS source that never delivers samples.
         #[cfg(target_os = "macos")]
         if unsafe { ffi::producer_av_authorization_status(1) } != 3 {
-            return Err("Allow microphone access in Producer to start this source".into());
+            return Err("Allow microphone access in Liveroom to start this source".into());
         }
         let name = CString::new(extra.id.as_str()).map_err(|_| "Invalid microphone ID")?;
         let device = device
@@ -704,7 +704,7 @@ pub enum ExtraSpec {
     /// it: own label, own layer (above guest slots, below overlays), own
     /// placement rect — never a guest slot.
     Mod { url: String },
-    /// A browser page rendered ON the set, fed by this Producer over a local
+    /// A browser page rendered ON the set, fed by this Liveroom over a local
     /// path (live/bridge.rs): the vote bar (#51). Full-canvas, transparent,
     /// no audio, never suspended when hidden (its state is a poll away, and a
     /// reload mid-reveal would flash). Distinct from `Guest` so the roster's
@@ -922,7 +922,7 @@ pub fn device_picker_spec(kind: &str) -> Option<(&'static str, &'static [&'stati
 /// Devices for one picker, straight from libobs — the same list OBS shows,
 /// so USB mics, audio interfaces and capture cards appear without us knowing
 /// anything about them.
-/// Producer's own virtual camera must never be selectable as a camera SOURCE:
+/// Liveroom's own virtual camera must never be selectable as a camera SOURCE:
 /// pointing the stage at its own output is an infinite feedback loop, and it
 /// holds the CMIO device open so the virtual-camera output can no longer
 /// start. Excluded from the picker and from default selection.
@@ -942,7 +942,7 @@ fn drop_own_vcam(kind: &str, opts: Vec<DeviceOption>) -> Vec<DeviceOption> {
     }
     opts.into_iter()
         .filter(|o| {
-            !o.name.contains(VCAM_DEVICE_NAME) && !o.name.contains("Producer Portrait Camera")
+            !o.name.contains(VCAM_DEVICE_NAME) && !o.name.contains("Liveroom Portrait Camera")
         })
         .collect()
 }
@@ -3375,8 +3375,8 @@ mod scene_restoration_tests {
         let options = || {
             [
                 "MacBook Camera",
-                "Producer Virtual Camera",
-                "Producer Portrait Camera",
+                "Liveroom Virtual Camera",
+                "Liveroom Portrait Camera",
                 "USB Capture",
             ]
             .into_iter()

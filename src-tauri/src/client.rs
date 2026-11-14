@@ -1,4 +1,4 @@
-//! Typed client for the Producer API contract
+//! Typed client for the Liveroom API contract
 //! (producer-server/contract/openapi.yaml). Both backends speak this.
 
 use serde::{Deserialize, Serialize};
@@ -68,7 +68,7 @@ impl ProducerClient {
         self
     }
 
-    /// Producer's own endpoints hang off the connected base
+    /// Liveroom's own endpoints hang off the connected base
     /// (…/v1/app/producer). Platform-wide routes do NOT — they live at the
     /// API root, so they must be resolved against the ORIGIN rather than
     /// appended, or you get /v1/app/producer/v1/app/live/... and a 404 that
@@ -189,7 +189,7 @@ impl ProducerClient {
     /// needs anything server-side. Idempotent by `external_ref` (our local
     /// uuid), so a retry, a reinstall or a second machine converges on the
     /// SAME server room instead of scattering guests across duplicates.
-    /// Never called at room creation or app start — Producer must keep
+    /// Never called at room creation or app start — Liveroom must keep
     /// working offline and streaming to RTMP without a Boomin session.
     pub async fn register_room(&self, title: &str, external_ref: &str) -> EngineResult<Value> {
         let resp = self
@@ -208,7 +208,7 @@ impl ProducerClient {
         Ok(resp.json().await?)
     }
 
-    /// Every server room this brand owns — Producer-registered ones (by
+    /// Every server room this brand owns — Liveroom-registered ones (by
     /// `external_ref`) and rooms minted on the web or by a deal. Home
     /// reconciles its local rows against this so a room created anywhere is
     /// hostable from any machine.
@@ -281,7 +281,7 @@ impl ProducerClient {
         Ok(serde_json::json!({ "ok": true }))
     }
 
-    /// Who is in this room right now. Producer polls this and reconciles its
+    /// Who is in this room right now. Liveroom polls this and reconciles its
     /// browser sources against it — guests arrive via the room link on their
     /// own, so the roster is the only way to learn about them.
     pub async fn room_guests(&self, room_id: &str) -> EngineResult<Value> {
@@ -375,7 +375,7 @@ impl ProducerClient {
     }
 
     /// Mint a mod link (#47): a control seat (kind producer, control grants,
-    /// no media) another Producer opens. `mod_url` is returned exactly once.
+    /// no media) another Liveroom opens. `mod_url` is returned exactly once.
     pub async fn room_mod_link(
         &self,
         room_id: &str,
@@ -454,7 +454,7 @@ impl ProducerClient {
         .await
     }
 
-    /// Boomin: cut the room to a scene from a mod's Producer (`room.scene`).
+    /// Boomin: cut the room to a scene from a mod's Liveroom (`room.scene`).
     /// The host hears it as a `scene.cut` frame on the room channel. 403
     /// room_scene_required / 422 scene_unknown come back as messages.
     pub async fn room_scene_cut(&self, room_id: &str, scene_id: &str) -> EngineResult<Value> {
@@ -512,7 +512,7 @@ impl ProducerClient {
     /// Start / stop a run — the span the ledger reports on.
     pub async fn room_run(&self, room_id: &str, action: &str) -> EngineResult<Value> {
         if self.is_boomin() {
-            // No Producer-facing run route on Boomin: the roster poll is the
+            // No Liveroom-facing run route on Boomin: the roster poll is the
             // heartbeat and a lapse ends the run server-side. The webview
             // brackets the report by its own clock (run_id stays null).
             return Ok(serde_json::json!({
@@ -777,7 +777,7 @@ impl ProducerClient {
     /// Push the CURRENT stage set. Always the FULL list, never a delta, so a
     /// dropped call is corrected by the next one instead of compounding. The
     /// server filters to admitted guests of THIS room and enforces the room's
-    /// stage capacity, so it — not Producer — has the last word on what a
+    /// stage capacity, so it — not Liveroom — has the last word on what a
     /// reconnecting guest reads back.
     pub async fn set_stage(&self, room_id: &str, on_stage: &[String]) -> EngineResult<Value> {
         let resp = self
@@ -797,7 +797,7 @@ impl ProducerClient {
     }
 
     /// Invite a guest to a live room. Returns the invite link (for the guest)
-    /// and the render URL (for Producer's browser source) — both are returned
+    /// and the render URL (for Liveroom's browser source) — both are returned
     /// ONCE ONLY, so the caller must persist them immediately.
     /// `guest_brand_id` is optional: naming a brand needs an active network
     /// connection, omitting it produces an anonymous link anyone can open.
@@ -1016,7 +1016,7 @@ impl ProducerClient {
         Ok(resp.json().await?)
     }
 
-    /// Exact-handle lookup — Producer's whole discovery surface. There is
+    /// Exact-handle lookup — Liveroom's whole discovery surface. There is
     /// deliberately no list call: the desktop can resolve a handle it was
     /// handed, nothing more.
     pub async fn network_lookup(&self, slug: &str) -> EngineResult<Value> {
@@ -1082,7 +1082,7 @@ impl ProducerClient {
 
     /// Enter a deal's show as the BENEFICIARY: knocks on the host's room
     /// through the deal, so the admit settles it. Returns `{join_url, resumed}`.
-    /// A 409 `network_room_closed` (host's Producer isn't polling its roster)
+    /// A 409 `network_room_closed` (host's Liveroom isn't polling its roster)
     /// is surfaced with the code intact so the UI can say "not open yet".
     pub async fn network_deal_enter(&self, id: &str) -> EngineResult<Value> {
         let resp = self

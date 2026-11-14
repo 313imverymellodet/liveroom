@@ -1,9 +1,9 @@
 ---
 name: producer-sets
-description: Create and edit Producer broadcast Sets using the Producer MCP compiler, canonical schema, visual checks and portable integration contracts.
+description: Create and edit Liveroom broadcast Sets using the Liveroom MCP compiler, canonical schema, visual checks and portable integration contracts.
 ---
 
-# Producer Sets
+# Liveroom Sets
 
 Read `producer_capabilities` first. This is a local authoring catalog, not a connected native-renderer probe. The agent authors the plan; MCP and CLI do not make a second model request.
 

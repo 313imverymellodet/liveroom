@@ -75,7 +75,7 @@ describe("[kind]", () => {
     const body = (await res.json()) as { guest: { kind: string; producer_ref: string; grants: string[] } };
     expect(body.guest.kind).toBe("producer");
     expect(body.guest.producer_ref).toBe("https://b.example.workers.dev");
-    // Kind is never what they may do: a Producer walking in gets the same bundle.
+    // Kind is never what they may do: a Liveroom walking in gets the same bundle.
     expect(body.guest.grants.sort()).toEqual([...DEFAULT_GRANTS].sort());
   });
 

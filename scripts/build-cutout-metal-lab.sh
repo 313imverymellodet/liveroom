@@ -3,7 +3,7 @@
 set -euo pipefail
 repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
 lab_dir="$repo_dir/src-tauri/target/cutout-lab"
-engine_contents="${PRODUCER_ENGINE_DIR:-/Applications/Producer.app/Contents}"
+engine_contents="${PRODUCER_ENGINE_DIR:-/Applications/Liveroom.app/Contents}"
 obs_commit="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["obs"]["commit"])' "$repo_dir/engine/obs.lock")"
 source_dir="$lab_dir/engine-source"
 mkdir -p "$lab_dir"
@@ -49,7 +49,7 @@ for entry in json.loads((root/'engine/obs.lock').read_text())['patchsets']:
     assert hashlib.sha256(b''.join(p.read_bytes() for p in patches)).hexdigest()==entry['sha256'],'Metal patch hash mismatch'
     for patch in patches:
         args=['git','-C',str(src/entry['target']),'apply']
-        # This is an extracted tarball inside the Producer repository. Keep
+        # This is an extracted tarball inside the Liveroom repository. Keep
         # git from discovering that enclosing repo and ignoring nested paths.
         env={**os.environ,'GIT_CEILING_DIRECTORIES':str(src)}
         if subprocess.run(args+['--check',str(patch)],capture_output=True,env=env).returncode==0:

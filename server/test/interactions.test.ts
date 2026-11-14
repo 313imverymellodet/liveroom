@@ -273,8 +273,8 @@ describe("[interaction] end to end", () => {
     const { room, g1, aud } = await show(e);
     // The host's control socket subscribes to interaction:host; a guest may not.
     const hub = e.REALTIME.instances.get(`liveroom:${room.id}`) ?? (e.REALTIME.get(e.REALTIME.idFromName(`liveroom:${room.id}`)), e.REALTIME.instances.get(`liveroom:${room.id}`)!);
-    await hub.object.acceptUpgrade(upgrade({ "X-Producer-User": "host", "X-Producer-Room": room.id, "X-Producer-Role": "host" }));
-    await hub.object.acceptUpgrade(upgrade({ "X-Producer-User": g1.guest.id, "X-Producer-Room": room.id, "X-Producer-Role": "guest" }));
+    await hub.object.acceptUpgrade(upgrade({ "X-Liveroom-User": "host", "X-Liveroom-Room": room.id, "X-Liveroom-Role": "host" }));
+    await hub.object.acceptUpgrade(upgrade({ "X-Liveroom-User": g1.guest.id, "X-Liveroom-Room": room.id, "X-Liveroom-Role": "guest" }));
     const [host, guest] = hub.state.getWebSockets() as unknown as FakeSocket[];
     await hub.object.webSocketMessage(host as never, JSON.stringify({ type: "subscribe", channel: "interaction:host" }));
     await hub.object.webSocketMessage(guest as never, JSON.stringify({ type: "subscribe", channel: "interaction:host" }));
@@ -285,7 +285,7 @@ describe("[interaction] end to end", () => {
     const t = await audienceToken(e, aud.code, "device-one-1234");
     expect(t.signaling_url).toContain("/v1/connect/audience-signal?token=");
     const rs = e.ROOMSTATE.get(e.ROOMSTATE.idFromName(`roomstate:${room.id}`)) && e.ROOMSTATE.instances.get(`roomstate:${room.id}`)!;
-    await rs.object.acceptAudience(upgrade({ "X-Producer-User": "aud_x" }));
+    await rs.object.acceptAudience(upgrade({ "X-Liveroom-User": "aud_x" }));
     const phone = rs.state.getWebSockets()[0] as unknown as FakeSocket;
     expect(phone.frames()[0]).toMatchObject({ type: "snapshot", interactions: [] });
     expect(typeof phone.frames()[0].server_now).toBe("number");

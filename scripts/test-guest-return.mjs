@@ -12,7 +12,7 @@ function harness(capture = async () => { throw new Error('denied'); }) {
   let next = 1, now = 0;
   const media = {
     getUserMedia: capture,
-    enumerateDevices: async () => [{ kind: 'videoinput', label: 'Producer Virtual Camera', deviceId: 'vcam' }],
+    enumerateDevices: async () => [{ kind: 'videoinput', label: 'Liveroom Virtual Camera', deviceId: 'vcam' }],
     addEventListener: (name, fn) => listeners.set(name, fn),
     removeEventListener: (name) => listeners.delete(name),
   };
@@ -45,7 +45,7 @@ function stream(kind = 'video') {
   const track = { kind, stopped: false, stop() { this.stopped = true; }, addEventListener: (name, fn) => events.set(name, fn) };
   return { track, end: () => events.get('ended')?.(), getTracks: () => [track], getVideoTracks: () => kind === 'video' ? [track] : [], getAudioTracks: () => kind === 'audio' ? [track] : [] };
 }
-const options = (h) => ({ pc: h.pc, enabled: true, programLabel: 'Producer Virtual Camera', micLabel: null });
+const options = (h) => ({ pc: h.pc, enabled: true, programLabel: 'Liveroom Virtual Camera', micLabel: null });
 
 test('denied microphone does not block video; duplicate requests capture once', async () => {
   const video = stream(); let captures = 0;
@@ -74,7 +74,7 @@ test('late video capture after connection teardown is stopped', async () => {
 test('virtual camera appearance and restart recover without accumulating senders', async () => {
   const first = stream(), second = stream(); let ready = false, count = 0;
   const h = harness(async (constraints) => { if (constraints.audio) throw new Error('denied'); return count++ ? second : first; });
-  h.media.enumerateDevices = async () => ready ? [{ kind: 'videoinput', label: 'Producer Virtual Camera', deviceId: 'vcam' }] : [{ kind: 'videoinput', label: 'Physical camera', deviceId: 'physical' }];
+  h.media.enumerateDevices = async () => ready ? [{ kind: 'videoinput', label: 'Liveroom Virtual Camera', deviceId: 'vcam' }] : [{ kind: 'videoinput', label: 'Physical camera', deviceId: 'physical' }];
   const feed = new h.GuestReturnFeed(options(h)); feed.request(); await flush(); assert.equal(count, 0);
   ready = true; await h.advance(2000); assert.equal(h.senders.length, 1);
   first.end(); await h.advance(2000); assert.equal(h.senders.length, 1); assert.equal(h.senders[0].track, second.track);

@@ -1,4 +1,4 @@
-/* Isolated macOS/OBS 32.1.2 visual proof, never linked into Producer.
+/* Isolated macOS/OBS 32.1.2 visual proof, never linked into Liveroom.
  * ABI subset verified against engine/obs.lock and src-tauri/src/live/ffi.rs.
  * No capture devices, audio sources, recorder or external stream destinations. */
 #import <AppKit/AppKit.h>
@@ -68,13 +68,13 @@ static obs_source_t *source(const char *id,const char *name,const char *url,uint
 static void engine(const char *bg,const char *fg,const char *debug) {
  @autoreleasepool {
   (void)debug;bool patterns=strncmp(bg,"pattern",7)==0,shared=strcmp(bg,"pattern-shared")==0;
-  struct obs_video_info v={"/Applications/Producer.app/Contents/Frameworks/libobs-opengl.dylib",30,1,1280,720,1280,720,7,0,false,2,2,3};
+  struct obs_video_info v={"/Applications/Liveroom.app/Contents/Frameworks/libobs-opengl.dylib",30,1,1280,720,1280,720,7,0,false,2,2,3};
   const char *metal=getenv("PRODUCER_PROOF_METAL");
-  if(!metal || strcmp(metal,"0")!=0){v.graphics_module="/Applications/Producer.app/Contents/Frameworks/libobs-metal.dylib";v.output_format=2;v.gpu_conversion=true;v.range=1;}
+  if(!metal || strcmp(metal,"0")!=0){v.graphics_module="/Applications/Liveroom.app/Contents/Frameworks/libobs-metal.dylib";v.output_format=2;v.gpu_conversion=true;v.range=1;}
   int rc=obs_reset_video(&v);if(rc){fprintf(stderr,"video failed %d\n",rc);obs_shutdown();return;}
   obs_set_video_levels(300,1000);producer_source_appearance_register();
   for(NSString *plugin in (patterns?@[@"image-source"]:@[@"image-source",@"obs-browser"])){
-    NSString *base=[@"/Applications/Producer.app/Contents/PlugIns" stringByAppendingPathComponent:[plugin stringByAppendingString:@".plugin/Contents"]];
+    NSString *base=[@"/Applications/Liveroom.app/Contents/PlugIns" stringByAppendingPathComponent:[plugin stringByAppendingString:@".plugin/Contents"]];
     obs_module_t *module=NULL;
     int open=obs_open_module(&module,[[base stringByAppendingPathComponent:[@"MacOS/" stringByAppendingString:plugin]] UTF8String],[[base stringByAppendingPathComponent:@"Resources"] UTF8String]);
     if(open||!obs_init_module(module)){fprintf(stderr,"plugin failed %s %d\n",plugin.UTF8String,open);obs_shutdown();return;}
@@ -160,7 +160,7 @@ int main(int argc,char **argv) {
   const char *args[]={"producer",argv[4]};obs_set_cmdline_args(2,args);
   NSString *config=[outputDir stringByAppendingPathComponent:@"obs-config"];
   [[NSFileManager defaultManager] createDirectoryAtPath:config withIntermediateDirectories:YES attributes:nil error:nil];
-  obs_add_data_path("/Applications/Producer.app/Contents/Frameworks/libobs.framework/Resources/");
+  obs_add_data_path("/Applications/Liveroom.app/Contents/Frameworks/libobs.framework/Resources/");
   if(!obs_startup("en-US",config.UTF8String,NULL)){fprintf(stderr,"startup failed\n");return 1;}
   obs_set_ui_task_handler(uiTask);
   [NSApp finishLaunching];

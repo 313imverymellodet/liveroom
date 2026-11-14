@@ -82,7 +82,7 @@ static void snapshot_children(struct program *p) {
 }
 static const char *name(void *p) {
   (void)p;
-  return "Producer set v2 program";
+  return "Liveroom set v2 program";
 }
 static uint32_t width(void *p) { return ((struct program *)p)->width; }
 static uint32_t height(void *p) { return ((struct program *)p)->height; }

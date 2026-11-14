@@ -141,10 +141,10 @@ describe("[mod] scene cuts on the room channel", () => {
       const all = state.getWebSockets();
       return all[all.length - 1] as unknown as FakeSocket;
     };
-    const host = await sock({ "X-Producer-User": "host", "X-Producer-Room": "r1", "X-Producer-Role": "host" });
-    const mod = await sock({ "X-Producer-User": "control:m1", "X-Producer-Room": "r1", "X-Producer-Role": "control", "X-Producer-Grants": JSON.stringify(MOD_GRANTS) });
-    const viewer = await sock({ "X-Producer-User": "control:v1", "X-Producer-Room": "r1", "X-Producer-Role": "control", "X-Producer-Grants": "[]" });
-    const guest = await sock({ "X-Producer-User": "g1", "X-Producer-Room": "r1", "X-Producer-Role": "guest" });
+    const host = await sock({ "X-Liveroom-User": "host", "X-Liveroom-Room": "r1", "X-Liveroom-Role": "host" });
+    const mod = await sock({ "X-Liveroom-User": "control:m1", "X-Liveroom-Room": "r1", "X-Liveroom-Role": "control", "X-Liveroom-Grants": JSON.stringify(MOD_GRANTS) });
+    const viewer = await sock({ "X-Liveroom-User": "control:v1", "X-Liveroom-Room": "r1", "X-Liveroom-Role": "control", "X-Liveroom-Grants": "[]" });
+    const guest = await sock({ "X-Liveroom-User": "g1", "X-Liveroom-Room": "r1", "X-Liveroom-Role": "guest" });
 
     host.sent.length = 0; // initial audience state is independent of scene authority
     // Only the host's publish counts.
@@ -168,7 +168,7 @@ describe("[mod] scene cuts on the room channel", () => {
     expect(host.frames().filter((f) => f.type === "scene.cut")).toHaveLength(1);
 
     // A seat connecting later starts from the stored list.
-    const late = await sock({ "X-Producer-User": "control:m2", "X-Producer-Room": "r1", "X-Producer-Role": "control", "X-Producer-Grants": JSON.stringify(MOD_GRANTS) });
+    const late = await sock({ "X-Liveroom-User": "control:m2", "X-Liveroom-Room": "r1", "X-Liveroom-Role": "control", "X-Liveroom-Grants": JSON.stringify(MOD_GRANTS) });
     expect(late.frames()[0]).toMatchObject({ type: "scene.state", active_scene_id: "s1", scenes: [{ id: "s1", name: "Wide" }, { id: "s2", name: "Close" }] });
     await hub.webSocketMessage(host as never, JSON.stringify({ type: "scene.ack", command_id: cut.command_id, status: "applied" }));
     expect(mod.frames().at(-1)).toMatchObject({ type: "scene.command", status: "applied", scene_id: "s2" });

@@ -2,7 +2,7 @@ import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-const env=Object.fromEntries(fs.readFileSync(path.join(os.homedir(),'Library/Application Support/ai.boomin.producer.sets-v2-dev/local-workspace/workspace.env'),'utf8').trim().split('\n').map(l=>{const n=l.indexOf('=');return [l.slice(0,n),l.slice(n+1)];}));
+const env=Object.fromEntries(fs.readFileSync(path.join(os.homedir(),'Library/Application Support/app.liveroom.studio.sets-v2-dev/local-workspace/workspace.env'),'utf8').trim().split('\n').map(l=>{const n=l.indexOf('=');return [l.slice(0,n),l.slice(n+1)];}));
 const base='http://127.0.0.1:8795';
 async function call(path,body,token=env.PRIMARY_TOKEN){const response=await fetch(base+path,{headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},...(body?{method:'POST',body:JSON.stringify(body)}:{})});const result=await response.json();assert(response.ok,`${path}: ${response.status} ${result.error?.message??''}`);return result;}
 const {room}=await call('/v1/app/live/rooms',{title:'Sets v2 · Audience proof',external_ref:'sets-v2-audience-proof'});

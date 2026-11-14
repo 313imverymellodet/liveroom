@@ -108,7 +108,7 @@ export interface RoomConfig {
    * server. Absent = minted here, title is ours to push. */
   origin?: "server";
   /** Network exposure, mirrored locally so the control renders offline.
-   * Producer is the only writer, so the local copy is authoritative;
+   * Liveroom is the only writer, so the local copy is authoritative;
    * changing it forces registration and a server PATCH. */
   visibility?: "private" | "connections" | "public";
   /** Dock sizing the user dragged (per room, like the layout itself). */
@@ -137,7 +137,7 @@ export interface RoomConfig {
   /** Chat channels the ROOM reads — public handles, set by the host and
    * published to every seat over the monitor leg (lib/monitorFeed.ts). */
   chat_channels?: { twitch?: string; kick?: string; youtube?: string };
-  /** Studio output (v0.4.37): the PROGRAM is a capture of Producer's own
+  /** Studio output (v0.4.37): the PROGRAM is a capture of Liveroom's own
    * window — the whole studio goes out. The stage and the return feed keep
    * showing the room scene (lib/studioOutput.ts). Persisted per room. */
   studio_output?: boolean;

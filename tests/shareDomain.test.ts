@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { shareDomain, audienceShareUrl, guestShareUrl } from "../src/lib/shareDomain.ts";
 
-test("new installs and invalid preferences default to Producer", () => {
+test("new installs and invalid preferences default to Liveroom", () => {
   for (const value of [null, undefined, "", "example.com", "producer.dev"]) assert.equal(shareDomain(value), "producer.dev");
   assert.equal(shareDomain("boomin.ai"), "boomin.ai");
 });

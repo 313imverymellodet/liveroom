@@ -1,5 +1,5 @@
 #!/bin/bash
-# notarize.sh — submit a signed Producer.app to Apple, wait, staple, verify.
+# notarize.sh — submit a signed Liveroom.app to Apple, wait, staple, verify.
 #
 # Notarization is the gate that unlocks distribution outside the App Store
 # AND is a hard requirement for the virtual camera: macOS refuses to install
@@ -18,7 +18,7 @@ if [[ ${1:-} == "--preflight" ]]; then
   PREFLIGHT_ONLY=1
   shift
 fi
-APP="${1:?usage: notarize.sh [--preflight] /path/to/Producer.app}"
+APP="${1:?usage: notarize.sh [--preflight] /path/to/Liveroom.app}"
 [[ -d $APP ]] || { echo "no such app: $APP" >&2; exit 1; }
 
 fail=0
@@ -85,7 +85,7 @@ else
 
     xcrun notarytool store-credentials "$PROFILE" \\
       --apple-id "<your-apple-id-email>" \\
-      --team-id "9936A69867" \\
+      --team-id "REPLACE_WITH_TEAM_ID" \\
       --password "<app-specific-password>"
 
 EOF

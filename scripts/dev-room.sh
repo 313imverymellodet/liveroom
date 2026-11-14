@@ -4,10 +4,10 @@
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-ENGINE_APP="${PRODUCER_DEV_ENGINE_APP:-/Applications/Producer.app}"
-DEV_APP="$PWD/src-tauri/target/dev-room/Producer.app"
+ENGINE_APP="${PRODUCER_DEV_ENGINE_APP:-/Applications/Liveroom.app}"
+DEV_APP="$PWD/src-tauri/target/dev-room/Liveroom.app"
 [[ -d "$ENGINE_APP/Contents/Frameworks/libobs.framework" ]] || {
-  echo "Install Producer first, or set PRODUCER_DEV_ENGINE_APP to its app bundle." >&2
+  echo "Install Liveroom first, or set PRODUCER_DEV_ENGINE_APP to its app bundle." >&2
   exit 1
 }
 if pgrep -f "$DEV_APP/Contents/MacOS/producer" >/dev/null; then

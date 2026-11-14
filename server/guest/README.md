@@ -1,14 +1,14 @@
 # Guest pages (self-hosted)
 
 The three browser pages a guest of a self-hosted host touches, bundled so the
-Producer server serves them from its own origin. A guest never contacts any
+Liveroom server serves them from its own origin. A guest never contacts any
 server but the host's.
 
 | Route the Worker serves | Page | Who opens it |
 | --- | --- | --- |
 | `/connect/guest/:code` | `src/GuestJoinPage.tsx` | A person with an invite link |
 | `/connect/guest/room/:code` | `src/GuestRoomPage.tsx` | A stranger with the room link (waits for admit) |
-| `/connect/guest/render/:id?k=…&mic=…&program=…` | `src/GuestRenderPage.tsx` | Producer, as a browser source (headless, transparent) |
+| `/connect/guest/render/:id?k=…&mic=…&program=…` | `src/GuestRenderPage.tsx` | Liveroom, as a browser source (headless, transparent) |
 
 All three call the API at `window.location.origin + "/v1/connect"` (see
 `src/apiConfig.ts`) and open signaling at
@@ -57,7 +57,7 @@ These files are copies of the hosted app's `src/pages/connect/Guest*.tsx` and
   param passed in as a prop;
 - `CONNECT_API_BASE_URL` derived from the page origin instead of a configured
   API host;
-- hosted-service branding, analytics and fonts removed ("Powered by Producer").
+- hosted-service branding, analytics and fonts removed ("Powered by Liveroom").
 
 When the hosted pages change (perfect negotiation, stage enforcement in
 `guestMesh.ts`, the `?cam=producer` / `?name=` / `&mic=` / `&program=`

@@ -14,7 +14,7 @@ describe("outputSceneFor", () => {
     expect(outputSceneFor("program", true)).toBe("studio");
     // v0.4.48: the return feed follows. It used to stay on the room so guests
     // never saw the UI — but the virtual camera is also how a host uses
-    // Producer as their camera in Meet or Zoom, and that sent the bare stage
+    // Liveroom as their camera in Meet or Zoom, and that sent the bare stage
     // while the stream sent the studio. One switch must not mean two pictures.
     // The cost is real and deliberate: with studio ON, guests see the UI.
     expect(outputSceneFor("return", true)).toBe("studio");

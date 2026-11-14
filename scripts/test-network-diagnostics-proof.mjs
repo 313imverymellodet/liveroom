@@ -14,7 +14,7 @@ const receiver=kind=>({kind,status:'available',trackLive:true,enabled:true,muted
  counters:{width:kind==='video'?960:null,height:kind==='video'?540:null,id:'SECRET'},
  delta:{windowMs:1000,framesDecoded:kind==='video'?20:null,framesReceived:kind==='video'?20:null,bytesReceived:2000,
   totalSamplesDuration:kind==='audio'?1:null,totalAudioEnergy:kind==='audio'?0.01:null,audioRms:kind==='audio'?0.1:null,concealedSamples:0}});
-function fixture({active=true,env={DEV:true,VITE_PRODUCER_NETWORK_DIAGNOSTICS:'1'},appId='ai.boomin.producer.sets-v2-dev',native=true}={}){
+function fixture({active=true,env={DEV:true,VITE_PRODUCER_NETWORK_DIAGNOSTICS:'1'},appId='app.liveroom.studio.sets-v2-dev',native=true}={}){
  let now=0,seq=0,live=active,disposed=false,engineCalls=0,seatCalls=0,identifierCalls=0,readEngine=async()=>({engine_ready:true,cpu:2,fps:60,render_time_us:100,skipped_frames:0,total_frames:100,video_height:1080,video_fps:60,
   sources:{items:[{id:'SECRET-ID',label:'SECRET-LABEL',device:'SECRET-DEVICE',kind:'camera',src_w:960,src_h:540,has_audio:false},{kind:'guest',src_w:960,src_h:540,has_audio:true,muted:false}]}});
  let sample=async options=>{seatCalls++;return options.enabled?{status:'sampled',sampledAtMs:now,video:receiver('video'),audio:receiver('audio')}:null;};
@@ -43,13 +43,13 @@ function fixture({active=true,env={DEV:true,VITE_PRODUCER_NETWORK_DIAGNOSTICS:'1
 test('installation and construction never auto-start diagnostics or media work',async()=>{
  const h=fixture();await h.exports.installNetworkDiagnosticsProof();assert.ok(h.window.__producerNetworkDiagnostics);assert.equal(h.engineCalls,0);assert.equal(h.seatCalls,0);assert.equal(h.timers.size,0);assert.equal(h.window.__producerNetworkDiagnostics.status().state,'idle');
 });
-for(const options of [{env:{DEV:false,VITE_PRODUCER_NETWORK_DIAGNOSTICS:'1'}},{env:{DEV:true,VITE_PRODUCER_NETWORK_DIAGNOSTICS:'0'}},{native:false},{appId:'ai.boomin.producer'},{appId:'ai.boomin.producer.sets-v2-dev.evil'}]){
+for(const options of [{env:{DEV:false,VITE_PRODUCER_NETWORK_DIAGNOSTICS:'1'}},{env:{DEV:true,VITE_PRODUCER_NETWORK_DIAGNOSTICS:'0'}},{native:false},{appId:'app.liveroom.studio'},{appId:'app.liveroom.studio.sets-v2-dev.evil'}]){
  test('installer rejects production, browser, disabled or nonallowlisted application: '+JSON.stringify(options),async()=>{
   const h=fixture(options);await h.exports.installNetworkDiagnosticsProof();assert.equal(h.window.__producerNetworkDiagnostics,undefined);assert.equal(h.engineCalls,0);assert.equal(h.seatCalls,0);assert.equal(h.timers.size,0);
  });
 }
 test('Windows dev bundle is allowed and never invokes Mac-only report persistence',async()=>{
- const h=fixture({active:false,appId:'ai.boomin.producer.windows-network-dev'});await h.exports.installNetworkDiagnosticsProof();const running=h.window.__producerNetworkDiagnostics.run();await h.advance(15000);assert.equal((await running).reason,'no_active_seat');assert.equal(h.reports.length,0);assert.equal(h.logs.length,1);
+ const h=fixture({active:false,appId:'app.liveroom.studio.windows-network-dev'});await h.exports.installNetworkDiagnosticsProof();const running=h.window.__producerNetworkDiagnostics.run();await h.advance(15000);assert.equal((await running).reason,'no_active_seat');assert.equal(h.reports.length,0);assert.equal(h.logs.length,1);
 });
 test('a single explicit run records at most 60 sanitized 1Hz samples then releases all timers/listeners',async()=>{
  const h=fixture(),driver=h.exports.createNetworkDiagnosticsProof(h.deps);const run=driver.run();assert.equal(driver.run(),run);await h.advance(60000);const report=await run;
@@ -153,7 +153,7 @@ test('missing or invalid receiver timings remain null with zero observed coverag
 });
 test('HMR disposes an installed running driver and cannot install after late bundle-ID resolution',async()=>{
  const h=fixture();await h.exports.installNetworkDiagnosticsProof();const run=h.window.__producerNetworkDiagnostics.run();await flush();h.disposeModule();await flush();assert.equal((await run).reason,'disposed');assert.equal(h.window.__producerNetworkDiagnostics,undefined);assert.equal(h.timers.size,0);
- let resolve;const late=fixture({appId:()=>new Promise(done=>{resolve=done;})});const pending=late.exports.installNetworkDiagnosticsProof();await flush();late.disposeModule();resolve('ai.boomin.producer.sets-v2-dev');await pending;assert.equal(late.window.__producerNetworkDiagnostics,undefined);
+ let resolve;const late=fixture({appId:()=>new Promise(done=>{resolve=done;})});const pending=late.exports.installNetworkDiagnosticsProof();await flush();late.disposeModule();resolve('app.liveroom.studio.sets-v2-dev');await pending;assert.equal(late.window.__producerNetworkDiagnostics,undefined);
 });
 test('main entry imports this tool only behind DEV and the exact explicit flag',()=>{
  const main=readFileSync(new URL('../src/main.tsx',import.meta.url),'utf8');assert.match(main,/if\(import\.meta\.env\.DEV&&import\.meta\.env\.VITE_PRODUCER_NETWORK_DIAGNOSTICS==='1'\)/);assert.match(main,/networkDiagnosticsProof.*then\(m=>m\.installNetworkDiagnosticsProof\(\)\)/);

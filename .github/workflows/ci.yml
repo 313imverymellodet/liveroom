@@ -60,7 +60,7 @@ jobs:
       - run: node scripts/test-windows-native-imports.mjs
       - run: python3 scripts/test-release-windows.py
       - run: node scripts/validate-set.mjs assets/creator-library/sets/*.set.json
-      - run: npm ci --prefix tools/producer-streamdeck/ai.boomin.producer.sounds.sdPlugin
+      - run: npm ci --prefix tools/producer-streamdeck/app.liveroom.studio.sounds.sdPlugin
       - run: node tools/producer-streamdeck/test.mjs
       - run: cc -std=c11 -Wall -Wextra -fsanitize=address,undefined scripts/test-soundboard-native.c -o /tmp/soundboard-test -lpthread -lm && /tmp/soundboard-test
       - run: node scripts/test-sets-v2-readiness-progress.mjs

@@ -91,7 +91,7 @@ export async function createAuthoringServer(directory) {
     if(await api.packageRevision(await read(file))!==input.baseRevision)throw Error('The source Set changed during repair. Inspect it again.');
     return save(next);
   });
-  tool('producer_preview_set','Create a standalone HTML browser preview using Producer’s actual SetPreview renderer. Optionally export a publication thumbnail using an installed Chromium browser. Cameras are placeholders and audio is simulated. Does not load preparation or put anything on air.',{file:fileName,exportThumbnail:z.boolean().optional(),layout:z.string().max(64).optional()},false,async({file,exportThumbnail,layout})=>{
+  tool('producer_preview_set','Create a standalone HTML browser preview using Liveroom’s actual SetPreview renderer. Optionally export a publication thumbnail using an installed Chromium browser. Cameras are placeholders and audio is simulated. Does not load preparation or put anything on air.',{file:fileName,exportThumbnail:z.boolean().optional(),layout:z.string().max(64).optional()},false,async({file,exportThumbnail,layout})=>{
     const doc=await read(file);
     const name=`preview-${randomUUID()}.html`,path=await writeNew(name,await previewHtml(doc));
     const thumbnail=exportThumbnail?`poster-${randomUUID()}.jpg`:undefined;
@@ -109,13 +109,13 @@ export async function createAuthoringServer(directory) {
       workspace,publicationId:z.string().uuid(),expectedRevision:z.number().int().positive(),idempotencyKey:z.string().uuid(),
     },false,async({workspace,publicationId,expectedRevision,idempotencyKey})=>publishingRequest(workspace,`/v1/app/producer/v1/sets/publications/${publicationId}`,{method:'PATCH',body:{status:'withdrawn',expected_revision:expectedRevision,idempotency_key:idempotencyKey}}),true);
   }
-  server.registerResource('authoring-guide','producer://authoring/guide',{mimeType:'application/json',description:'Producer compiler capabilities and compact plan/edit contract'},async uri=>({contents:[{uri:uri.href,mimeType:'application/json',text:JSON.stringify({catalog:api.AUTHORING_CATALOG,instructions:api.DESIGN_INSTRUCTIONS,...scope})}]}));
+  server.registerResource('authoring-guide','producer://authoring/guide',{mimeType:'application/json',description:'Liveroom compiler capabilities and compact plan/edit contract'},async uri=>({contents:[{uri:uri.href,mimeType:'application/json',text:JSON.stringify({catalog:api.AUTHORING_CATALOG,instructions:api.DESIGN_INSTRUCTIONS,...scope})}]}));
   server.registerResource('canonical-schema','producer://authoring/schema',{mimeType:'application/schema+json',description:'Full canonical Set JSON schema from the installed checkout; used directly by canonical v2 plans and edits. Load for advanced authoring.'},async uri=>({contents:[{uri:uri.href,mimeType:'application/schema+json',text:JSON.stringify(api.presentationJsonSchema)}]}));
   return server;
 }
 
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
-  const directory=process.env.PRODUCER_SETS_DIR??join(homedir(),'Documents','Producer Sets');
+  const directory=process.env.PRODUCER_SETS_DIR??join(homedir(),'Documents','Liveroom Sets');
   const server=await createAuthoringServer(directory);
   await server.connect(new StdioServerTransport());
 }

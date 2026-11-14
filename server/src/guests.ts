@@ -3,13 +3,13 @@
 // D1, minus everything that was Boomin-shaped: no brand or org scoping, no
 // network knocks, no appearance deals. One deployment = one host.
 //
-// The contract with Producer (unchanged, so the desktop app needs no fork):
+// The contract with Liveroom (unchanged, so the desktop app needs no fork):
 //
 //   render URL:  {origin}/connect/guest/render/{guestId}?k={renderKey}
 //   join URL:    {origin}/connect/guest/{inviteCode}
 //   room link:   {origin}/connect/guest/room/{roomCode}
 //
-// ONE render URL PER GUEST. Each becomes its own browser source in Producer,
+// ONE render URL PER GUEST. Each becomes its own browser source in Liveroom,
 // which is what gives the host independent position/crop/z on the stage and
 // an independent fader per guest. The render URL is STABLE FOREVER — a browser
 // source's URL is fixed at creation — so it carries only a durable id and a
@@ -98,7 +98,7 @@ function requireSecret(env: Env): string {
 
 /** The render key is DERIVED, never stored: sha256("guest-render:<id>:<secret>").
  *
- *  Guests walk in through the room link, so Producer has no stored copy of a
+ *  Guests walk in through the room link, so Liveroom has no stored copy of a
  *  once-only URL — the roster must return render_url on demand. Deriving beats
  *  both alternatives: storing a recoverable key puts live render secrets at
  *  rest, and minting per read would change the URL on every 3s poll and
@@ -310,7 +310,7 @@ async function insertGuest(
 }
 
 /** Invite a named guest by link. The link goes to the guest, the render URL
- *  into Producer's browser source; both come back exactly once (the roster can
+ *  into Liveroom's browser source; both come back exactly once (the roster can
  *  re-derive render_url, the invite code is hashed). */
 export async function inviteGuest(
   env: Env,
@@ -345,7 +345,7 @@ export const modUrl = (origin: string, code: string) => `${origin}/connect/mod/$
 /** The host mints a MOD LINK (#47): a participant of kind `producer` in the
  *  `control` seat holding the mod bundle (admit, stage, order, remove,
  *  interactions, scene) and NO media grant — it never appears on the set.
- *  Another Producer opens the link and gets the roster + the scene list.
+ *  Another Liveroom opens the link and gets the roster + the scene list.
  *  Single-user server: a mod is a capability the host hands out, never a
  *  login. The link is returned exactly once (hashed at rest); revoking the
  *  row (`POST guests/:id/revoke`) kills it at the seat's next exchange. */
@@ -393,7 +393,7 @@ export function requireGrant(seat: Pick<GuestRow, "grants">, grant: Grant): void
   }
 }
 
-/** A ticket to the room channel's CONTROL side. The host's Producer gets
+/** A ticket to the room channel's CONTROL side. The host's Liveroom gets
  *  role host (everything); a mod seat gets its row's grants, re-read here at
  *  every mint so a revoke lands at the next exchange. */
 export async function mintControlTicket(
@@ -423,7 +423,7 @@ export async function guestByInviteCode(env: Env, inviteCode: string): Promise<G
 }
 
 /** Resolve a guest for the RENDER page. Same discipline, different secret: the
- *  render key never leaves the host's own Producer instance. */
+ *  render key never leaves the host's own Liveroom instance. */
 export async function guestByRenderKey(env: Env, guestId: string, renderKey: string): Promise<GuestRow> {
   const expected = await deriveRenderKey(env, guestId);
   // Key checked BEFORE the lookup, so a wrong key cannot probe which ids exist.
@@ -578,7 +578,7 @@ export async function joinRoomByCode(
   if (!name) throw new ApiError(400, "guest_name_required", "Enter a name so the host knows who you are.");
 
   // RESUME an existing slot before creating a new one: a reload must not mint
-  // a new guest id (= a new render_url = Producer destroys the source and the
+  // a new guest id (= a new render_url = Liveroom destroys the source and the
   // host's framing). Doubles as the revoke blocklist: a revoked code fails here.
   if (input.resumeCode) {
     const existing = await env.DB.prepare("SELECT * FROM live_room_guests WHERE invite_code_hash = ?1")
@@ -621,7 +621,7 @@ export async function joinRoomByCode(
     inviteCode,
     joinedVia: "room_link",
     status: room.guest_auto_admit ? "accepted" : "waiting",
-    // Another Producer walking in through the room link: kind = producer,
+    // Another Liveroom walking in through the room link: kind = producer,
     // the ref is display metadata. Same bundle as any visitor — kind is
     // never what they may do.
     kind: producerRef ? "producer" : "visitor",
@@ -776,7 +776,7 @@ export function publicGuest(guest: GuestRow) {
  *  quality) recently — evidence, not self-report. */
 export const CONNECTED_WINDOW_MS = 15_000;
 /** How long a departed guest stays on the roster, so a wifi blip does not
- *  cost the host a re-frame: Producer keeps the source alive meanwhile. */
+ *  cost the host a re-frame: Liveroom keeps the source alive meanwhile. */
 export const LEFT_GRACE_MS = 90_000;
 /** Past this a quality reading reports `unknown` rather than a stale value. */
 export const QUALITY_FRESH_MS = 20_000;
@@ -798,7 +798,7 @@ export function freshQuality(guest: Pick<GuestRow, "quality" | "quality_at">, no
   return now - guest.quality_at * 1000 <= QUALITY_FRESH_MS ? guest.quality : "unknown";
 }
 
-/** The roster Producer polls (~3s). Control seats (mods) are not on it —
+/** The roster Liveroom polls (~3s). Control seats (mods) are not on it —
  *  they are never on the set; `GET rooms/:id/mods` lists them. render_url is derived, so it comes back
  *  on EVERY read; only an ADMITTED guest gets one — a waiting guest must not
  *  be renderable, or the waiting room is decoration. The poll doubles as the
@@ -842,7 +842,7 @@ export async function roomRoster(env: Env, origin: string, roomId: string, opts:
 
 // ── The stage ────────────────────────────────────────────────────────────────
 
-/** Set who is on stage. Producer is authoritative and calls this on every
+/** Set who is on stage. Liveroom is authoritative and calls this on every
  *  change. Persisted AND versioned, then pushed — never polled. Only ADMITTED
  *  guests of THIS room may be staged, so a stale client cannot put a departed
  *  guest into everyone's subscribe set. */

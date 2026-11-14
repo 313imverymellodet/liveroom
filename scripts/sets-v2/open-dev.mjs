@@ -7,14 +7,14 @@ import fs from 'node:fs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const run=(command,args)=>{const result=spawnSync(command,args,{cwd:root,stdio:'inherit'});if(result.status!==0)throw Error(`${command} failed`);};
 if(process.platform!=='darwin')throw Error('This launcher requires the macOS native dev bundle.');
-const app=path.join(root,'src-tauri/target/sets-v2-dev/Producer Sets v2 Dev.app');
+const app=path.join(root,'src-tauri/target/sets-v2-dev/Liveroom Sets v2 Dev.app');
 if(!fs.existsSync(app))throw Error('Build and stage the native dev bundle first: npm run dev:sets-v2-room -- --prepare');
-const label='ai.boomin.producer.sets-v2-vite';
+const label='app.liveroom.studio.sets-v2-vite';
 const check=spawnSync('/bin/launchctl',['print',`gui/${process.getuid()}/${label}`],{stdio:'ignore'});
 let frontendReady=false;
 try{const response=await fetch('http://127.0.0.1:1436/',{signal:AbortSignal.timeout(1000)});frontendReady=response.ok;await response.body?.cancel();}catch{}
 if(!frontendReady){
- const logs=path.join(os.homedir(),'Library/Logs/ai.boomin.producer.sets-v2-dev');fs.mkdirSync(logs,{recursive:true});
+ const logs=path.join(os.homedir(),'Library/Logs/app.liveroom.studio.sets-v2-dev');fs.mkdirSync(logs,{recursive:true});
  const domain=`gui/${process.getuid()}`;
  if(check.status===0)run('/bin/launchctl',['bootout',`${domain}/${label}`]);
  const xml=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');

@@ -32,7 +32,7 @@ async function boundedCapture(constraints: MediaStreamConstraints): Promise<Medi
   });
   try {
     return await Promise.race([capture, new Promise<never>((_, reject) => {
-      timer = setTimeout(() => { expired = true; reject(new Error('Authorize Producer Virtual Camera and try again')); }, 5000);
+      timer = setTimeout(() => { expired = true; reject(new Error('Authorize Liveroom Virtual Camera and try again')); }, 5000);
     })]);
   } finally { clearTimeout(timer!); }
 }
@@ -65,7 +65,7 @@ export class ProgramCapture {
     }
     if(this.refs>0)void invoke('live_program_video_wanted',{on}).catch(()=>{});
   }
-  async acquire(bus: 0 | 1, label = 'Producer Virtual Camera'): Promise<ProgramLease> {
+  async acquire(bus: 0 | 1, label = 'Liveroom Virtual Camera'): Promise<ProgramLease> {
     this.refs++;
     try {
       if (!this.starting) {
@@ -96,7 +96,7 @@ export class ProgramCapture {
     }
     if (generation !== this.generation) throw new Error('Publisher closed');
     const camera = devices.find((d) => d.kind === 'videoinput' && d.label.toLowerCase().includes(label.toLowerCase()));
-    if (!camera) throw new Error('Start and authorize Producer Virtual Camera first');
+    if (!camera) throw new Error('Start and authorize Liveroom Virtual Camera first');
     const video = await boundedCapture({ video: { deviceId: { exact: camera.deviceId }, frameRate: { ideal: 30 } }, audio: false });
     if (generation !== this.generation) { video.getTracks().forEach((t)=>t.stop()); throw new Error('Publisher closed'); }
     this.camera=video;

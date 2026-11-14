@@ -294,10 +294,10 @@ interactionConnectRoutes.get("/audience-signal", async (c) => {
   const claims = await verifyTicket(c.env.SIGNALING_SECRET, c.req.query("token") ?? "", "audience");
   if (!claims || !claims.room) throw new ApiError(401, "invalid_token", "Audience token is invalid or expired.");
   const forwarded = new Request(c.req.url, c.req.raw);
-  forwarded.headers.set("X-Producer-User", claims.sub);
-  forwarded.headers.set("X-Producer-Room", claims.room);
-  forwarded.headers.set("X-Producer-Role", "audience");
-  forwarded.headers.delete("X-Producer-Grants");
+  forwarded.headers.set("X-Liveroom-User", claims.sub);
+  forwarded.headers.set("X-Liveroom-Room", claims.room);
+  forwarded.headers.set("X-Liveroom-Role", "audience");
+  forwarded.headers.delete("X-Liveroom-Grants");
   if (!c.env.REALTIME) throw new ApiError(503, "realtime_unavailable", "Realtime is not configured.");
   return c.env.REALTIME.get(c.env.REALTIME.idFromName(roomChannelName(claims.room))).fetch(forwarded);
 });

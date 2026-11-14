@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Update } from "@tauri-apps/plugin-updater";
 import { hasTauri } from "./ipc";
+import { UPDATES_ENABLED } from "../brand";
 
 export type UpdateState = "idle" | "checking" | "current" | "error" | "downloading" | "ready" | "installing" | "restarting" | "installed";
 
@@ -42,7 +43,7 @@ export function useUpdater(): UpdaterStatus {
   const staged = useRef<Update | null>(null);
 
   useEffect(() => {
-    if (!hasTauri()) return;
+    if (!hasTauri() || !UPDATES_ENABLED) return;
     let alive = true;
 
     const run = async () => {
@@ -109,7 +110,7 @@ export function useUpdater(): UpdaterStatus {
         await relaunch();
       } catch (cause) {
         const detail = cause instanceof Error ? cause.message : String(cause);
-        setError(`${installed.current ? "The update is installed, but Producer could not restart" : "The update could not be installed"}. ${detail}`);
+        setError(`${installed.current ? "The update is installed, but Liveroom could not restart" : "The update could not be installed"}. ${detail}`);
         // Keep downloaded bytes for an installation retry. A relaunch retry
         // must never try to install already-consumed bytes a second time.
         setState(installed.current ? "installed" : "ready");

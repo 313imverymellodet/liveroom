@@ -17,7 +17,7 @@ use crate::error::EngineResult;
 pub struct NewTarget {
     pub endpoint_id: String,
     pub channel_id: String,
-    /// The exact, immutable Producer API request body for this target.
+    /// The exact, immutable Liveroom API request body for this target.
     pub request_json: String,
 }
 

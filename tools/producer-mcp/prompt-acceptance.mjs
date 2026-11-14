@@ -10,7 +10,7 @@ const scenarioArg=process.argv.indexOf('--scenario');
 const only=scenarioArg<0?null:process.argv[scenarioArg+1];
 if(scenarioArg>=0&&!scenarios.some(s=>(s.plan.package?.id??s.plan.id)===only))throw Error('Unknown acceptance scenario.');
 const out=fileURLToPath(new URL('../../target/prompt-acceptance/',import.meta.url));await mkdir(out,{recursive:true});
-const directory=join(homedir(),'Documents/Producer Sets');
+const directory=join(homedir(),'Documents/Liveroom Sets');
 const transport=new StdioClientTransport({command:process.execPath,args:[fileURLToPath(new URL('./server.mjs',import.meta.url))],env:{...process.env,PRODUCER_SETS_DIR:directory},stderr:'pipe'});
 const client=new Client({name:'producer-prompt-acceptance',version:'1.0.0'});
 export async function call(name,args={}){const result=await client.callTool({name,arguments:args});if(result.isError)throw Error(result.content[0]?.text);return JSON.parse(result.content[0].text);}

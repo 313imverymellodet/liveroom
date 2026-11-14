@@ -25,7 +25,7 @@ version = "0.4.88"
 optional = {
     f"Producer_{version}_x64_en-US.msi": {},
     f"Producer_{version}_amd64.deb": {},
-    f"Producer-{version}-1.x86_64.rpm": {},
+    f"Liveroom-{version}-1.x86_64.rpm": {},
 }
 for windows_only in (False, True):
     for assets in ({}, optional):

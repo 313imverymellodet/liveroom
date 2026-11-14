@@ -81,7 +81,7 @@ clang++ -bundle "${OBJECTS[@]}" "$CEF/build/libcef_dll_wrapper/Release/libcef_dl
 cat > "$PLUGIN/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0"><dict><key>CFBundleIdentifier</key><string>ai.boomin.producer.obs-browser</string><key>CFBundleExecutable</key><string>obs-browser</string><key>CFBundlePackageType</key><string>BNDL</string><key>CFBundleVersion</key><string>1</string><key>CFBundleShortVersionString</key><string>2.26.8</string></dict></plist>
+<plist version="1.0"><dict><key>CFBundleIdentifier</key><string>app.liveroom.studio.obs-browser</string><key>CFBundleExecutable</key><string>obs-browser</string><key>CFBundlePackageType</key><string>BNDL</string><key>CFBundleVersion</key><string>1</string><key>CFBundleShortVersionString</key><string>2.26.8</string></dict></plist>
 PLIST
 cp -R "$CEF/Release/Chromium Embedded Framework.framework" "$STAGE/Frameworks/"
 cp "$CEF/LICENSE.txt" "$STAGE/licenses/CEF-LICENSE.txt"
@@ -90,20 +90,20 @@ cp "$WORK/browser"/cmake/macos/entitlements-helper*.plist "$STAGE/signing/"
 clang++ "${FLAGS[@]}" -DENABLE_BROWSER_SHARED_TEXTURE \
   "$WORK/browser/browser-app.cpp" "$WORK/browser/obs-browser-page/obs-browser-page-main.cpp" \
   "$CEF/build/libcef_dll_wrapper/Release/libcef_dll_wrapper.a" -framework AppKit \
-  -o "$WORK/Producer Helper"
+  -o "$WORK/Liveroom Helper"
 for suffix in '' ' (GPU)' ' (Plugin)' ' (Renderer)'; do
-  HELPER="$STAGE/Frameworks/Producer Helper${suffix}.app"
+  HELPER="$STAGE/Frameworks/Liveroom Helper${suffix}.app"
   mkdir -p "$HELPER/Contents/MacOS"
-  cp "$WORK/Producer Helper" "$HELPER/Contents/MacOS/Producer Helper${suffix}"
+  cp "$WORK/Liveroom Helper" "$HELPER/Contents/MacOS/Liveroom Helper${suffix}"
   python3 - "$HELPER/Contents/Info.plist" "$suffix" <<'PY'
 import plistlib,sys
 suffix=sys.argv[2]
 with open(sys.argv[1],'wb') as f:
-    plistlib.dump({'CFBundleExecutable':'Producer Helper'+suffix,
-                  'CFBundleIdentifier':'ai.boomin.producer.helper'+''.join(c for c in suffix if c.isalpha()),
+    plistlib.dump({'CFBundleExecutable':'Liveroom Helper'+suffix,
+                  'CFBundleIdentifier':'app.liveroom.studio.helper'+''.join(c for c in suffix if c.isalpha()),
                   'CFBundlePackageType':'APPL','CFBundleVersion':'1',
                   'CFBundleShortVersionString':'1.0','CFBundleInfoDictionaryVersion':'6.0',
-                  'CFBundleName':'Producer Helper'+suffix,'LSMinimumSystemVersion':'13.0',
+                  'CFBundleName':'Liveroom Helper'+suffix,'LSMinimumSystemVersion':'13.0',
                   'LSUIElement':True,'NSSupportsAutomaticGraphicsSwitching':True,
                   'LSEnvironment':{'MallocNanoZone':'0'}},f)
 PY

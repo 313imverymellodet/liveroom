@@ -1,5 +1,5 @@
 #!/bin/bash
-# dev.sh — run Producer in dev with a REAL app bundle, because CEF (guest
+# dev.sh — run Liveroom in dev with a REAL app bundle, because CEF (guest
 # tiles, overlays) refuses to initialize outside one: it CHECK-crashes in
 # cef_initialize when the main process isn't bundled. `tauri dev`'s bare
 # binary therefore can never render guests; this builds the same topology
@@ -29,11 +29,11 @@ npx tauri build --debug --bundles app --features guest-rtc-production --config '
 
 # A running instance keeps plugins mapped and codesign gets "Operation not
 # permitted" rewriting them — close it before touching the bundle.
-pkill -f "bundle/macos/Producer.app" 2>/dev/null && sleep 1
+pkill -f "bundle/macos/Liveroom.app" 2>/dev/null && sleep 1
 
-APP="src-tauri/target/debug/bundle/macos/Producer.app"
+APP="src-tauri/target/debug/bundle/macos/Liveroom.app"
 [[ -d $APP ]] || { echo "FATAL: $APP missing after build" >&2; exit 1; }
-otool -L "$APP/Contents/MacOS/Producer" | grep -q libobs \
+otool -L "$APP/Contents/MacOS/Liveroom" | grep -q libobs \
   || { echo "FATAL: app was built without the live engine" >&2; exit 1; }
 
 # Sign with the real Developer ID when the keychain holds one — a STABLE

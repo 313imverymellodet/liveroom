@@ -616,7 +616,7 @@ pub async fn room_control_session(
 }
 
 /// Boomin (api #392): a ticket into the room channel for the host's or a
-/// mod's Producer. The webview opens the socket itself.
+/// mod's Liveroom. The webview opens the socket itself.
 #[tauri::command]
 pub async fn room_channel_ticket(
     state: State<'_, AppState>,
@@ -647,7 +647,7 @@ pub async fn room_publish_scenes(
     client.room_publish_scenes(&room_id, &config).await
 }
 
-/// Boomin: a mod's cut, `POST …/scene`. The host's Producer applies the
+/// Boomin: a mod's cut, `POST …/scene`. The host's Liveroom applies the
 /// resulting `scene.cut` frame as its own keypress.
 #[tauri::command]
 pub async fn room_scene_cut(
@@ -967,7 +967,7 @@ pub async fn network_enter_room(
 }
 
 /// The seat a knock returns, completed for the native guest seat: the API
-/// the invite code is a credential for, and whether Producer's scene is the
+/// the invite code is a credential for, and whether Liveroom's scene is the
 /// camera (the virtual camera started) this time.
 fn seat_result(mut res: Value, base_url: &str, producer_cam: bool) -> Value {
     if let Some(o) = res.as_object_mut() {
@@ -1030,12 +1030,12 @@ pub async fn network_deal_action(
         .await
 }
 
-/// Enter a funded (or free) deal's show from Producer as the BENEFICIARY.
+/// Enter a funded (or free) deal's show from Liveroom as the BENEFICIARY.
 /// Knocks through the deal via the API (so the host admitting us settles
 /// it) and returns the seat: `join_url` (its invite code is the seat's
 /// credential), `resumed`, `api_base` and `producer_cam`. No browser and no
 /// window — the UI opens a room in guest mode and runs the guest half of
-/// the call natively (src/lib/guestSeat.ts). Producer IS the guest's camera:
+/// the call natively (src/lib/guestSeat.ts). Liveroom IS the guest's camera:
 /// the scene goes out through the virtual camera and the seat prefers that
 /// device. No driver or no engine → the seat falls back to a real webcam.
 #[tauri::command]

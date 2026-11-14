@@ -52,7 +52,7 @@ binding = "ASSETS"
 [vars]
 # Your own Meta developer app ids (Development Mode is fine — you post to
 # your own accounts). Secrets are set with `wrangler secret put`:
-#   PRIMARY_TOKEN            — the endpoint token you paste into Producer
+#   PRIMARY_TOKEN            — the endpoint token you paste into Liveroom
 #   AUTOMATION_TOKEN         — optional publish/read-only token for agents/CLI
 #   TOKEN_ENCRYPTION_KEY     — 32+ chars; encrypts platform tokens at rest
 #   SIGNALING_SECRET         — 32+ chars; signs guest signaling tickets and

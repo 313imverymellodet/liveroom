@@ -33,7 +33,7 @@ export interface Me {
   name: string | null;
   /** How this account signs in, when the API says (otp · google · …). */
   signInMethod: string | null;
-  /** null = the API exposes no 2FA state; Producer then points at boomin.ai. */
+  /** null = the API exposes no 2FA state; Liveroom then points at boomin.ai. */
   twoFactor: boolean | null;
   brandName: string | null;
   brandSlug: string | null;

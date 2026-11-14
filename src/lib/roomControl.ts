@@ -1,8 +1,8 @@
 import type { RoomSource, RoomActionKind, RoomAction } from "../../server/src/roomActions";
-// The room channel's CONTROL side, from Producer (#47).
+// The room channel's CONTROL side, from Liveroom (#47).
 //
-// One WebSocket to the room's Durable Object, opened by the HOST's Producer
-// (to publish its scene list and receive mods' cuts) and by a MOD's Producer
+// One WebSocket to the room's Durable Object, opened by the HOST's Liveroom
+// (to publish its scene list and receive mods' cuts) and by a MOD's Liveroom
 // (to see the list and send cuts). Hosted sockets renew their short-lived
 // authorization; every reconnect mints a fresh ticket through `session`.
 //

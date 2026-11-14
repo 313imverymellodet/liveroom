@@ -7,7 +7,7 @@ import {activeEndpointId,isBoomin,WORKSPACE_EVENT} from '../../lib/workspace';
 import {activeGuestSeatDiagnosticSession,type GuestSeatDiagnosticSession} from '../../lib/guestSeat';
 import type {NetworkDiagnosticsProof} from './networkDiagnosticsProof';
 
-const MAC_DEV_APP='ai.boomin.producer.sets-v2-dev';
+const MAC_DEV_APP='app.liveroom.studio.sets-v2-dev';
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export interface NativePairFixture {
  version:1;
@@ -144,7 +144,7 @@ export function createNativePairProof(deps:Dependencies):NativePairProof {
    if(!all.length)return null;
    const node=all[0],f=fixture!;
    if(node.dataset.producerNetworkRoomId!==f.remoteRoomId||node.dataset.producerEndpointId!==f.workspace.endpointId)refuse('context_changed');
-   one(elements(deps.document,node,'section.producer-join[aria-label="Join a Producer room"]'),'app_not_ready');
+   one(elements(deps.document,node,'section.producer-join[aria-label="Join a Liveroom room"]'),'app_not_ready');
    return node;
   }
   async function waitFor<T>(read:()=>T|null,ms:number,timeoutReason:Reason):Promise<T>{

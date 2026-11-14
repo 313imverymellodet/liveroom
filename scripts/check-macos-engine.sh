@@ -15,9 +15,9 @@ for p in "${ENGINE_PLUGINS[@]}" obs-browser; do
   check_arch "$STAGE/PlugIns/$p.plugin/Contents/MacOS/$p"
 done
 for suffix in '' ' (GPU)' ' (Plugin)' ' (Renderer)'; do
-  check_arch "$STAGE/Frameworks/Producer Helper${suffix}.app/Contents/MacOS/Producer Helper${suffix}"
+  check_arch "$STAGE/Frameworks/Liveroom Helper${suffix}.app/Contents/MacOS/Liveroom Helper${suffix}"
 done
 check_arch "$STAGE/bin/obs-ffmpeg-mux"
-check_arch "$STAGE/SystemExtensions/ai.boomin.producer.camera-extension.systemextension/Contents/MacOS/ai.boomin.producer.camera-extension"
+check_arch "$STAGE/SystemExtensions/app.liveroom.studio.camera-extension.systemextension/Contents/MacOS/app.liveroom.studio.camera-extension"
 bash "$REPO_ROOT/scripts/engine-closure.sh" "$STAGE" >/dev/null
 echo "PASS: complete $ARCH Mac live engine, browser/helpers, recording muxer and camera provider"

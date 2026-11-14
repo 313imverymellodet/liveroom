@@ -1,4 +1,4 @@
-/* Producer desktop — the Boomin unit-detail language.
+/* Liveroom desktop — the Boomin unit-detail language.
    Dark blue-gray rail (the web app's dark tokens), light work surface
    (the web app's light tokens), Instrument Sans, small-caps section
    labels, dark pill primary actions, soft status chips. */
@@ -2558,7 +2558,7 @@ textarea::placeholder {
   border-color: var(--mint);
 }
 
-/* ── Sheet v3: StreamSync density, Producer tokens ─────────────────────── */
+/* ── Sheet v3: StreamSync density, Liveroom tokens ─────────────────────── */
 
 .rm-sheet {
   background: oklch(0.19 0.037 250);
@@ -9185,7 +9185,7 @@ html[data-platform="win"] *::-webkit-scrollbar-button {
 .rm-vote-n { text-align: right; font-variant-numeric: tabular-nums; color: var(--fg-2); }
 .rm-vote-fine { color: var(--fg-3); font-size: 11px; }
 /* ── Green room: a room in GUEST mode ──────────────────────────────────────
-   The strip between the header and the stage while this Producer holds a
+   The strip between the header and the stage while this Liveroom holds a
    seat in someone else's room. Self-view left, one line of truth, the host's
    program return once it arrives, and the seat's own controls. */
 .rm-seat {
@@ -10928,7 +10928,7 @@ html[data-platform="win"] *::-webkit-scrollbar-button {
    Made of the room's own parts. A panel at --r-card with a hairline and an
    11px/0.16em group label in its head; rows at 10px like every list in the
    room; controls at --r-ctl. No pills and no gradient text — nothing else in
-   Producer has either, and a welcome screen that does not look like the app
+   Liveroom has either, and a welcome screen that does not look like the app
    is just an advert for it. */
 .walk-panel {
   position: relative;

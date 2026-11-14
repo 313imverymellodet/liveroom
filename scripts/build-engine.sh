@@ -1,5 +1,5 @@
 #!/bin/bash
-# build-engine.sh — D5 source path: build the Producer engine from the OBS
+# build-engine.sh — D5 source path: build the Liveroom engine from the OBS
 # source pinned in engine/obs.lock using the producer-macos preset, and emit
 # the same artifact layout extract-engine.sh emits.
 #
@@ -97,7 +97,7 @@ for p in "${ENGINE_PLUGINS[@]}"; do
   # only ever pair with OBS's extension — ours would never be found. It is
   # also gated behind ENABLE_VIRTUALCAM and links OBS::frontend-api, which a
   # zero-Qt preset does not build. We compile it ourselves instead, from the
-  # same pinned source, with Producer's identifiers.
+  # same pinned source, with Liveroom's identifiers.
   if [[ $p == mac-virtualcam ]]; then
     continue
   fi
@@ -112,8 +112,8 @@ done
 "$(dirname "${BASH_SOURCE[0]}")/build-retired-camera-extension.sh"
 # Release CI only downloads STAGE, not this build runner's working tree.
 # Keep both halves of the virtual camera in the engine archive.
-CAMERA_EXT="$REPO_ROOT/engine/camera-extension/ai.boomin.producer.camera-extension.systemextension"
-[[ -x "$CAMERA_EXT/Contents/MacOS/ai.boomin.producer.camera-extension" ]] \
+CAMERA_EXT="$REPO_ROOT/engine/camera-extension/app.liveroom.studio.camera-extension.systemextension"
+[[ -x "$CAMERA_EXT/Contents/MacOS/app.liveroom.studio.camera-extension" ]] \
   || { echo "FATAL: camera extension executable not built" >&2; exit 1; }
 mkdir -p "$STAGE/SystemExtensions"
 cp -R "$CAMERA_EXT" "$STAGE/SystemExtensions/"
@@ -158,7 +158,7 @@ done
 rm -f "$STAGE/.closure-list"
 cp "$SRC_DIR/COPYING" "$STAGE/licenses/COPYING.obs-studio"
 
-# M-L7.1 browser assets: obs-browser plugin, CEF framework, Producer Helper
+# M-L7.1 browser assets: obs-browser plugin, CEF framework, Liveroom Helper
 # apps, and the frontend-api shim dylib obs-browser links.
 BROWSER_BUNDLE="$(find "$BUILD" -name "obs-browser.plugin" -maxdepth 6 -type d | head -1)"
 if [[ -n $BROWSER_BUNDLE ]]; then
@@ -167,7 +167,7 @@ if [[ -n $BROWSER_BUNDLE ]]; then
   [[ -n $CEF_FW ]] || CEF_FW="$(find "$SRC_DIR/.deps" -maxdepth 3 -type d -name "Chromium Embedded Framework.framework" | head -1)"
   [[ -n $CEF_FW ]] || { echo "FATAL: obs-browser built but CEF framework not found in .deps" >&2; exit 1; }
   cp -R "$CEF_FW" "$STAGE/Frameworks/"
-  for helper in "Producer Helper.app" "Producer Helper (GPU).app" "Producer Helper (Plugin).app" "Producer Helper (Renderer).app"; do
+  for helper in "Liveroom Helper.app" "Liveroom Helper (GPU).app" "Liveroom Helper (Plugin).app" "Liveroom Helper (Renderer).app"; do
     happ="$(find "$BUILD" -name "$helper" -maxdepth 6 -type d | head -1)"
     [[ -n $happ ]] || { echo "FATAL: $helper not produced by build" >&2; exit 1; }
     cp -R "$happ" "$STAGE/Frameworks/"

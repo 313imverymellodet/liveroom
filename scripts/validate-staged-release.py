@@ -112,7 +112,7 @@ def validate(repo, run_id, version):
         require(re.fullmatch(r'sha256:[0-9a-f]{64}', artifact['digest']), f'Missing digest for {name}')
         return artifact
 
-    installer = preserved_artifact(f'Producer-windows-x64-unqualified-{sha}')
+    installer = preserved_artifact(f'Liveroom-windows-x64-unqualified-{sha}')
     proof = preserved_artifact(f'producer-windows-qualification-{sha}')
     # Capture the log privately and extract only the engine resolver's run ID.
     log = subprocess.check_output([

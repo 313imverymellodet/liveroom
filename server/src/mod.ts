@@ -1,7 +1,7 @@
 // The control seat's routes (#47): /v1/connect/mod/:code/* — no bearer; the
 // mod code IS the credential, exactly like a guest's invite code. Every
 // route re-reads the seat row (revoke lands at the next call) and checks the
-// grant the action needs. The server is the gate; Producer's UI only hides.
+// grant the action needs. The server is the gate; Liveroom's UI only hides.
 //
 // What a seat can do here is the roster half. Scene cuts are FRAMES on the
 // room channel (see scenes.ts / realtime.ts) — a mod opens the control

@@ -8,7 +8,7 @@
 //! Deliberately separate from vault.rs, whose own frozen law restricts it to
 //! endpoint access tokens.
 
-const SERVICE: &str = "ai.boomin.producer.live";
+const SERVICE: &str = "app.liveroom.studio.live";
 
 /// Resolve a stream key by credential ID. Engine-side only — the returned
 /// secret must never be serialized, logged, or sent over IPC.

@@ -904,7 +904,7 @@ function UnitView({ renderOriginalMedia, commentsEndpointId, readOnly = false, u
             </section>
           </>}
           {tab === "insights" && (hasPublishedPosts ? <>
-            <div className="pm-insights-intro"><h2>Post insights</h2><p>Metrics from published destinations. A dash means the metric has not been synced to Producer.</p></div>
+            <div className="pm-insights-intro"><h2>Post insights</h2><p>Metrics from published destinations. A dash means the metric has not been synced to Liveroom.</p></div>
             <div className="pm-insight-grid">
               {[{ label: "Views", value: "—" }, { label: "Reach", value: "—" }, { label: "Likes", value: "—" }, { label: "Comments", value: knownComments.length ? commentCount.toLocaleString() : "—" }, { label: "Shares", value: "—" }].map((metric) => <div className="pm-insight-card" key={metric.label}><span>{metric.label}</span><strong>{metric.value}</strong></div>)}
             </div>

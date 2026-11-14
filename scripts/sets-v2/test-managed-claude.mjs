@@ -3,7 +3,7 @@ import path from 'node:path';
 // Real local Worker verification. Reads only the development endpoint token;
 // the Anthropic credential stays encrypted inside the managed connection.
 import fs from 'node:fs';
-const env=Object.fromEntries(fs.readFileSync(path.join(os.homedir(),'Library/Application Support/ai.boomin.producer.sets-v2-dev/local-workspace/workspace.env'),'utf8').trim().split('\n').map(l=>{const n=l.indexOf('=');return [l.slice(0,n),l.slice(n+1)];}));
+const env=Object.fromEntries(fs.readFileSync(path.join(os.homedir(),'Library/Application Support/app.liveroom.studio.sets-v2-dev/local-workspace/workspace.env'),'utf8').trim().split('\n').map(l=>{const n=l.indexOf('=');return [l.slice(0,n),l.slice(n+1)];}));
 const headers={Authorization:'Bearer '+env.PRIMARY_TOKEN,'Content-Type':'application/json'},base='http://127.0.0.1:8795';
 async function call(path,body){const response=await fetch(base+path,{headers,...(body?{method:'POST',body:JSON.stringify(body)}:{})});const result=await response.json();if(!response.ok)throw Error(`${path}: ${response.status} ${result.error?.message??'Request failed'}`);return result;}
 const {room}=await call('/v1/app/live/rooms',{title:'Sets v2 · Managed integration proof',external_ref:'sets-v2-managed-proof'});

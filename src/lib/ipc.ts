@@ -197,7 +197,7 @@ export const ipc = {
   liveSetOverlay: (windowId: number | null, colorKey: boolean, url?: string | null) =>
     invoke("live_set_overlay", { windowId, colorKey, url: url ?? null }),
   liveSetVideo: (height: number, fps: number) => invoke("live_set_video", { height, fps }),
-  /** Studio output: the program becomes a capture of Producer's own window
+  /** Studio output: the program becomes a capture of Liveroom's own window
    * (lib/studioOutput.ts). Resolves to the engine's resulting state. */
   liveSetStudio: (on: boolean) => invoke<boolean>("live_set_studio", { on }),
   liveHomeGlass: () => invoke("live_home_glass"),
@@ -633,7 +633,7 @@ export const registerRoom = (endpointId: string, title: string, externalRef: str
     externalRef,
   });
 
-/** A room as the server knows it: Producer-registered (external_ref = the
+/** A room as the server knows it: Liveroom-registered (external_ref = the
  * local id that minted it) or created on the web / by a deal. */
 export interface ServerRoom {
   id: string;
@@ -645,7 +645,7 @@ export interface ServerRoom {
   deleted_at?: string | null;
   /** Boomin: the brand's main stage — where Network bookings and deals land. */
   is_default?: boolean;
-  /** Boomin: the room's stage config; for a Producer room, the host's scene
+  /** Boomin: the room's stage config; for a Liveroom room, the host's scene
    * directory (lib/boominRoom.ts `scenesFromBoominConfig`). */
   config?: unknown;
 }
@@ -704,13 +704,13 @@ export const network = {
     }),
   act: (endpointId: string, id: string, action: "accept" | "decline" | "revoke") =>
     invoke("network_invitation_action", { endpointId, id, action }),
-  /** Exact-handle lookup — the ONLY discovery surface Producer gets. */
+  /** Exact-handle lookup — the ONLY discovery surface Liveroom gets. */
   lookup: (endpointId: string, slug: string) =>
     invoke<NetworkBrandCard>("network_lookup", { endpointId, slug }),
   liveRooms: (endpointId: string) =>
     invoke<{ rooms?: NetworkLiveRoom[] }>("network_live_rooms", { endpointId }),
   /** Knock on a visible open stage. The join_url is the seat's credential
-   * (its invite code) — Producer takes the seat natively (lib/guestSeat),
+   * (its invite code) — Liveroom takes the seat natively (lib/guestSeat),
    * never a browser. `api_base` is the endpoint the code is good for.
    * Local room/media selection and host admission precede capture. */
   enterRoom: (endpointId: string, roomId: string) =>
@@ -758,14 +758,14 @@ async function enterNetworkSeat(endpointId:string,path:string):Promise<NetworkSe
  const result=await networkEntries.enter<NetworkSeat>(`${endpointId}:${path}`,async requestId=>{
    const capability=await guests.request(endpointId,'GET','/v1/app/network/entry-capabilities');
    if(capability.status!==200||(capability.body as {network_entry_protocol?:number}|undefined)?.network_entry_protocol!==1)
-     throw Error('This server needs the coordinated Producer network update before a network appearance can start.');
+     throw Error('This server needs the coordinated Liveroom network update before a network appearance can start.');
    return guests.request(endpointId,'POST',path,{request_id:requestId});
  });
  // Joining grants a seat, not permission to start this computer's devices.
  return {...result,api_base:endpoint.base_url,producer_cam:false};
 }
 
-/** What a knock returns: the seat this Producer now holds in someone
+/** What a knock returns: the seat this Liveroom now holds in someone
  * else's room. */
 export interface NetworkSeat {
   join_url: string;
@@ -865,7 +865,7 @@ export interface RoomGuest {
   /** What this participant may do. Absent → the default guest bundle
    * (camera, mic, return feed, inputs; never screen). Present → verbatim. */
   grants?: string[] | null;
-  /** Another Producer's origin / workspace id — display only (#46). */
+  /** Another Liveroom's origin / workspace id — display only (#46). */
   producer_ref?: string | null;
   /** `control` = a mod seat behind the host's mod link; never on the set. */
   seat?: "guest" | "control" | string | null;
@@ -920,7 +920,7 @@ export interface Interaction {
 }
 
 /** The local overlay bridge (#51): the set's vote bar is a browser source
- * on 127.0.0.1 fed by THIS Producer, never by the server. */
+ * on 127.0.0.1 fed by THIS Liveroom, never by the server. */
 export const overlayBridge = {
   start: () => invoke<string>("overlay_bridge_start"),
   chatStart: () => invoke<string>("chat_overlay_start"),
@@ -950,7 +950,7 @@ export const guests = {
     invoke("room_guest_revoke", { endpointId, guestId }),
   /** What THIS token may do in the room (api #380). `available: false` =
    * the server has no such route (self-hosted, or Boomin before #380) and
-   * Producer behaves as the host, exactly as before. */
+   * Liveroom behaves as the host, exactly as before. */
   access: (endpointId: string, roomId: string) =>
     invoke<{ available?: boolean; access?: unknown }>("room_access", { endpointId, roomId }),
   /** One authenticated call against the API root for the ACCESS surface
@@ -961,7 +961,7 @@ export const guests = {
     if (method !== "GET" && result.status >= 200 && result.status < 300 && /^\/v1\/app\/(content|files|series)(\/|$)/.test(path)) cacheChanged(endpointId);
     return result;
   },
-  /** Mint a MOD LINK (#47): a control seat another Producer opens. The URL
+  /** Mint a MOD LINK (#47): a control seat another Liveroom opens. The URL
    * comes back exactly once. */
   modLink: (endpointId: string, roomId: string, displayName?: string | null) =>
     invoke<{ guest: RoomGuest; mod_url: string }>("room_mod_link", { endpointId, roomId, displayName: displayName ?? null }),
@@ -987,7 +987,7 @@ export const guests = {
   /** The room's audience code + /a/CODE URL; rotate mints a new one. */
   audienceLink: (endpointId: string, roomId: string, rotate = false) =>
     invoke<{ code: string; url: string }>("room_audience_link", { endpointId, roomId, rotate }),
-  /** A ticket to the room channel's CONTROL side for the host's Producer:
+  /** A ticket to the room channel's CONTROL side for the host's Liveroom:
    * scene list out, mods' cuts in. */
   controlSession: (endpointId: string, roomId: string) =>
     invoke<{ signaling_ticket: string; signaling_url: string; peer_id?: string }>("room_control_session", { endpointId, roomId }),
@@ -995,7 +995,7 @@ export const guests = {
   order: (endpointId: string, roomId: string, order: string[]) =>
     invoke("room_guest_order", { endpointId, roomId, order }),
   /** Boomin (api #392): a ticket into the room's channel for the host's or a
-   * mod's Producer. `controlSession` already returns this shape on Boomin;
+   * mod's Liveroom. `controlSession` already returns this shape on Boomin;
    * exposed for callers that want the role + capabilities alongside. */
   channelTicket: (endpointId: string, roomId: string) =>
     invoke<{ ticket: string; expires_in: number; role?: string; can?: Record<string, boolean>; signaling_url: string }>(

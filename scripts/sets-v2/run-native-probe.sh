@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")/../.."
-app="${PRODUCER_PROBE_APP:-/Applications/Producer.app}"
+app="${PRODUCER_PROBE_APP:-/Applications/Liveroom.app}"
 proof_dir="${PRODUCER_PROBE_OUTPUT:-$PWD/docs/sets-v2/native}"
 build_dir="$(mktemp -d /private/tmp/producer-sets-v2-native.XXXXXX)"
 cleanup_probe() {
@@ -15,7 +15,7 @@ PY_CLEANUP
 trap cleanup_probe EXIT
 started_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 frameworks="$app/Contents/Frameworks"
-probe_app="$build_dir/Producer.app"
+probe_app="$build_dir/Liveroom.app"
 mkdir -p "$proof_dir"
 # A failed rerun must never leave an older successful report looking current.
 python3 - "$proof_dir" <<'PY_REPORT'
@@ -28,7 +28,7 @@ mkdir -p "$probe_app/Contents/MacOS"
 # APFS clones give it an actual isolated bundle without duplicating asset blocks.
 cp -cR "$frameworks" "$probe_app/Contents/Frameworks"
 cat > "$probe_app/Contents/Info.plist" <<'PLIST'
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>CFBundleIdentifier</key><string>ai.boomin.producer.sets-v2-probe</string><key>CFBundleName</key><string>producer</string><key>CFBundleExecutable</key><string>producer</string><key>CFBundlePackageType</key><string>APPL</string><key>LSUIElement</key><true/><key>NSCameraUsageDescription</key><string>Preview the native camera inside the local Three.js rendering experiment.</string></dict></plist>
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>CFBundleIdentifier</key><string>app.liveroom.studio.sets-v2-probe</string><key>CFBundleName</key><string>producer</string><key>CFBundleExecutable</key><string>producer</string><key>CFBundlePackageType</key><string>APPL</string><key>LSUIElement</key><true/><key>NSCameraUsageDescription</key><string>Preview the native camera inside the local Three.js rendering experiment.</string></dict></plist>
 PLIST
 CARGO_BUILD_JOBS=1 CARGO_TARGET_DIR="${PRODUCER_SETS_V2_RUST_TARGET:-/private/tmp/producer-sets-v2-rust-target}" cargo build --offline --manifest-path scripts/sets-v2/rust-probe/Cargo.toml
 rust_lib="${PRODUCER_SETS_V2_RUST_TARGET:-/private/tmp/producer-sets-v2-rust-target}/debug/libproducer_sets_v2_native_adapter_probe.a"

@@ -80,7 +80,7 @@ function actualCallers({failFirst=false}={}){
   const exports={};modules.set(name,exports);
   vm.runInNewContext(compile(read(name)),{exports,window,document,performance:{now:()=>now},...clock,__env:env,__hot:null,
    require:specifier=>{
-    if(specifier==='@tauri-apps/api/app')return {getIdentifier:async()=>{identifierCalls++;return 'ai.boomin.producer.sets-v2-dev';}};
+    if(specifier==='@tauri-apps/api/app')return {getIdentifier:async()=>{identifierCalls++;return 'app.liveroom.studio.sets-v2-dev';}};
     if(specifier==='../../lib/nativeInvoke')return {invoke};
     if(specifier==='../../lib/ipc')return {ipc:{liveEngineStatus:async()=>({engine_ready:true})},uiLog:line=>logs.push(line)};
     if(specifier==='../../lib/guestSeat')return {activeGuestSeatDiagnosticSession:()=>session,subscribeGuestSeatDiagnosticSessions:()=>()=>{}};

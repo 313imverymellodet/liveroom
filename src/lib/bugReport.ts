@@ -35,7 +35,7 @@ export const TEXT_LIMIT = 4000;
 // ── redaction ────────────────────────────────────────────────────────────────
 //
 // The log tail is the one field the user did not type, so it is the one field
-// that can carry something they never meant to send. Producer's own logs are
+// that can carry something they never meant to send. Liveroom's own logs are
 // tame, but a log is an append-only surface anyone can add a line to, and a
 // bug report becomes a PUBLIC GitHub issue — the blast radius of one leaked
 // token is the whole workspace.
@@ -77,7 +77,7 @@ const RULES: Array<[RegExp, string]> = [
   [/\bgithub_pat_[A-Za-z0-9_]{8,}/g, REDACTED],
   [/\bxox[abposr]-[A-Za-z0-9-]{8,}/g, REDACTED],
   [/\bAKIA[0-9A-Z]{12,}/g, REDACTED],
-  // 4. JWTs — three base64url segments. Producer's own session token is one.
+  // 4. JWTs — three base64url segments. Liveroom's own session token is one.
   [/\beyJ[A-Za-z0-9_-]{4,}\.[A-Za-z0-9_-]{4,}\.[A-Za-z0-9_-]{4,}/g, REDACTED],
   // 5. Credentials smuggled through a URL's query string.
   [/([?&](?:token|key|api[_-]?key|access[_-]?token|secret|signature|sig|code)=)[^&\s"']+/gi, `$1${REDACTED}`],
@@ -184,7 +184,7 @@ export function reportToText(report: BugReport): string {
  *  body is capped well under the limit — the point is that the user lands on a
  *  form with their words already in it, not that every log line survives. */
 export function githubIssueUrl(report: BugReport): string {
-  const title = report.text.trim().split("\n")[0]!.slice(0, 120) || "Producer bug report";
+  const title = report.text.trim().split("\n")[0]!.slice(0, 120) || "Liveroom bug report";
   const body = reportToText(report).slice(0, 5000);
   const params = new URLSearchParams({ title, body, labels: "bug,from-app" });
   return `${REPO_URL}/issues/new?${params.toString()}`;

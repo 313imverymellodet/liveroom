@@ -11,7 +11,7 @@ test("studio off: everything is the room", () => {
 
 test("studio on: the program and the return feed both carry the studio", () => {
   assert.equal(outputSceneFor("program", true), "studio");
-  // The regression this fixes: a host using Producer as their camera in Meet
+  // The regression this fixes: a host using Liveroom as their camera in Meet
   // got the bare stage while the stream got the studio.
   assert.equal(outputSceneFor("return", true), "studio");
 });

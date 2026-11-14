@@ -13,7 +13,7 @@
 # ── Why there is no ENABLE_BROWSER_DISPATCH_LOOP here ───────────────────────
 # The producer-macos preset sets it TRUE because obs-browser's
 # cmake/os-macos.cmake hard-requires Qt6 and defines ENABLE_BROWSER_QT_LOOP —
-# Producer has no QApplication, so the macOS build needs the libdispatch pump
+# Liveroom has no QApplication, so the macOS build needs the libdispatch pump
 # the patchset adds. cmake/os-windows.cmake defines no Qt loop and calls no
 # find_package(Qt6), so CEF pumps its own multi-threaded message loop and Windows
 # needs no pump patch at all.
@@ -131,7 +131,7 @@ cp -R "$OUT"/. "$STAGE/bin/"
 # reading its stdout (nvenc-helpers.c nvenc_check, obs-qsv11-plugin-main.c,
 # texture-amf.cpp amf_load). The helper is resolved with
 # os_get_executable_path_ptr(), i.e. RELATIVE TO THE RUNNING EXECUTABLE, which
-# for Producer is producer.exe with bin/ flattened beside it -- so the helpers
+# for Liveroom is producer.exe with bin/ flattened beside it -- so the helpers
 # must be in bin/, and they are: set_target_properties_obs installs every
 # executable except obs-browser-helper to OBS_EXECUTABLE_DESTINATION
 # (bin/64bit), which the wholesale copy above carries. Assert it anyway: a
@@ -212,7 +212,7 @@ if engine_plugins windows | grep -qx obs-browser; then
   # rundir first: set_target_properties_obs stages it there via a post-build copy.
   # The build-tree fallback covers a helper that built but was not copied, which
   # is a different failure from one that never built at all.
-  # named by the preset (BROWSER_HELPER_OUTPUT_NAME -> "Producer Helper.exe"):
+  # named by the preset (BROWSER_HELPER_OUTPUT_NAME -> "Liveroom Helper.exe"):
   # the helper is what Task Manager shows, so it must not say obs-browser-page
   helper_exe="$(lock_get_file engine/producer-presets.json "[c for c in d['configurePresets'] if c['name']=='producer-windows'][0]['cacheVariables']['BROWSER_HELPER_OUTPUT_NAME']['value']").exe"
   page="$PLUGIN_SRC/$helper_exe"
@@ -232,7 +232,7 @@ DATA_SRC="$BUILD/rundir/Release/data"
 
 # The virtual camera's IDLE image. win-dshow's filter loads placeholder.png from
 # beside its DLL at runtime, and upstream's is the OBS logo -- the one OBS
-# mention a camera picker would show while Producer sends no frames. Producer's
+# mention a camera picker would show while Liveroom sends no frames. Liveroom's
 # image (the same file macOS bakes into its camera extension) replaces it;
 # engine-closure-windows.sh proves the staged bytes are ours.
 mkdir -p "$STAGE/data/obs-plugins/win-dshow"

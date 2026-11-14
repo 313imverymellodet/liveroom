@@ -1,5 +1,5 @@
 #!/bin/bash
-# build-camera-extension.sh — build Producer's CoreMediaIO camera extension
+# build-camera-extension.sh — build Liveroom's CoreMediaIO camera extension
 # from the pinned OBS sources, with OUR identifiers set at BUILD time.
 #
 # Why from source: rebranding a prebuilt extension only rewrites Info.plist.
@@ -16,9 +16,9 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SRC="${PRODUCER_OBS_SOURCE:-$REPO_ROOT/engine/obs-studio}/plugins/mac-virtualcam/src/camera-extension"
 OUT_DIR="$REPO_ROOT/engine/camera-extension"
 
-EXT_ID="${PRODUCER_VCAM_EXTENSION_ID:-ai.boomin.producer.camera-extension}"
-TEAM_ID="${PRODUCER_TEAM_ID:-9936A69867}"
-DEVICE_NAME="${PRODUCER_VCAM_NAME:-Producer Virtual Camera}"
+EXT_ID="${PRODUCER_VCAM_EXTENSION_ID:-app.liveroom.studio.camera-extension}"
+TEAM_ID="${PRODUCER_TEAM_ID:-REPLACE_WITH_TEAM_ID}"
+DEVICE_NAME="${PRODUCER_VCAM_NAME:-Liveroom Virtual Camera}"
 
 # 🔑 These UUIDs are the rendezvous with the obs-plugin half: mac-virtualcam
 # reads OBSCameraDeviceUUID from ITS OWN Info.plist and looks for a device
@@ -38,7 +38,7 @@ mkdir -p "$BUNDLE/Contents/MacOS" "$BUNDLE/Contents/Resources"
 WORK="$(mktemp -d)"
 cp "$SRC"/*.swift "$WORK/"
 /usr/bin/sed -i '' "s/OBS Virtual Camera/$DEVICE_NAME/g" "$WORK"/*.swift
-/usr/bin/sed -i '' "s/OBS Camera Extension Stream/Producer Camera Stream/g" "$WORK"/*.swift
+/usr/bin/sed -i '' "s/OBS Camera Extension Stream/Liveroom Camera Stream/g" "$WORK"/*.swift
 
 python3 "$REPO_ROOT/scripts/patch-single-camera-extension.py" "$WORK"
 
@@ -63,7 +63,7 @@ swiftc -O -swift-version 5 \
 # system extension crashes before it logs, the only symptom is a camera that
 # never appears. This was previously copied with `|| true`, so a wrong path
 # failed silently and shipped a bundle that could never run. Never optional.
-# Producer's own idle image, not upstream's OBS logo (which is what
+# Liveroom's own idle image, not upstream's OBS logo (which is what
 # $SRC/../common/data/placeholder.png is). Same file the Windows build stages
 # beside win-dshow's filter, so the idle camera looks identical on both.
 PLACEHOLDER="$REPO_ROOT/engine/assets/vcam-placeholder.png"
@@ -101,7 +101,7 @@ cat > "$BUNDLE/Contents/Info.plist" <<PLIST
 	<key>LSMinimumSystemVersion</key>
 	<string>13.0</string>
 	<key>NSSystemExtensionUsageDescription</key>
-	<string>Producer uses a camera extension so other apps can use your production as a webcam.</string>
+	<string>Liveroom uses a camera extension so other apps can use your production as a webcam.</string>
 	<key>CMIOExtension</key>
 	<dict>
 		<key>CMIOExtensionMachServiceName</key>

@@ -8,7 +8,7 @@ index 5d2c4dc..f51c393 100644
  #endif
 +
 +#ifdef ENABLE_BROWSER_DISPATCH_LOOP
-+/* Producer patch: libdispatch main-thread pump — the Qt loop above,
++/* Liveroom patch: libdispatch main-thread pump — the Qt loop above,
 + * re-expressed with GCD so a host without a QApplication can run CEF.
 + * The host's NSApplication run loop drains the main queue. */
 +#include <dispatch/dispatch.h>
@@ -120,7 +120,7 @@ index b25d9ac..4c93fec 100644
 +
 +typedef std::function<void()> MessageTask;
 +
-+/* Producer patch: Qt-free main-thread CEF pump for hosts without a
++/* Liveroom patch: Qt-free main-thread CEF pump for hosts without a
 + * QApplication. Same semantics as the Qt loop — browser tasks and CEF
 + * message-loop work run on the process main thread — but scheduled via
 + * libdispatch instead of the Qt event loop. */
@@ -188,7 +188,7 @@ index 6d6dc51..77ad8fe 100644
 -find_package(Qt6 REQUIRED Widgets)
 -
 -target_compile_definitions(obs-browser PRIVATE ENABLE_BROWSER_SHARED_TEXTURE ENABLE_BROWSER_QT_LOOP)
-+# Producer patch: allow a Qt-free build for hosts without a QApplication.
++# Liveroom patch: allow a Qt-free build for hosts without a QApplication.
 +# The libdispatch pump (ENABLE_BROWSER_DISPATCH_LOOP) replaces the Qt event
 +# loop as CEF's main-thread scheduler; everything else is unchanged.
 +option(ENABLE_BROWSER_DISPATCH_LOOP "Use a libdispatch main-thread CEF pump instead of the Qt event loop" OFF)
@@ -211,7 +211,7 @@ index 6d6dc51..77ad8fe 100644
  
  set(helper_basename browser-helper)
 -set(helper_output_name "OBS Helper")
-+# Producer patch: CEF locates helper apps by "<AppName> Helper" convention;
++# Liveroom patch: CEF locates helper apps by "<AppName> Helper" convention;
 +# embedding hosts override this to match their app name.
 +if(NOT DEFINED BROWSER_HELPER_OUTPUT_NAME)
 +  set(BROWSER_HELPER_OUTPUT_NAME "OBS Helper")
@@ -403,7 +403,7 @@ index 1484ea7..6305f59 100644
  target_link_libraries(obs-browser PRIVATE CEF::Wrapper CEF::Library d3d11 dxgi)
  target_link_options(obs-browser PRIVATE /IGNORE:4099)
  
-+# Producer patch: the CEF helper exe is what Task Manager shows; embedding
++# Liveroom patch: the CEF helper exe is what Task Manager shows; embedding
 +# hosts name it after themselves. The plugin spawns it by this name too.
 +if(NOT DEFINED BROWSER_HELPER_OUTPUT_NAME)
 +  set(BROWSER_HELPER_OUTPUT_NAME "obs-browser-page")
@@ -452,7 +452,7 @@ index 95a168c..1368a0f 100644
  	string path = obs_get_module_binary_path(obs_current_module());
  	path = path.substr(0, path.find_last_of('/') + 1);
 +#ifdef _WIN32
-+	/* Producer patch: the helper exe is named by the build (default obs-browser-page) */
++	/* Liveroom patch: the helper exe is named by the build (default obs-browser-page) */
 +#ifndef BROWSER_HELPER_OUTPUT_NAME
 +#define BROWSER_HELPER_OUTPUT_NAME "obs-browser-page"
 +#endif

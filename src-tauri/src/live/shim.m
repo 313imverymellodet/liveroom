@@ -1,4 +1,4 @@
-// Producer Live — AppKit/AVFoundation shim (M-L6).
+// Liveroom Live — AppKit/AVFoundation shim (M-L6).
 // The only Objective-C in the host: creating and managing the NSView that
 // hosts obs_display (A6), TCC status/requests, and default-device lookup.
 // Every AppKit call is marshalled onto the main thread here, so the Rust
@@ -96,7 +96,7 @@ int producer_preview_prepare_window(void *ns_window) {
 }
 
 // Studio output: the CGWindowID of OUR window, for a ScreenCaptureKit window
-// capture of Producer itself. `windowNumber` IS the CGWindowID on macOS.
+// capture of Liveroom itself. `windowNumber` IS the CGWindowID on macOS.
 uint32_t producer_window_id(void *ns_window) {
     __block uint32_t wid = 0;
     run_on_main(^{
@@ -289,7 +289,7 @@ void producer_drag_chip_show(void) {
         root.layer.cornerRadius = 18;
         panel.contentView = root;
 
-        NSTextField *title = [NSTextField labelWithString:@"Drag Producer into the list to allow Screen Recording"];
+        NSTextField *title = [NSTextField labelWithString:@"Drag Liveroom into the list to allow Screen Recording"];
         title.font = [NSFont systemFontOfSize:12 weight:NSFontWeightMedium];
         title.textColor = [NSColor colorWithCalibratedWhite:0.72 alpha:1.0];
         title.frame = NSMakeRect(16, H - 28, W - 32, 16);
@@ -307,7 +307,7 @@ void producer_drag_chip_show(void) {
         iv.frame = NSMakeRect(10, (row.frame.size.height - 32) / 2, 32, 32);
         [row addSubview:iv];
 
-        NSTextField *name = [NSTextField labelWithString:@"Producer"];
+        NSTextField *name = [NSTextField labelWithString:@"Liveroom"];
         name.font = [NSFont systemFontOfSize:15 weight:NSFontWeightSemibold];
         name.textColor = [NSColor whiteColor];
         name.frame = NSMakeRect(52, (row.frame.size.height - 20) / 2, 160, 20);
@@ -363,7 +363,7 @@ enum {
 };
 static int g_vcam_state = VcamIdle;
 static char g_vcam_error[512] = {0};
-static NSString * const VcamProviderID = @"ai.boomin.producer.camera-extension";
+static NSString * const VcamProviderID = @"app.liveroom.studio.camera-extension";
 
 @interface ProducerExtensionDelegate : NSObject <OSSystemExtensionRequestDelegate>
 @end
@@ -467,16 +467,16 @@ int producer_vcam_state(char *buf, int len) {
         const char *detail = g_vcam_error;
         switch (state) {
             case VcamMoveToApplications:
-                detail = "Move Producer to Applications, then reopen it from there to install the virtual camera.";
+                detail = "Move Liveroom to Applications, then reopen it from there to install the virtual camera.";
                 break;
             case VcamRequiresSignedApp:
-                detail = "Install the virtual camera from a signed Producer release.";
+                detail = "Install the virtual camera from a signed Liveroom release.";
                 break;
             case VcamRestartRequired:
-                detail = "Restart your Mac to finish installing Producer Virtual Camera.";
+                detail = "Restart your Mac to finish installing Liveroom Virtual Camera.";
                 break;
             case VcamUnavailable:
-                detail = "This build does not include the Producer camera extension.";
+                detail = "This build does not include the Liveroom camera extension.";
                 break;
         }
         if (buf && len > 0) snprintf(buf, (size_t)len, "%s", detail);
@@ -506,7 +506,7 @@ void producer_vcam_open_settings(void) {
 // run with no request outstanding.
 // 🔴 AVFoundation HIDES an app's own camera extension from it (deliberate:
 // Apple preventing self-capture feedback). Checking through AVCaptureDevice
-// therefore reports "not installed" forever inside Producer while every
+// therefore reports "not installed" forever inside Liveroom while every
 // other app sees the camera fine. The CMIO C API does not filter — it is
 // how OBS's plugin detects its own extension, and how we must.
 int producer_vcam_installed(void) {
@@ -574,7 +574,7 @@ int producer_default_camera_id(char *buf, int buflen) {
     // virtual-camera output could no longer start. macOS will happily hand it
     // back as the "default" device once a real camera is denied or absent.
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    if (device && ([device.localizedName containsString:@"Producer Virtual Camera"] || [device.localizedName containsString:@"Producer Portrait Camera"])) {
+    if (device && ([device.localizedName containsString:@"Liveroom Virtual Camera"] || [device.localizedName containsString:@"Liveroom Portrait Camera"])) {
         device = nil;
         AVCaptureDeviceDiscoverySession *s = [AVCaptureDeviceDiscoverySession
             discoverySessionWithDeviceTypes:@[ AVCaptureDeviceTypeBuiltInWideAngleCamera,
@@ -582,7 +582,7 @@ int producer_default_camera_id(char *buf, int buflen) {
                                   mediaType:AVMediaTypeVideo
                                    position:AVCaptureDevicePositionUnspecified];
         for (AVCaptureDevice *d in s.devices) {
-            if (![d.localizedName containsString:@"Producer Virtual Camera"] && ![d.localizedName containsString:@"Producer Portrait Camera"]) {
+            if (![d.localizedName containsString:@"Liveroom Virtual Camera"] && ![d.localizedName containsString:@"Liveroom Portrait Camera"]) {
                 device = d;
                 break;
             }

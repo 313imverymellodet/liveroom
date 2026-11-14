@@ -171,7 +171,7 @@ function ScenePads({
     <section className="mb-strip" aria-label="Scenes">
       <div className="mb-pads">
         {!scenes ? (
-          <div className="mb-pads-empty">{pending ? "Checking your seat…" : "The host's scenes land here once their Producer opens the room."}</div>
+          <div className="mb-pads-empty">{pending ? "Checking your seat…" : "The host's scenes land here once their Liveroom opens the room."}</div>
         ) : scenes.scenes.length === 0 ? (
           <div className="mb-pads-empty">The host hasn't published scenes yet.</div>
         ) : (

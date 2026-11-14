@@ -51,7 +51,7 @@ try{
    const button=document.createElement('button');button.textContent='Enter';button.dataset.producerNetworkRoomId=remoteRoomId;button.dataset.producerEndpointId=endpointId;section.append(button);
    function renderSheet(){
     const aside=document.createElement('aside');aside.className='producer-network-sheet join-sheet';aside.dataset.producerNetworkRoomId=options.wrongSheet?localRoomId:remoteRoomId;aside.dataset.producerEndpointId=endpointId;
-    aside.innerHTML='<section class="producer-join" aria-label="Join a Producer room"><form><label><input type="radio" name="producer-video"><strong>My room and Set</strong></label><label><input type="radio" name="producer-video" checked><strong>Webcam and microphone</strong></label><select aria-label="Room to send"><option value="other-local-room">Other saved room</option><option value="'+localRoomId+'">Local room</option></select><button type="submit">Join room</button></form></section>';
+    aside.innerHTML='<section class="producer-join" aria-label="Join a Liveroom room"><form><label><input type="radio" name="producer-video"><strong>My room and Set</strong></label><label><input type="radio" name="producer-video" checked><strong>Webcam and microphone</strong></label><select aria-label="Room to send"><option value="other-local-room">Other saved room</option><option value="'+localRoomId+'">Local room</option></select><button type="submit">Join room</button></form></section>';
     aside.querySelector('form').addEventListener('submit',e=>{e.preventDefault();joins++;submittedRoom=aside.querySelector('select').value;submittedProgram=aside.querySelectorAll('input[type="radio"]')[0].checked;if(options.reject){aside.insertAdjacentHTML('beforeend','<p role="alert">PRIVATE INVITATION SECRET</p>');return;}aside.remove();if(options.recordAfterJoin)capture=true;if(!options.noAdmission)session={current:()=>true};});
     document.body.append(aside);if(options.raceRecording)capture=true;if(options.busyAfterKnock)observed='running';
    }
@@ -62,7 +62,7 @@ try{
    if(options.existingSheet)renderSheet();
    const exports={};if(options.native===false)delete window.__TAURI_INTERNALS__;else window.__TAURI_INTERNALS__={};delete window.__producerNativePairProof;
    const require=name=>{
-    if(name==='@tauri-apps/api/app')return {async getIdentifier(){identifierCalls++;if(holdIdentifier)return new Promise(resolve=>{resolveIdentifier=resolve;});return options.appId??'ai.boomin.producer.sets-v2-dev';}};
+    if(name==='@tauri-apps/api/app')return {async getIdentifier(){identifierCalls++;if(holdIdentifier)return new Promise(resolve=>{resolveIdentifier=resolve;});return options.appId??'app.liveroom.studio.sets-v2-dev';}};
     if(name.endsWith('/ipc'))return {ipc:{listEndpoints:deps.endpoints,liveListRooms:deps.rooms,liveEngineStatus:deps.engine},recording:{list:deps.recordings},uiLog:deps.log};
     if(name.endsWith('/workspace'))return {activeEndpointId:deps.activeEndpoint,isBoomin:ep=>ep.endpoint_kind==='boomin',WORKSPACE_EVENT:'producer:workspace'};
     if(name.endsWith('/guestSeat'))return {activeGuestSeatDiagnosticSession:deps.getSession};
@@ -72,7 +72,7 @@ try{
    const driver=exports.createNativePairProof(deps);
    return {driver,exports,observer,logs,timers,button,
     counts:()=>({identifierCalls,reads,knocks,joins,diagnosticCalls,cancels}),state(next){state=next;},recordOther(){recordOther=true;},active(next){active=next;},submitted:()=>({room:submittedRoom,program:submittedProgram}),
-    holdEndpoints(){holdEndpoints=true;},releaseEndpoints(){resolveEndpoints?.([endpoint,extraEndpoint]);},holdIdentifier(){holdIdentifier=true;},releaseIdentifier(){resolveIdentifier?.('ai.boomin.producer.sets-v2-dev');},
+    holdEndpoints(){holdEndpoints=true;},releaseEndpoints(){resolveEndpoints?.([endpoint,extraEndpoint]);},holdIdentifier(){holdIdentifier=true;},releaseIdentifier(){resolveIdentifier?.('app.liveroom.studio.sets-v2-dev');},
     hide(){visible=false;document.dispatchEvent(new Event('visibilitychange'));},
     async advance(ms){await flush();const end=now+ms;for(;;){const next=[...timers.entries()].filter(([,t])=>t.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;timers.delete(next[0]);now=next[1].at;next[1].fn();await flush();}now=end;await flush();},
     async finish(input=manifest,ms=100000){const p=driver.run(input);await this.advance(ms);return await p;},disposeModule,
@@ -80,7 +80,7 @@ try{
   }
   async function test(name,fn){await fn();results.push({name,pass:true});}
   await test('installation is inert: no native reads, timers or clicks',async()=>{const h=fixture();await h.exports.installNativePairProof();check(!!window.__producerNativePairProof,'API missing');check(h.counts().identifierCalls===1&&h.counts().reads===0&&h.timers.size===0,'installation performed work');});
-  for(const options of [{env:{DEV:false,VITE_PRODUCER_NATIVE_PAIR_PROOF:'1'}},{env:{DEV:true,VITE_PRODUCER_NATIVE_PAIR_PROOF:'0'}},{native:false},{appId:'ai.boomin.producer'},{appId:'ai.boomin.producer.sets-v2-dev.evil'},{appId:'ai.boomin.producer.windows-network-dev'}])await test('installation refuses '+JSON.stringify(options),async()=>{const h=fixture(options);await h.exports.installNativePairProof();check(!window.__producerNativePairProof&&h.counts().reads===0,'unexpected installation');});
+  for(const options of [{env:{DEV:false,VITE_PRODUCER_NATIVE_PAIR_PROOF:'1'}},{env:{DEV:true,VITE_PRODUCER_NATIVE_PAIR_PROOF:'0'}},{native:false},{appId:'app.liveroom.studio'},{appId:'app.liveroom.studio.sets-v2-dev.evil'},{appId:'app.liveroom.studio.windows-network-dev'}])await test('installation refuses '+JSON.stringify(options),async()=>{const h=fixture(options);await h.exports.installNativePairProof();check(!window.__producerNativePairProof&&h.counts().reads===0,'unexpected installation');});
   await test('malformed fixture rejected before any native read or click',async()=>{const h=fixture();const r=await h.finish({...manifest,remoteRoomId:'https://wrong.invalid/secret'});check(r.reason==='invalid_fixture'&&h.counts().reads===0&&h.counts().knocks===0,'invalid fixture accepted');});
   await test('wrong workspace never clicks',async()=>{const h=fixture();h.active('wrong');check((await h.finish()).reason==='workspace_mismatch'&&h.counts().knocks===0,'workspace accepted');});
   await test('legacy unowned local room is rejected',async()=>{const h=fixture({legacyRoom:true});check((await h.finish()).reason==='room_mismatch'&&h.counts().knocks===0,'unowned room accepted');});

@@ -100,7 +100,7 @@ export function AccountSheet({
     }
   };
 
-  /** Two-factor lives on boomin.ai — never a web console inside Producer.
+  /** Two-factor lives on boomin.ai — never a web console inside Liveroom.
    * The handoff signs the browser in with a one-time code. */
   const openAccountOnWeb = async () => {
     if (!boominEp) return;
@@ -154,10 +154,10 @@ export function AccountSheet({
           ) : (
             <div className="acct-you">
               <div className="acct-row">
-                <span className="acct-row-k">Boomin</span>
-                <span className="acct-row-v">Not signed in</span>
+                <span className="acct-row-k">Account</span>
+                <span className="acct-row-v">Self-hosted</span>
               </div>
-              <div className="cr-hint">Your own server needs no account. Sign in to Boomin for the Network, deals and a brand's rooms.</div>
+              <div className="cr-hint">Liveroom runs on servers you own. No account needed.</div>
             </div>
           )}
 
@@ -260,7 +260,7 @@ export function AccountSheet({
               <span className="ws-pop-txt">
                 <span className="ws-pop-name">{boominEp ? "Connect a server" : "Add a workspace"}</span>
                 <span className="ws-pop-slug">
-                  {boominEp ? "Your own producer-server" : "Sign in to Boomin, or use your own server"}
+                  {boominEp ? "Your own liveroom-server" : "Connect another liveroom-server"}
                 </span>
               </span>
             </button>

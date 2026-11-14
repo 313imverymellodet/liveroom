@@ -17,7 +17,7 @@ const decoder = new TextDecoder();
 // Audiences:
 //   guest-signal  — the per-guest channel (host page ↔ guest page)
 //   guest-room    — the room channel, guest side (stage pushes, guest↔guest)
-//   room-control  — the room channel, CONTROL side: the host's Producer and a
+//   room-control  — the room channel, CONTROL side: the host's Liveroom and a
 //                   mod seat. Carries the seat's grants so the room DO can
 //                   refuse a scene cut from a seat without room.scene.
 //   audience      — a per-DEVICE capability for the audience door (#51): no

@@ -92,8 +92,8 @@ describe("dedupeSeatRows — one row per (room, member)", () => {
     expect(dedupeSeatRows([noUrl, withUrl]).map((r) => r.id)).toEqual(["s-b"]);
   });
   it("rows without a user fall back to producer_ref, then the row id", () => {
-    const a = { id: "a", monitor: true, producer_ref: "Producer @ x", state: "admitted" };
-    const b = { id: "b", monitor: true, producer_ref: "Producer @ x", state: "admitted", joined_at: "2026-09-05T12:00:00Z" };
+    const a = { id: "a", monitor: true, producer_ref: "Liveroom @ x", state: "admitted" };
+    const b = { id: "b", monitor: true, producer_ref: "Liveroom @ x", state: "admitted", joined_at: "2026-09-05T12:00:00Z" };
     const c = { id: "c", monitor: true, state: "admitted" };
     expect(dedupeSeatRows([a, b, c]).map((r) => r.id)).toEqual(["b", "c"]);
   });

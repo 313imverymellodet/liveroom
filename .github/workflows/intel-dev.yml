@@ -33,7 +33,7 @@ jobs:
         run: |
           bun install --frozen-lockfile
           bun run build
-      - name: Prepare pinned Intel engine and Producer camera pair
+      - name: Prepare pinned Intel engine and Liveroom camera pair
         env:
           # Hosted runners do not qualify physical GPU behavior. Camera input
           # and OpenGL startup are separately verified on the Intel dev Mac.
@@ -46,11 +46,11 @@ jobs:
       - name: Build engine-linked development app
         run: |
           bun run tauri build --debug --bundles app --features guest-rtc-production --config '{"bundle":{"createUpdaterArtifacts":false,"macOS":{"minimumSystemVersion":"13.0"}}}'
-          APP=src-tauri/target/debug/bundle/macos/Producer.app
-          otool -L "$APP/Contents/MacOS/Producer" | grep -q libobs
-          lipo "$APP/Contents/MacOS/Producer" -verify_arch x86_64
+          APP=src-tauri/target/debug/bundle/macos/Liveroom.app
+          otool -L "$APP/Contents/MacOS/Liveroom" | grep -q libobs
+          lipo "$APP/Contents/MacOS/Liveroom" -verify_arch x86_64
           echo "APP=$APP" >> "$GITHUB_ENV"
-      - name: Import existing Producer signing identity and camera profile
+      - name: Import existing Liveroom signing identity and camera profile
         env:
           SIGN_IDENT: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           CERT_B64: ${{ secrets.APPLE_CERTIFICATE }}
@@ -93,12 +93,12 @@ jobs:
           set -euo pipefail
           mkdir -p candidate
           PRODUCER_NOTARY_RECEIPT_DIR="$PWD/candidate" bash scripts/notarize-macos-artifact.sh "$APP"
-          ditto -c -k --keepParent "$APP" candidate/Producer-Intel-Dev.zip
-          shasum -a 256 candidate/Producer-Intel-Dev.zip > candidate/Producer-Intel-Dev.zip.sha256
+          ditto -c -k --keepParent "$APP" candidate/Liveroom-Intel-Dev.zip
+          shasum -a 256 candidate/Liveroom-Intel-Dev.zip > candidate/Liveroom-Intel-Dev.zip.sha256
           printf '%s\n' "$PRODUCER_SOURCE_SHA" > candidate/source-revision.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: Producer-Intel-Dev-${{ github.sha }}
+          name: Liveroom-Intel-Dev-${{ github.sha }}
           path: candidate/
           if-no-files-found: error
           retention-days: 14
@@ -106,7 +106,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: Producer-Intel-Dev-accepted-${{ github.sha }}
+          name: Liveroom-Intel-Dev-accepted-${{ github.sha }}
           path: candidate/
           if-no-files-found: ignore
           retention-days: 14

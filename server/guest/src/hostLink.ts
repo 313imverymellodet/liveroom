@@ -1,7 +1,7 @@
-// The guest's link to the host — every peer connection that ends in Producer.
+// The guest's link to the host — every peer connection that ends in Liveroom.
 //
 // ── One channel, two host pages ──────────────────────────────────────────────
-// Producer renders a guest as browser sources, one page per SOURCE: the camera
+// Liveroom renders a guest as browser sources, one page per SOURCE: the camera
 // page (`/render/:id`) and, for a guest who may share, the screen page
 // (`/render/:id?track=screen`). Both pages hold a render ticket for the same
 // guest session, so both land on the same signaling channel and every frame
@@ -258,7 +258,7 @@ export class HostLink {
         } catch { /* contentHint still biases the encoder */ }
       })();
 
-      // Producer pushes stage changes and cue state to the render page
+      // Liveroom pushes stage changes and cue state to the render page
       // natively, and the render page forwards them down this channel — the
       // host IS the authority and reaches us directly.
       pc.ondatachannel = (ev) => {
@@ -338,7 +338,7 @@ export class HostLink {
     try {
       if (msg.kind === "hello") {
         // A host page arrived (or came back). The screen page is created on
-        // demand — it exists only because Producer loaded one for us.
+        // demand — it exists only because Liveroom loaded one for us.
         if (name === "screen") this.ensurePeer("screen");
         this.announceLocal();
         if (name === "main") this.programRequest?.restart();

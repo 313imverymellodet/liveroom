@@ -32,7 +32,7 @@ struct EnumCtx {
     out: Vec<FilterState>,
 }
 
-/// Filters Producer attaches for its own machinery (scene fades) are named
+/// Filters Liveroom attaches for its own machinery (scene fades) are named
 /// with this prefix and hidden from the user's chain — they are transitions,
 /// not something the user added.
 pub const INTERNAL_PREFIX: &str = "__producer_";
@@ -59,7 +59,7 @@ extern "C" fn collect(
         ctx.out.push(FilterState {
             error: {
                 #[cfg(target_os = "windows")]
-                { if CStr::from_ptr(kind).to_bytes() == b"producer_person_mask" && ffi::producer_person_mask_status(filter) < 0 { Some("Cutout could not start. Reinstall Producer or remove and retry the filter.".into()) } else { None } }
+                { if CStr::from_ptr(kind).to_bytes() == b"producer_person_mask" && ffi::producer_person_mask_status(filter) < 0 { Some("Cutout could not start. Reinstall Liveroom or remove and retry the filter.".into()) } else { None } }
                 #[cfg(not(target_os = "windows"))]
                 { None }
             },
@@ -154,7 +154,7 @@ fn known_keys(kind: &str) -> &'static [(&'static str, KeyType)] {
             ("luma_min_smooth", KeyType::Double),
         ],
         "sharpness_filter_v2" => &[("sharpness", KeyType::Double)],
-        // Producer's own (shim-registered) Cutout: mode off|soft|cut, the
+        // Liveroom's own (shim-registered) Cutout: mode off|soft|cut, the
         // rest 0–1. See person_mask.m.
         "producer_person_mask" => &[
             ("mode", KeyType::Text),

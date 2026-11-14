@@ -3,7 +3,7 @@
 The managed renderer now plugs into the existing presentation/2 package, module
 runtime, editor preview, native prepare/take path and recordings. Grand Arena’s
 existing package remains intact. `docs/shows/grand-arena-3d-study.json` is a
-separate procedural Set included in the normal catalog since Producer 0.4.75.
+separate procedural Set included in the normal catalog since Liveroom 0.4.75.
 Its native GPU output capability targets Apple Silicon/macOS.
 
 See [the authoring and lifecycle contract](../../docs/shows/scene3d.md).
@@ -30,13 +30,13 @@ from the managed presentation/2 implementation above.
 
 # Three.js native-output experiment
 
-An isolated development prototype, built on Producer's existing browser sources,
+An isolated development prototype, built on Liveroom's existing browser sources,
 ordered native groups and v2 prepare/take API. It does not change released Set
 packages or introduce a second module runtime.
 
 ## Run
 
-From the Producer checkout:
+From the Liveroom checkout:
 
 ```sh
 npm --prefix scripts/scene3d ci
@@ -46,12 +46,12 @@ node scripts/scene3d/dev-room.mjs
 Requires the existing isolated Sets v2 dev app, root frontend dependencies, and a
 free port 1436. Set `PRODUCER_SCENE3D_DEV_APP` to another isolated dev app bundle.
 `--no-open` starts only the local services; `--record-proof` also records ten
-seconds through Producer's normal recording API. No live-stream output starts.
+seconds through Liveroom's normal recording API. No live-stream output starts.
 The existing local workspace service remains responsible for the dev room.
 
 The dev room has Blue/Gold/Neutral lighting cues, pause/resume, recording and Exit
 prototype. Exit returns to the room scene and removes sources created by this
-run. The prototype uses a separate **Producer 3D GPU lab** room and the isolated
+run. The prototype uses a separate **Liveroom 3D GPU lab** room and the isolated
 app profile. The temporary controls are visible only in the development entry
 when the runner supplies `VITE_SCENE3D_PROOF`.
 
@@ -119,7 +119,7 @@ rendered revision.
 5. Exercise simultaneous landscape/portrait output, recording, rapid takes,
    cancellation, disposal and recovery against the new managed resource.
 
-A normal Producer recording was decoded and verified at 1920×1080, 30 fps,
+A normal Liveroom recording was decoded and verified at 1920×1080, 30 fps,
 10.133 seconds. 8,006 sampled stage pixels changed between seconds 1 and 8 in
 bands outside both native camera slots. The local camera clip is not committed.
 Use `xcrun swift scripts/scene3d/inspect-recording.swift <recording.mp4>` to repeat

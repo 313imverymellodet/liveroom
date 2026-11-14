@@ -144,7 +144,7 @@ pub fn first_light(credential_id: &str, report_dir: &Path) -> FirstLightReport {
             return report;
         }
 
-        // Producer's defaults first (CBR 4500, 2s keyint, the chosen
+        // Liveroom's defaults first (CBR 4500, 2s keyint, the chosen
         // encoder's quality preset), then the service's policy on top so a
         // per-service cap is the last word.
         let chosen = encoders::chosen();

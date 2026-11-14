@@ -16,7 +16,7 @@ export async function openSetEditorReview(name:string,roomId?:string){
   if(repairImage&&repairRun&&localStorage.getItem('producer-review-repair:'+repairRun)!=='complete'){
    await until(()=>button('Set settings'),'room host repair');
    const {ipc}=await import('../../lib/ipc');
-   const room=(await ipc.liveListRooms()).find(r=>roomId?r.id===roomId:r.name==='Producer authoring acceptance');
+   const room=(await ipc.liveListRooms()).find(r=>roomId?r.id===roomId:r.name==='Liveroom authoring acceptance');
    if(!room)throw Error('Acceptance room is unavailable');
    const config=JSON.parse(room.config||'{}');
    if(!config.presentation?.package?.set?.slots.some((s:{id:string})=>s.id==='host'))throw Error('Acceptance Set has no Host slot');
@@ -33,7 +33,7 @@ export async function openSetEditorReview(name:string,roomId?:string){
    const {ipc,devices}=await import('../../lib/ipc');
    const permissions=await ipc.livePermissions();
    const engine=await ipc.liveEngineStatus();
-   await invoke('live_set_v2_report',{result:{kind:'native-handoff-inspection',permissions,engine:{engine_ready:engine.engine_ready,sources:engine.sources},devices:permissions.camera==='granted'?await devices.list('camera'):[],rooms:(await ipc.liveListRooms()).filter(r=>r.name==='Producer authoring acceptance').map(r=>({id:r.id,name:r.name,sources:JSON.parse(r.config||'{}').sources,bindings:JSON.parse(r.config||'{}').presentation?.bindings}))}});
+   await invoke('live_set_v2_report',{result:{kind:'native-handoff-inspection',permissions,engine:{engine_ready:engine.engine_ready,sources:engine.sources},devices:permissions.camera==='granted'?await devices.list('camera'):[],rooms:(await ipc.liveListRooms()).filter(r=>r.name==='Liveroom authoring acceptance').map(r=>({id:r.id,name:r.name,sources:JSON.parse(r.config||'{}').sources,bindings:JSON.parse(r.config||'{}').presentation?.bindings}))}});
    return;
   }
   const dock=await until(()=>document.querySelector<HTMLElement>('[aria-label="Show the bottom row"]')||button('Set settings'),'Set controls');
@@ -136,7 +136,7 @@ export async function openSetEditorReview(name:string,roomId?:string){
     window.removeEventListener('producer:set-render-timing',receiveTiming);
    }
    const {ipc}=await import('../../lib/ipc');
-   const savedRoom=(await ipc.liveListRooms()).find(r=>roomId?r.id===roomId:r.name==='Producer authoring acceptance');
+   const savedRoom=(await ipc.liveListRooms()).find(r=>roomId?r.id===roomId:r.name==='Liveroom authoring acceptance');
    const saved=JSON.parse(savedRoom?.config||'{}');
    const sourceChecks=await until(async()=>{
     const items=(await ipc.liveEngineStatus()).sources?.items??[];

@@ -23,9 +23,6 @@ import { notify } from "../lib/notices";
 import { IS_MAC, IS_WINDOWS } from "../lib/platform";
 import { buildReport, githubIssueUrl, reportToText, type BugReport } from "../lib/bugReport";
 
-/** Where an unauthenticated report goes. Mirrors the Rust
- *  `DEFAULT_BOOMIN_API_ROOT`; a self-hosted server has no such route. */
-const BOOMIN_API = "https://api.boomin.ai";
 const REPORT_PATH = "/v1/app/support/report";
 
 export interface BugSheetProps {
@@ -149,22 +146,9 @@ export function BugSheet({ open, onClose, version, engine, encoder, scenes, sour
         if (!r.available) throw new Error("This server has no bug-report route.");
         body = (r.body ?? {}) as Record<string, unknown>;
       } else {
-        // Self-hosted or signed out: the SAME Boomin route, unauthenticated.
-        const res = await fetch(BOOMIN_API + REPORT_PATH, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(report),
-        });
-        body = (await res.json().catch(() => ({}))) as Record<string, unknown>;
-        if (!res.ok) {
-          throw new Error(
-            res.status === 429
-              ? "Too many reports in the last hour. Try again shortly."
-              : typeof body.message === "string"
-                ? body.message
-                : `The server answered ${res.status}.`,
-          );
-        }
+        // Liveroom: reports never go to a third party. Without a connected
+        // server that has a report route, the user copies the report instead.
+        throw new Error("No connected server accepts bug reports. Use Copy and paste the report into an issue.");
       }
       const n = typeof body.issue_number === "number" ? body.issue_number : null;
       if (n !== null) {
@@ -202,7 +186,7 @@ export function BugSheet({ open, onClose, version, engine, encoder, scenes, sour
         <div className="acct-sheet-in">
           <div className="acc-confirm-title">Report a bug</div>
           <div className="cr-hint bug-lede">
-            Goes straight to the people who build Producer. You don't need an account — a self-hosted or signed-out report
+            Goes straight to the people who build Liveroom. You don't need an account — a self-hosted or signed-out report
             reaches us just the same.
           </div>
 

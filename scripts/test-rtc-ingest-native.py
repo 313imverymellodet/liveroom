@@ -3,7 +3,7 @@
 from pathlib import Path
 import json, hashlib, os, subprocess, tempfile
 root=Path(__file__).resolve().parents[1]
-engine=Path(os.environ.get('PRODUCER_ENGINE_DIR','/Applications/Producer.app/Contents'))
+engine=Path(os.environ.get('PRODUCER_ENGINE_DIR','/Applications/Liveroom.app/Contents'))
 frameworks=engine/'Frameworks'
 if not (frameworks/'libobs.framework').is_dir():
     raise SystemExit('Installed native engine framework is required')

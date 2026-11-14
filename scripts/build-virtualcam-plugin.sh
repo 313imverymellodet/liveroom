@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build the mac-virtualcam OBS-PLUGIN from source with Producer's identifiers.
+# Build the mac-virtualcam OBS-PLUGIN from source with Liveroom's identifiers.
 #
 # The virtual camera is a PAIR: a CMIO system extension (the device other
 # apps see) and an obs plugin (feeds it frames). They rendezvous by bundle
@@ -16,8 +16,8 @@ if [[ ${1:-} == "--stage" ]]; then
   STAGE_DIR="${2:?--stage needs a directory}"
 fi
 
-EXT_ID="ai.boomin.producer.camera-extension"
-PLUGIN_BUNDLE_ID="ai.boomin.producer.mac-virtualcam"
+EXT_ID="app.liveroom.studio.camera-extension"
+PLUGIN_BUNDLE_ID="app.liveroom.studio.mac-virtualcam"
 SRC="${PRODUCER_OBS_SOURCE:-engine/obs-studio}/plugins/mac-virtualcam/src"
 LIBOBS="${PRODUCER_OBS_SOURCE:-engine/obs-studio}/libobs"
 # Never hardcode the artifact hash — it changes with every obs.lock edit.
@@ -163,7 +163,7 @@ s = s.replace(old_stop, """static void virtualcam_output_stop(void *data, uint64
 
     struct virtualcam_data *vcam = (struct virtualcam_data *) data;
 
-    // Producer: idempotent. obs_output_stop() is asynchronous, so
+    // Liveroom: idempotent. obs_output_stop() is asynchronous, so
     // obs_output_destroy() can reach this a second time; upstream double-
     // released formatDescription and the pool (pointer-auth trap). A stop
     // after a FAILED start released objects that were never created.

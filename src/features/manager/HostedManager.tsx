@@ -20,7 +20,7 @@ export function HostedManager(props: Props) {
     let alive = true;
     setError(null);
     void openManagerSession(props.endpoint).then((value) => { if (alive) setSession(value); }).catch(() => {
-      if (alive) { setSession(null); setError("Couldn’t open the local cache. Reopen Producer or retry."); }
+      if (alive) { setSession(null); setError("Couldn’t open the local cache. Reopen Liveroom or retry."); }
     });
     const changed = (event: Event) => {
       const detail = (event as CustomEvent<{ endpointId?: string; clear?: boolean }>).detail;
@@ -33,7 +33,7 @@ export function HostedManager(props: Props) {
   }, [props.endpoint.id, props.endpoint.base_url, props.endpoint.brand_slug, attempt]);
   // A changed endpoint must never render or edit the previous workspace's cache
   // while its asynchronous session lookup is still resolving.
-  if (!session || session.endpointIdentity !== JSON.stringify([props.endpoint.id, props.endpoint.base_url, props.endpoint.brand_slug ?? null])) return <div className="pm-live"><div className="pm-live-message" role={error ? "alert" : "status"}>{error ?? "Opening Producer…"}{error && <button type="button" onClick={() => setAttempt((n) => n + 1)}>Retry</button>}</div></div>;
+  if (!session || session.endpointIdentity !== JSON.stringify([props.endpoint.id, props.endpoint.base_url, props.endpoint.brand_slug ?? null])) return <div className="pm-live"><div className="pm-live-message" role={error ? "alert" : "status"}>{error ?? "Opening Liveroom…"}{error && <button type="button" onClick={() => setAttempt((n) => n + 1)}>Retry</button>}</div></div>;
   return <QueryClientProvider client={session.client}><CachedManager key={session.scope} {...props} session={session} /></QueryClientProvider>;
 }
 

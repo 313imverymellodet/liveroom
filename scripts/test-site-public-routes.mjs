@@ -28,7 +28,7 @@ function privateCache(response,expectedEtag=null){
  assert.equal(response.headers.get('etag'),expectedEtag);
 }
 
-test('canonical public brand renders a Producer profile with a fixed anonymous issuer',async()=>{
+test('canonical public brand renders a Liveroom profile with a fixed anonymous issuer',async()=>{
  const r=await request('/kleveland');
  assert.equal(r.response.status,200);assert.equal(r.assets.length,0);assert.equal(r.calls.length,1);
  assert.equal(r.calls[0].url,identityOrigin+'/v1/connect/producer/kleveland');
@@ -237,7 +237,7 @@ test('branded guest/audience and legacy room shells keep precedence and credenti
   assert.equal(r.response.status,200,path);assert.equal(r.calls.length,1,path);assert.equal(r.assets.length,0,path);
   assert.equal(new URL(r.calls[0].url).origin,'https://boomin.ai');assert.deepEqual(r.calls[0].init.headers,{accept:'text/html'});
   assert.equal(r.calls[0].init.redirect,'manual');assert.equal(r.response.headers.get('set-cookie'),null);assert.equal(r.response.headers.get('cache-control'),'no-store');
-  assert.match(r.text,/og:site_name" content="Producer"/);
+  assert.match(r.text,/og:site_name" content="Liveroom"/);
  }
 });
 
@@ -250,14 +250,14 @@ test('room assets stay a fixed Boomin proxy and reject upstream HTML',async()=>{
 
 const release={tag_name:'v0.4.88',draft:false,prerelease:false,assets:[
  {id:10,name:'Producer_aarch64.dmg',size:123,browser_download_url:'https://github.com/Boomin-Ai/producer/releases/download/v0.4.88/Producer_aarch64.dmg'},
- {id:11,name:'Producer-setup.exe',size:456,browser_download_url:'https://github.com/Boomin-Ai/producer/releases/download/v0.4.88/Producer-setup.exe'},
+ {id:11,name:'Liveroom-setup.exe',size:456,browser_download_url:'https://github.com/Boomin-Ai/producer/releases/download/v0.4.88/Liveroom-setup.exe'},
 ]};
 test('stable installer downloads and metadata keep precedence and their existing envelopes',async()=>{
  const upstream=url=>String(url).endsWith('/releases/latest')?json(release):new Response('INSTALLER');
  const meta=await request('/download/meta.json',{upstream});assert.equal(meta.response.status,200);assert.equal(JSON.parse(meta.text).version,'v0.4.88');assert.equal(meta.assets.length,0);assert.equal(meta.calls.length,1);
  const download=await request('/download/windows',{upstream});assert.equal(download.response.status,200);assert.equal(download.text,'INSTALLER');assert.equal(download.calls.length,2);assert.equal(download.assets.length,0);
  assert.match(download.calls[0].url,/api.github.com\/repos\/Boomin-Ai\/producer\/releases\/latest$/);assert.match(download.calls[1].url,/\?ck=11$/);
- assert.equal(download.response.headers.get('content-disposition'),'attachment; filename="Producer-Setup.exe"');assert.equal(download.response.headers.get('cache-control'),'no-store');
+ assert.equal(download.response.headers.get('content-disposition'),'attachment; filename="Liveroom-Setup.exe"');assert.equal(download.response.headers.get('cache-control'),'no-store');
  const preview=await request('/download/meta.json',{upstream:()=>json({...release,prerelease:true})});assert.equal(preview.response.status,503);
 });
 

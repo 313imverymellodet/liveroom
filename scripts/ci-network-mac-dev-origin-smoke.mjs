@@ -9,7 +9,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {setTimeout as wait} from 'node:timers/promises';
 
-export const IDENTIFIER='ai.boomin.producer.sets-v2-dev',ORIGIN='http://localhost:1436';
+export const IDENTIFIER='app.liveroom.studio.sets-v2-dev',ORIGIN='http://localhost:1436';
 export const COMMANDS=['plugin:app|identifier','live_set_v2_smoke_enabled','live_set_v2_report'];
 const RUNTIME_ENVIRONMENT=['HOME','PATH','USER','LOGNAME','TMPDIR','LANG','LC_ALL','LC_CTYPE','SHELL','__CF_USER_TEXT_ENCODING'];
 const FAILURES=new Set(['bridge_missing','identifier_denied','identifier_wrong','smoke_denied','smoke_false','report_denied','origin_wrong']);
@@ -69,7 +69,7 @@ export async function nativeOriginSmoke(appPath,outPath){
   require(process.platform==='darwin'&&process.env.GITHUB_ACTIONS==='true'&&process.env.CI==='true','ci_macos_only');
   const workspace=resolve(process.env.GITHUB_WORKSPACE??''),runner=resolve(process.env.RUNNER_TEMP??''),app=resolve(appPath),out=resolve(outPath);
   require(process.env.GITHUB_WORKSPACE&&process.env.RUNNER_TEMP&&under(workspace,app)&&under(workspace,out),'unexpected_ci_paths');
-  require(app.endsWith('/candidate/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Producer DJ Test.app'),'unexpected_app_path');
+  require(app.endsWith('/candidate/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Liveroom DJ Test.app'),'unexpected_app_path');
   require(!await exists(out),'proof_destination_exists');
   const plist=join(app,'Contents/Info.plist');
   const info=JSON.parse(execFileSync('plutil',['-convert','json','-o','-',plist],{encoding:'utf8'}));
@@ -139,7 +139,7 @@ export async function selfTest(){
   for(const [deny,failure] of [[COMMANDS[0],'identifier_denied'],[COMMANDS[1],'smoke_denied'],[COMMANDS[2],'report_denied']]){
     const result=await run({deny});assert.equal(result.reports.length,0);assert(result.failures.some(url=>url.endsWith(failure)));assert(!JSON.stringify(result).includes('SENSITIVE'));
   }
-  assert.equal((await run({identifier:'ai.boomin.producer'})).reports.length,0);assert.equal((await run({enabled:false})).reports.length,0);
+  assert.equal((await run({identifier:'app.liveroom.studio'})).reports.length,0);assert.equal((await run({enabled:false})).reports.length,0);
   assert(!validateNativeReport({...good.reports[0],nonce:'stale'},nonce));assert(!validateNativeReport({...good.reports[0],origin:'https://producer.dev'},nonce));assert(!validateNativeReport({...good.reports[0],commands:['record']},nonce));
   assert.throws(()=>smokeHtml('</script>'));assert(!under('/work','/work-other/file'));assert(under('/work','/work/candidate'));
   assert.doesNotMatch(script,/eval\(|getUserMedia|connectRoom|engine_|record|capture|email|token/i);

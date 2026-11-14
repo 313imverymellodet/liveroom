@@ -1,7 +1,7 @@
-# Producer Set authoring MCP and CLI
+# Liveroom Set authoring MCP and CLI
 
 Local, deterministic authoring for Claude Code, Codex and other MCP clients. The
-agent supplies a design or an edit; Producer compiles and validates a new Set.
+agent supplies a design or an edit; Liveroom compiles and validates a new Set.
 There is no second model request, provider credential or native app requirement.
 
 ## Contracts
@@ -78,7 +78,7 @@ codex mcp add producer-sets -- node /absolute/producer/tools/producer-mcp/server
 
 Use the same skill in `~/.codex/skills/producer-sets`. Restart the MCP connection
 after updating the server. The default artifact directory is
-`~/Documents/Producer Sets`, configurable with `PRODUCER_SETS_DIR`. The server
+`~/Documents/Liveroom Sets`, configurable with `PRODUCER_SETS_DIR`. The server
 reads regular `.set.json` files directly inside that directory; outside paths and
 symlinks are rejected. Outputs use unique filenames and preserve originals.
 
@@ -97,7 +97,7 @@ symlinks are rejected. Outputs use unique filenames and preserve originals.
 | `producer_check_geometry` | Ring alignment and advisory overlap checks |
 | `producer_visual_check` | Actual-browser text fit and estimated native batching budgets |
 | `producer_repair_ring` | Explicit, revision-fenced ring repair preserving the camera |
-| `producer_preview_set` | Standalone HTML using Producer's Set renderer |
+| `producer_preview_set` | Standalone HTML using Liveroom's Set renderer |
 
 Resources `producer://authoring/guide` and `producer://authoring/schema` expose the
 contract and full generated schema. Use focused discovery when possible rather
@@ -324,7 +324,7 @@ separating reusable definitions from recipient-owned connections and secrets.
 [OBS scene collections](https://obsproject.com/kb/scene-collections) provide a
 reference for portable collections with separately configured dependencies.
 [Claude structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)
-are a provider-side reliability option; the complete recursive Producer schema
+are a provider-side reliability option; the complete recursive Liveroom schema
 is not blindly passed as strict output configuration. Provider schema support and
 semantic validation must both be established before claiming strict conformance.
 
@@ -334,7 +334,7 @@ its editorial-overlap findings remain advisory.
 
 ## Optional public Set publishing
 
-Producer handles and Sets are served at `https://producer.dev/<handle>` and `/<handle>/set/<slug>`, using the same Boomin workspace identity. The MCP remains a local file authoring server by default. To add authenticated publishing, set `PRODUCER_ENABLE_PUBLISH=1` and use an existing Boomin CLI login (`~/.boomin/config.json`, or `PRODUCER_PUBLISH_CONFIG` for an explicit credential-file path). Tokens are never returned or put in packages.
+Liveroom handles and Sets are served at `https://producer.dev/<handle>` and `/<handle>/set/<slug>`, using the same Boomin workspace identity. The MCP remains a local file authoring server by default. To add authenticated publishing, set `PRODUCER_ENABLE_PUBLISH=1` and use an existing Boomin CLI login (`~/.boomin/config.json`, or `PRODUCER_PUBLISH_CONFIG` for an explicit credential-file path). Tokens are never returned or put in packages.
 
 This adds `producer_list_publications`, `producer_publish_set`, and `producer_withdraw_set`. Each call selects its workspace; writes carry an idempotency key, updates/withdrawal use the exact revision, and public/unlisted publication requires `confirmPublic:true`. Private drafts are the default. Authored values and embedded assets become downloadable: inspect the package before publishing. Native output and device state stay untouched.
 

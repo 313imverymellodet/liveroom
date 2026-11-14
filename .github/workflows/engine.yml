@@ -1,4 +1,4 @@
-# Producer engine CI — LIVE-REVIEW.md D5: build-on-engine-change, consume-by-hash.
+# Liveroom engine CI — LIVE-REVIEW.md D5: build-on-engine-change, consume-by-hash.
 # Builds libobs + the §5.2 plugin allowlist from the OBS source pinned in
 # engine/obs.lock using the producer-macos preset, gates the result on the
 # zero-Qt closure check, and publishes the immutable artifact.

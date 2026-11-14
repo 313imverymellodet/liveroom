@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       source_sha:
-        description: "Full Producer source SHA; later frontend commits must retain the pinned engine lock"
+        description: "Full Liveroom source SHA; later frontend commits must retain the pinned engine lock"
         required: true
         type: string
         default: "98a2a87fadced029f6adf0ae3df223e63c0992d3"
@@ -110,7 +110,7 @@ jobs:
       - name: Retain unreleased app and matching provenance/symbols
         uses: actions/upload-artifact@v4
         with:
-          name: Producer-network-mac-dev-${{ inputs.source_sha }}
+          name: Liveroom-network-mac-dev-${{ inputs.source_sha }}
           path: unreleased-mac-artifact/
           if-no-files-found: error
           retention-days: 14

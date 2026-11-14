@@ -1,5 +1,5 @@
 param(
-  [string]$EngineDir = "$env:LOCALAPPDATA\Producer",
+  [string]$EngineDir = "$env:LOCALAPPDATA\Liveroom",
   [string]$OutputDir = "$env:TEMP\producer-windows-native-proof",
   [switch]$CompileOnly
 )

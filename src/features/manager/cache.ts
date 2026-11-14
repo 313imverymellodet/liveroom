@@ -85,7 +85,7 @@ function disk(endpointId: string, sessionScope: string, resource: "queries" | "n
 export async function openManagerSession(endpoint: EndpointInfo): Promise<ManagerSession> {
   const revision = revisions.get(endpoint.id) ?? 0;
   const scope = await invoke<string>("manager_cache_scope", { endpointId: endpoint.id });
-  if ((revisions.get(endpoint.id) ?? 0) !== revision) throw new Error("Workspace credentials changed. Please reopen Producer.");
+  if ((revisions.get(endpoint.id) ?? 0) !== revision) throw new Error("Workspace credentials changed. Please reopen Liveroom.");
   for (const [key, previous] of sessions) if (previous.endpointId === endpoint.id && key !== scope) { previous.dispose(); sessions.delete(key); }
   const existing = sessions.get(scope);
   if (existing) return existing;

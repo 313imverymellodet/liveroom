@@ -22,7 +22,7 @@ const calls: string[] = [];
 const readonly = new URLSearchParams(location.search).has('readonly');
 const access = { role:'mod' as const, via:'grant' as const, known:true, can:{roster:true,control:!readonly,manage:false,settings:false,interactions:!readonly,scene:!readonly,billing:false} };
 createRoot(document.getElementById('root')!).render(<div style={{height:'100vh',display:'flex',flexDirection:'column',background:'#060b13'}}><ModBoard
-  title="Producer Demo" access={access} pending={false} boomin online program={preview}
+  title="Liveroom Demo" access={access} pending={false} boomin online program={preview}
   scenes={{scenes:[{id:'one',name:'Host camera'},{id:'two',name:'Interview'}],active_scene_id:'one'}}
   onCut={id=>calls.push(`scene:${id}`)}
   people={<PeoplePanel guestCount={0} waitingCount={1} audience={{state:{enabled:true,online:3},hands:[{id:'j',name:'Jordan'}],host:false,hosted:true,controls:!readonly,canInvite:!readonly,canModerate:!readonly,canShare:!readonly,send:f=>{calls.push(JSON.stringify(f));return true;},share:()=>calls.push('copy-audience'),invite:()=>calls.push('invite'),error:null}}><div>Guest requests appear here.{!readonly && <button onClick={()=>calls.push('admit')}>Admit guest</button>}</div></PeoplePanel>}

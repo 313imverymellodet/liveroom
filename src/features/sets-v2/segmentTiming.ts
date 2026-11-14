@@ -12,7 +12,7 @@ export async function measureSegmentTiming(sourceId:string){
  window.addEventListener('producer:set-render-timing',receive);
  const heartbeat=setInterval(()=>{void import('./preparedScenes').then(m=>invoke('live_set_v2_report',{result:{kind:'timing-heartbeat',debug:m.preparationDebug().map(s=>({...s,entries:s.entries.filter(e=>e.state.state!=='ready').slice(0,24)})),body:document.body.innerText.slice(-2000)}})).catch(()=>{});},5000);
  try{
-  for(const name of ['Head to Head — The Arena','Producer — Make Your Show','Claude Code — Build, Review, Ship']){
+  for(const name of ['Head to Head — The Arena','Liveroom — Make Your Show','Claude Code — Build, Review, Ship']){
    button('Set settings')!.click();const editor=await wait(()=>document.querySelector<HTMLDialogElement>('dialog[open]'),'editor');
    button('Choose set',editor)!.click();(await wait(()=>Array.from(editor.querySelectorAll<HTMLButtonElement>('[role=option]')).find(o=>o.textContent?.includes(name)),name)).click();
    await wait(()=>editor.querySelector('[role=combobox][aria-label="Choose set"]')?.textContent?.includes(name),'selected title');

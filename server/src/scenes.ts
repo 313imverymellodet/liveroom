@@ -1,6 +1,6 @@
 // Scene cuts by mods (#47, founder decision 2026-09-04) — the PURE half.
 //
-// The host's Producer publishes its scene list + active scene to the room's
+// The host's Liveroom publishes its scene list + active scene to the room's
 // Durable Object; a control seat (mod) sends `scene.cut`. The DO validates
 // here and forwards the cut to the host as a FRAME — never a config the host
 // polls — so it lands inside a frame budget, and the host applies it exactly

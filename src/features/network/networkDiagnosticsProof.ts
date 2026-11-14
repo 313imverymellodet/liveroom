@@ -6,7 +6,7 @@ import {reportNetworkDevResult} from './networkDevReport';
 import {activeGuestSeatDiagnosticSession,subscribeGuestSeatDiagnosticSessions,type GuestSeatDiagnosticSession} from '../../lib/guestSeat';
 import type {ProducerMediaSnapshot,ReceiverObservation} from '../../lib/producerMediaDiagnostics';
 
-const ALLOWED_APPS=new Set(['ai.boomin.producer.sets-v2-dev','ai.boomin.producer.windows-network-dev']);
+const ALLOWED_APPS=new Set(['app.liveroom.studio.sets-v2-dev','app.liveroom.studio.windows-network-dev']);
 type EndReason='completed'|'no_active_seat'|'cancelled'|'session_changed'|'disposed'|'failed';
 type Sample={elapsedMs:number;receiverStatus:ProducerMediaSnapshot['status']|'unavailable';
  video:ReturnType<typeof receiverFields>;audio:ReturnType<typeof receiverFields>;engine:ReturnType<typeof engineFields>};
@@ -172,7 +172,7 @@ export async function installNetworkDiagnosticsProof():Promise<void>{
  window.__producerNetworkDiagnostics?.dispose();
  installed=createNetworkDiagnosticsProof({now:()=>performance.now(),setTimer:(fn,ms)=>setTimeout(fn,ms),clearTimer:timer=>clearTimeout(timer),
   getSession:activeGuestSeatDiagnosticSession,subscribeSession:subscribeGuestSeatDiagnosticSessions,readEngine:()=>ipc.liveEngineStatus(),log:uiLog,
-  ...(id==='ai.boomin.producer.sets-v2-dev'?{report:reportNetworkDevResult}:{})});
+  ...(id==='app.liveroom.studio.sets-v2-dev'?{report:reportNetworkDevResult}:{})});
  window.__producerNetworkDiagnostics=installed;
 }
 import.meta.hot?.dispose(()=>{moduleDisposed=true;installed?.dispose();if(window.__producerNetworkDiagnostics===installed)delete window.__producerNetworkDiagnostics;installed=undefined;});

@@ -1,7 +1,7 @@
 //! Windows Firewall for guest media.
 //!
-//! Guests' WebRTC media reaches Producer directly, so an inbound allow rule
-//! for Producer.exe must exist on every profile. The installer adds one
+//! Guests' WebRTC media reaches Liveroom directly, so an inbound allow rule
+//! for Liveroom.exe must exist on every profile. The installer adds one
 //! (windows/hooks.nsh); this is the runtime backstop for a per-user install
 //! that couldn't elevate, a rule the user deleted, or a moved binary. Every
 //! non-Windows build answers `ok` — nothing to check.
@@ -10,7 +10,7 @@ use crate::error::EngineResult;
 
 /// The rule name the installer, the check and the repair all agree on.
 #[allow(dead_code)]
-pub const RULE_NAME: &str = "Boomin Producer";
+pub const RULE_NAME: &str = "Liveroom";
 
 #[derive(serde::Serialize)]
 pub struct FirewallStatus {
@@ -94,7 +94,7 @@ mod win {
     }
 }
 
-/// Is the inbound allow rule for Producer present?
+/// Is the inbound allow rule for Liveroom present?
 #[tauri::command]
 pub async fn firewall_status() -> EngineResult<FirewallStatus> {
     #[cfg(target_os = "windows")]

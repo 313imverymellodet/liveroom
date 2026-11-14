@@ -83,7 +83,7 @@ describe("redactSecrets", () => {
   });
 
   it("leaves file paths and long ordinary words alone", () => {
-    const line = "1757000000000 wrote /Users/someone/Library/Logs/ai.boomin.producer/producer-ui.log";
+    const line = "1757000000000 wrote /Users/someone/Library/Logs/app.liveroom.studio/producer-ui.log";
     expect(redactSecrets(line)).toBe(line);
   });
 
@@ -204,6 +204,6 @@ describe("the failure path carries the same report", () => {
 
   it("an empty report still produces a usable issue title", () => {
     const empty = buildReport({ text: "  ", attachDiagnostics: false, version: null, os: "macos", arch: "aarch64" });
-    expect(new URL(githubIssueUrl(empty)).searchParams.get("title")).toBe("Producer bug report");
+    expect(new URL(githubIssueUrl(empty)).searchParams.get("title")).toBe("Liveroom bug report");
   });
 });

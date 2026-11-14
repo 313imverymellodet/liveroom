@@ -5,10 +5,11 @@ import { setActiveEndpointId } from "../lib/workspace";
 import { ModLinkDrop } from "./ModLinkDrop";
 import type { ModLink } from "../lib/modSeat";
 import { EntryFrame } from "./EntryFrame";
+import { SELF_HOSTING_GUIDE_URL as GUIDE_URL, WORDMARK, SERVER_NAME } from "../brand";
 
 /** The self-hosting walkthrough — deploy the open producer-server, then
  * connect it here with its URL + PRIMARY_TOKEN. */
-export const SELF_HOSTING_GUIDE_URL = "https://github.com/Boomin-Ai/producer/blob/main/server/SELF_HOSTING.md";
+export const SELF_HOSTING_GUIDE_URL = GUIDE_URL;
 export const BOOMIN_SIGNUP_URL = "https://boomin.ai/signup";
 
 /** The name, with where it stands. `big` is the first-impression form
@@ -17,12 +18,12 @@ export const BOOMIN_SIGNUP_URL = "https://boomin.ai/signup";
  *
  *  BETA rides along in a lighter weight and a quieter colour: it is a
  *  qualifier on the name, not part of it, and setting it in the same bold
- *  caps would read as "Producer Beta" — a product with that name. Thin, so
+ *  caps would read as "Liveroom Beta" — a product with that name. Thin, so
  *  the eye takes the name first and the status second. */
 export function Wordmark({ big = false }: { big?: boolean }) {
   return (
     <div className={`wordmark${big ? " big" : ""}`}>
-      PRODUCER<span className="wordmark-beta">BETA</span>
+      {WORDMARK}<span className="wordmark-beta">BETA</span>
     </div>
   );
 }
@@ -47,36 +48,25 @@ function rememberSignedIn() {
   }
 }
 
-/** Returning beta users sign in with Boomin. Connecting another owned server
- * remains available from an existing workspace, not the initial welcome. */
-export function SignIn({ onConnected, onModLink, allowServerConnection = false }: { onConnected: () => void; onModLink?: (link: ModLink) => void; allowServerConnection?: boolean }) {
-  const [door, setDoor] = useState<"boomin" | "server">("boomin");
-  if (allowServerConnection && door === "server") return <ServerForm onBack={() => setDoor("boomin")} onConnected={onConnected} />;
-  return (
-    <BoominLogin
-      direct
-      betaRequired={!allowServerConnection}
-      onBack={allowServerConnection ? () => setDoor("server") : undefined}
-      backLabel="Use my own server"
-      onConnected={onConnected}
-      onModLink={onModLink}
-    />
-  );
+/** Liveroom is self-hosted only: signing in means connecting a
+ * liveroom-server you own. (Upstream's Boomin hosted sign-in, BoominLogin
+ * below, is kept for merge compatibility but no longer reachable.) */
+export function SignIn({ onConnected, onModLink }: { onConnected: () => void; onModLink?: (link: ModLink) => void; allowServerConnection?: boolean }) {
+  return <ServerForm onConnected={onConnected} onModLink={onModLink} />;
 }
 
-export function Onboarding({ onConnected, onCancel, onModLink, start, allowServerConnection = false }: { onConnected: () => void; onCancel?: () => void; onModLink?: (link: ModLink) => void; start?: "server"; allowServerConnection?: boolean }) {
-  const [door, setDoor] = useState<Door>(start ?? "chooser");
+export function Onboarding({ onConnected, onCancel, onModLink }: { onConnected: () => void; onCancel?: () => void; onModLink?: (link: ModLink) => void; start?: "server"; allowServerConnection?: boolean }) {
+  return <ServerForm onBack={onCancel} onConnected={onConnected} onModLink={onModLink} />;
+}
 
-  if (!allowServerConnection) return <BoominLogin betaRequired onConnected={onConnected} onModLink={onModLink} />;
+/** Upstream's two-door chooser (Boomin or own server), unused in Liveroom. */
+export function UpstreamOnboardingChooser({ onConnected, onCancel, onModLink, start }: { onConnected: () => void; onCancel?: () => void; onModLink?: (link: ModLink) => void; start?: "server" }) {
+  const [door, setDoor] = useState<Door>(start ?? "chooser");
   if (door === "boomin") return <BoominLogin onBack={() => setDoor("chooser")} onConnected={onConnected} onModLink={onModLink} />;
-  // Arriving straight on the server form (the account sheet's "Connect a
-  // server") means there is no chooser behind it — Back returns to where the
-  // click came from, the dashboard.
   if (door === "server")
     return (
       <ServerForm
         onBack={start === "server" && onCancel ? onCancel : () => setDoor("chooser")}
-        backLabel={start === "server" && onCancel ? "Back" : undefined}
         onConnected={onConnected}
       />
     );
@@ -122,7 +112,7 @@ export function Onboarding({ onConnected, onCancel, onModLink, start, allowServe
   );
 }
 
-function BoominLogin({
+export function BoominLogin({
   onBack,
   onConnected,
   direct = false,
@@ -302,7 +292,7 @@ function BoominLogin({
 
   return (
     <EntryFrame>
-      <h1 className="entry-heading">{step === "code" ? "Check your inbox" : direct ? "Welcome back" : "Sign in to Producer"}</h1>
+      <h1 className="entry-heading">{step === "code" ? "Check your inbox" : direct ? "Welcome back" : "Sign in to Liveroom"}</h1>
       <p className="entry-description">{step === "code" ? <>Enter the sign-in code sent to <strong>{email.trim()}</strong>.</> : "Use your Boomin email to open your workspace."}</p>
       <form
         className="entry-form"
@@ -373,7 +363,7 @@ function BoominLogin({
             </button>}
           </div>
       </form>
-      {betaRequired && <p className="entry-beta-note"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><rect x="3" y="6" width="14" height="11" rx="3" /><path d="M6 6V4a4 4 0 0 1 8 0v2M10 10v3" /></svg>Producer beta requires a Boomin account and workspace.</p>}
+      {betaRequired && <p className="entry-beta-note"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><rect x="3" y="6" width="14" height="11" rx="3" /><path d="M6 6V4a4 4 0 0 1 8 0v2M10 10v3" /></svg>Liveroom beta requires a Boomin account and workspace.</p>}
       {(direct || betaRequired) && (
         <>
           <div className="entry-account">
@@ -403,7 +393,7 @@ function BoominLogin({
   );
 }
 
-function ServerForm({ onBack, onConnected, backLabel = "Back" }: { onBack: () => void; onConnected: () => void; backLabel?: string }) {
+function ServerForm({ onBack, onConnected, onModLink, backLabel = "Back" }: { onBack?: () => void; onConnected: () => void; onModLink?: (link: ModLink) => void; backLabel?: string }) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -428,7 +418,7 @@ function ServerForm({ onBack, onConnected, backLabel = "Back" }: { onBack: () =>
   return (
     <EntryFrame>
       <h1 className="entry-heading">Connect your server</h1>
-      <p className="entry-description">Enter your producer-server address and primary token.</p>
+      <p className="entry-description">Enter your {SERVER_NAME} address and primary token.</p>
       <form
         className="entry-form"
         onSubmit={(e) => {
@@ -438,11 +428,11 @@ function ServerForm({ onBack, onConnected, backLabel = "Back" }: { onBack: () =>
       >
         <label>
           Name
-          <input name="name" placeholder="My producer-server" />
+          <input name="name" placeholder={`My ${SERVER_NAME}`} />
         </label>
         <label>
           Server URL
-          <input name="base_url" placeholder="https://producer-server.yourname.workers.dev" required />
+          <input name="base_url" placeholder={`https://${SERVER_NAME}.yourname.workers.dev`} required />
         </label>
         <label>
           Primary token
@@ -453,9 +443,11 @@ function ServerForm({ onBack, onConnected, backLabel = "Back" }: { onBack: () =>
           <button type="submit" disabled={busy}>
             {busy ? "Verifying…" : "Verify & connect"}
           </button>
-          <button type="button" className="entry-secondary" disabled={busy} onClick={onBack}>
-            {backLabel}
-          </button>
+          {onBack && (
+            <button type="button" className="entry-secondary" disabled={busy} onClick={onBack}>
+              {backLabel}
+            </button>
+          )}
         </div>
       </form>
       <div className="signin-doors">
@@ -464,6 +456,13 @@ function ServerForm({ onBack, onConnected, backLabel = "Back" }: { onBack: () =>
           Self-hosting guide
         </button>
       </div>
+      {/* No server needed to help run someone else's show. */}
+      {onModLink && (
+        <div className="onboarding-modlink">
+          <span>Helping run someone else&rsquo;s show?</span>
+          <ModLinkDrop compact onOpen={onModLink} />
+        </div>
+      )}
     </EntryFrame>
   );
 }

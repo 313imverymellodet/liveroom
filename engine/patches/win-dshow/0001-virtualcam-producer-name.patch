@@ -7,7 +7,7 @@ index 23e0ee4..67b29c0 100644
  
  	if (reg) {
 -		return RegServer(CLSID_OBS_VirtualVideo, L"OBS Virtual Camera", file);
-+		return RegServer(CLSID_OBS_VirtualVideo, L"Producer Virtual Camera", file);
++		return RegServer(CLSID_OBS_VirtualVideo, L"Liveroom Virtual Camera", file);
  	} else {
  		return UnregServer(CLSID_OBS_VirtualVideo);
  	}
@@ -16,7 +16,7 @@ index 23e0ee4..67b29c0 100644
  		rf2.rgPins = &AMSPinVideo;
  
 -		hr = fm->RegisterFilter(CLSID_OBS_VirtualVideo, L"OBS Virtual Camera", &moniker,
-+		hr = fm->RegisterFilter(CLSID_OBS_VirtualVideo, L"Producer Virtual Camera", &moniker,
++		hr = fm->RegisterFilter(CLSID_OBS_VirtualVideo, L"Liveroom Virtual Camera", &moniker,
  					&CLSID_VideoInputDeviceCategory, nullptr, &rf2);
  		if (FAILED(hr)) {
  			return false;

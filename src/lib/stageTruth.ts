@@ -18,7 +18,7 @@
  * request's own echo flips it. A newer frame WITHOUT the guest is a
  * refusal — the one cause today is a full set ("no free guest slot"), so
  * the row snaps back with that. No answer within HOST_ANSWER_MS is its own
- * message: the host's Producer is not in the room.
+ * message: the host's Liveroom is not in the room.
  *
  * Pure: no DOM, no IPC (server/test runs it under tsc). Live.tsx drives it.
  */
@@ -27,7 +27,7 @@ export const HOST_ANSWER_MS = 12_000;
 
 export const NO_FREE_SLOT = "No free guest slot on the host's set — ask the host to add one";
 export const HOST_KEPT_ON = "The host's set kept them on — ask the host";
-export const HOST_SILENT = "The host's Producer didn't confirm — is the host in the room?";
+export const HOST_SILENT = "The host's Liveroom didn't confirm — is the host in the room?";
 /** A seat's feed has no slot to run out of — a refusal there is the host's
  * own choice (or its feed had not connected yet). */
 export const MOD_FEED_NOT_PLACED = "The host's set didn't place your feed — is it connected? Ask the host";

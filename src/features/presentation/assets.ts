@@ -15,7 +15,7 @@ export function validateAsset(asset:MediaAsset){
  }
 }
 export async function importAsset(file:File):Promise<MediaAsset>{
- if(file.size>ASSET_BYTES)throw new Error('This browser import embeds files up to 12 MB. Use Load media in Producer for full-length files.');
+ if(file.size>ASSET_BYTES)throw new Error('This browser import embeds files up to 12 MB. Use Load media in Liveroom for full-length files.');
  const mime=file.name.toLowerCase().endsWith('.json')?'application/lottie+json':file.type;
  const bytes=new Uint8Array(await file.arrayBuffer());
  let binary='';

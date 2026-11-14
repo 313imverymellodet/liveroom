@@ -1,14 +1,14 @@
 #!/bin/bash
-# assemble-engine-bundle.sh — inject the Producer engine artifact into a built
-# Producer.app per LIVE-REVIEW.md §5.2 (OBS-native topology), then codesign
+# assemble-engine-bundle.sh — inject the Liveroom engine artifact into a built
+# Liveroom.app per LIVE-REVIEW.md §5.2 (OBS-native topology), then codesign
 # inner→outer. Local dev signs ad-hoc ("-"); CI passes a Developer ID via
 # CODESIGN_IDENT and notarizes afterwards.
 #
-# usage: assemble-engine-bundle.sh /path/to/Producer.app [engine_stage_dir]
+# usage: assemble-engine-bundle.sh /path/to/Liveroom.app [engine_stage_dir]
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/engine-lib.sh"
 
-APP="${1:?usage: assemble-engine-bundle.sh /path/to/Producer.app [engine_stage_dir]}"
+APP="${1:?usage: assemble-engine-bundle.sh /path/to/Liveroom.app [engine_stage_dir]}"
 STAGE="${2:-$ARTIFACT_DIR/$(artifact_name)}"
 IDENT="${CODESIGN_IDENT:--}"
 
@@ -27,11 +27,11 @@ cp -R "$STAGE/PlugIns/." "$CONTENTS/PlugIns/"
 #
 # 🔴 macOS requires a system extension's bundle id to be PREFIXED BY THE
 # CONTAINING APP'S id. The upstream bundle is com.obsproject.* , which is not
-# a child of ai.boomin.producer, so it is rejected outright. Rebrand it in
+# a child of app.liveroom.studio, so it is rejected outright. Rebrand it in
 # place: directory, CFBundleIdentifier, CFBundleExecutable, the executable
 # file itself, and the CMIO Mach service name (which must be
 # <TeamID>.<bundle id> — it still carries OBS's team prefix otherwise).
-VCAM_EXT_ID="ai.boomin.producer.camera-extension"
+VCAM_EXT_ID="app.liveroom.studio.camera-extension"
 # Prefer the extension we BUILD (scripts/build-camera-extension.sh): its
 # identifiers are set at compile time, so it has our name and our service
 # identity rather than a rewritten Info.plist over OBS's compiled one.
@@ -58,7 +58,7 @@ elif [[ -d "$STAGE/SystemExtensions" ]]; then
     plutil -replace CFBundleIdentifier -string "$VCAM_EXT_ID" "$new_ext/Contents/Info.plist"
     plutil -replace CFBundleExecutable -string "$VCAM_EXT_ID" "$new_ext/Contents/Info.plist"
     plutil -replace CMIOExtension.CMIOExtensionMachServiceName \
-      -string "9936A69867.$VCAM_EXT_ID" "$new_ext/Contents/Info.plist"
+      -string "REPLACE_WITH_TEAM_ID.$VCAM_EXT_ID" "$new_ext/Contents/Info.plist"
     # The old signature covers the old names — it must be replaced wholesale.
     rm -rf "$new_ext/Contents/_CodeSignature"
   done
@@ -68,7 +68,7 @@ fi
 # Do not let an old engine archive silently produce another broken release.
 # macOS requires the retired identifier in the app to authorize deactivation.
 # This helper publishes no devices and is never activated.
-RETIRED_ID="ai.boomin.producer.portrait-camera-extension"
+RETIRED_ID="app.liveroom.studio.portrait-camera-extension"
 RETIRED_EXT="$(cd "$(dirname "$0")/.." && pwd)/engine/camera-extension/$RETIRED_ID.systemextension"
 [[ -d "$RETIRED_EXT" ]] || { echo "Build the removal-only camera helper first" >&2; exit 1; }
 rm -rf "$CONTENTS/Library/SystemExtensions/$RETIRED_ID.systemextension"
@@ -101,7 +101,7 @@ fi
 mkdir -p "$CONTENTS/Resources/licenses"
 cp -R "$STAGE/licenses/." "$CONTENTS/Resources/licenses/" 2>/dev/null || true
 
-# Recording/replay: obs-ffmpeg-mux sits beside the Producer executable
+# Recording/replay: obs-ffmpeg-mux sits beside the Liveroom executable
 # (libobs resolves it relative to the running binary).
 if [[ -f "$STAGE/bin/obs-ffmpeg-mux" ]]; then
   cp "$STAGE/bin/obs-ffmpeg-mux" "$CONTENTS/MacOS/"

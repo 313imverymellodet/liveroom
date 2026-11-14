@@ -47,7 +47,7 @@ struct guest_state {
 struct guest_audio_plane { float *data[8]; };
 OBS_IMPORT void *obs_obj_get_data(void *);
 OBS_IMPORT uint64_t os_gettime_ns(void);
-static const char *name(void *unused) { (void)unused; return "Producer guest"; }
+static const char *name(void *unused) { (void)unused; return "Liveroom guest"; }
 static void *create(obs_data_t *settings, obs_source_t *source) {
     (void)settings; (void)source;
     struct guest_state *state = calloc(1, sizeof(*state));

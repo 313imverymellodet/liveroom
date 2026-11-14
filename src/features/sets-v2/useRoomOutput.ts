@@ -134,7 +134,7 @@ export function useRoomOutput(
   });
   if(!bank.current)bank.current=new PreparedScenes(async value=>{
     const scenes=(value.plan as {scenes3d?:Record<string,unknown>}|undefined)?.scenes3d;
-    if(scenes&&Object.keys(scenes).length){scene3dCapability.current??=invoke<boolean>('live_set_v2_scene3d_enabled').catch(()=>false);if(!await scene3dCapability.current)throw Error('This 3D Set requires an updated Producer app.');}
+    if(scenes&&Object.keys(scenes).length){scene3dCapability.current??=invoke<boolean>('live_set_v2_scene3d_enabled').catch(()=>false);if(!await scene3dCapability.current)throw Error('This 3D Set requires an updated Liveroom app.');}
     return transport.current!.send(value).catch(e=>{if(/Set first-frame timeout|Media did not decode its first frame/.test(String(e)))uiLog(`[sets] ${value.outputId??'program'} generation=${generation.current}: ${String(e)}`);if(value.op==='status'&&/Prepare (a v2|the portrait) set first/.test(String(e)))return {preparedRevision:0,renderedRevision:0,renderSerial:0,ready:false,warmed:false,queued:false,transitioning:false,cachedKeys:[],generation:generation.current};throw e;});
   },()=>notifyPreparation(v=>v+1),undefined,()=>{const context=snapshotTraceContext();return(stage,fields)=>recordTraceEvent(`set.prepare.${stage}`,fields,'set',context);});
   const bindingDimensions = (selectedBindings: Record<string, string>) =>

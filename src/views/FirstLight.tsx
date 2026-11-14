@@ -55,7 +55,7 @@ export function FirstLight({ onDone }: { onDone: () => void }) {
 function Welcome({ onNext }: { onNext: () => void }) {
   return (
     <EntryFrame stage="welcome">
-      <p className="entry-eyebrow">Welcome to Producer</p>
+      <p className="entry-eyebrow">Welcome to Liveroom</p>
       <h1 className="entry-heading">Your studio starts here.</h1>
       <p className="entry-description">Create Sets, go live, and bring guests into your show.</p>
       <div className="entry-actions">
@@ -149,12 +149,12 @@ function Permissions({ onDone }: { onDone: () => void }) {
     }
   }
 
-  let cameraDetail = "Use your Producer output as a webcam in other apps.";
+  let cameraDetail = "Use your Liveroom output as a webcam in other apps.";
   let cameraAction: React.ReactNode = null;
   if (vcam && !vcam.installed) {
     switch (vcam.state) {
       case "move_to_applications":
-        cameraDetail = "Move Producer to Applications, then reopen it to install the virtual camera.";
+        cameraDetail = "Move Liveroom to Applications, then reopen it to install the virtual camera.";
         cameraAction = (
           <button type="button" className="entry-secondary" onClick={() => vcamIpc.revealApp().catch(() => {})}>
             Show in Finder
@@ -162,7 +162,7 @@ function Permissions({ onDone }: { onDone: () => void }) {
         );
         break;
       case "needs_approval":
-        cameraDetail = "Approve Producer Virtual Camera in system settings.";
+        cameraDetail = "Approve Liveroom Virtual Camera in system settings.";
         cameraAction = (
           <button type="button" className="entry-secondary" onClick={() => vcamIpc.openSettings().catch(() => {})}>
             Open Settings
@@ -199,14 +199,14 @@ function Permissions({ onDone }: { onDone: () => void }) {
           title="Screen recording"
           detail={
             chipUp
-              ? "In system settings, add the floating Producer chip to screen recording and turn access on."
+              ? "In system settings, add the floating Liveroom chip to screen recording and turn access on."
               : "Share a screen or window in your show."
           }
           status={perms?.screen === "granted" ? "granted" : perms ? "pending" : "unknown"}
           action={
             needsRelaunch ? (
               <button type="button" className="entry-secondary" onClick={relaunchNow}>
-                Restart Producer
+                Restart Liveroom
               </button>
             ) : screenGranted ? null : (
               <button type="button" className="entry-secondary" onClick={startScreenGrant}>

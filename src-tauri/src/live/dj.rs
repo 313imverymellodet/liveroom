@@ -106,7 +106,7 @@ impl Dj {
         ffi::obs_data_set_bool(data, c"restart_on_activate".as_ptr(), false);
         ffi::obs_data_set_bool(data, c"close_when_inactive".as_ptr(), false);
         ffi::obs_data_set_bool(data, c"clear_on_media_end".as_ptr(), false);
-        let name = CString::new(format!("Producer DJ {}", deck)).unwrap();
+        let name = CString::new(format!("Liveroom DJ {}", deck)).unwrap();
         let src = ffi::obs_source_create(
             c"ffmpeg_source".as_ptr(),
             name.as_ptr(),

@@ -1,6 +1,6 @@
 {
-  "identifier": "ai.boomin.producer.sets-v2-dev",
-  "productName": "Producer Sets v2 Dev",
+  "identifier": "app.liveroom.studio.sets-v2-dev",
+  "productName": "Liveroom Sets v2 Dev",
   "build": {
     "devUrl": "http://localhost:1436"
   },
@@ -8,7 +8,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Producer Dev",
+        "title": "Liveroom Dev",
         "url": "index.html",
         "width": 1440,
         "height": 960,

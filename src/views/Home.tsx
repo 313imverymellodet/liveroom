@@ -64,6 +64,7 @@ import type { GuestSeatSpec } from "../lib/guestSeat";
 import { NetworkMessages } from "../features/network/NetworkMessages";
 import { ProducerJoin } from "../features/network/ProducerJoin";
 import { ProducerGuestView } from "./GuestSeat";
+import { REPO_SLUG, REPO_URL } from "../brand";
 
 const STATE_LABEL: Record<string, string> = {
   scheduled: "Scheduled",
@@ -113,7 +114,7 @@ type MainView =
   | { kind: "home" }
   | { kind: "opening" | "room"; room: LiveRoom; access?: RoomEntryAccess }
   /** GUEST MODE: a room opened on a seat in someone else's show (a deal
-   * entered, a live stage knocked on). `room` is this Producer's own stage
+   * entered, a live stage knocked on). `room` is this Liveroom's own stage
    * — the scene that is their camera — when they have one. */
   | { kind: "seat"; room?: LiveRoom; seat: GuestSeatSpec; access?:RoomEntryAccess }
   | { kind: "compose" }
@@ -248,7 +249,7 @@ export function Home({
   }, [settingsOpen]);
   // Home is SURFACES, not one long page: Rooms (the stage list) and Manager
   // (channels, network, rundown — productions soon). The rail switches them.
-  // The native design preview starts on Manager inside Producer's real frame.
+  // The native design preview starts on Manager inside Liveroom's real frame.
   const [managerRecordingId, setManagerRecordingId] = useState<string | null>(null);
   const [surface, setSurface] = useState<"rooms" | "manager">(
     import.meta.env.DEV && import.meta.env.VITE_MANAGER_PREVIEW === "1" ? "manager" : "rooms",
@@ -638,7 +639,7 @@ export function Home({
           onJoin={()=>{closeSettings();setAccountOpen(false);setView({kind:'home'});setPendingSeat(undefined);setNetworkSheet('join');}}
         />
       )}
-      {networkSheet==='messages'&&<aside className="producer-network-sheet" aria-label="Producer messages"><NetworkMessages endpoint={endpoints.find(e=>e.id===activeId)??null} onClose={()=>setNetworkSheet(null)} onConnections={()=>{setNetworkSheet(null);setSurface('rooms');setView({kind:'home'});}} onUnreadChange={setNetworkUnread}/></aside>}
+      {networkSheet==='messages'&&<aside className="producer-network-sheet" aria-label="Liveroom messages"><NetworkMessages endpoint={endpoints.find(e=>e.id===activeId)??null} onClose={()=>setNetworkSheet(null)} onConnections={()=>{setNetworkSheet(null);setSurface('rooms');setView({kind:'home'});}} onUnreadChange={setNetworkUnread}/></aside>}
       {networkSheet==='join'&&<aside className="producer-network-sheet join-sheet" data-producer-network-room-id={pendingSeat?.networkRoomId} data-producer-endpoint-id={pendingSeat?.endpointId}><ProducerJoin key={`${activeId}:${pendingSeat?.joinUrl??'link'}`} endpoint={endpoints.find(e=>e.id===activeId)??null} rooms={rooms.filter(r=>r.endpoint_id===activeId)} invitation={pendingSeat} onClose={()=>{setNetworkSheet(null);setPendingSeat(undefined);}} onEnter={startSeat}/></aside>}
       {view.kind === "console" && (
         <ConsoleHost
@@ -740,7 +741,7 @@ function SystemBanner({ message, onDismiss }: { message: string; onDismiss: () =
       <span className="sys-banner-dot" />
       <span className="sys-banner-text">
         {darkWake
-          ? "macOS wouldn't unlock the keychain while the Mac was half-asleep. Wake it fully and reopen Producer."
+          ? "macOS wouldn't unlock the keychain while the Mac was half-asleep. Wake it fully and reopen Liveroom."
           : message}
       </span>
       {darkWake && <span className="sys-banner-raw">{message}</span>}
@@ -1062,7 +1063,7 @@ function WalkthroughSwitch() {
 /** Settings row: bring the self-hoster's Network invitation back. Only shown
  * when there is a self-hosted workspace AND the card was dismissed — the
  * one place it can be un-dismissed. */
-function NetworkInviteReset({ endpoints }: { endpoints: EndpointInfo[] }) {
+export function NetworkInviteReset({ endpoints }: { endpoints: EndpointInfo[] }) {
   const dismissed = useNetworkInviteDismissed();
   if (dismissed !== true || !endpoints.some((e) => !isBoomin(e))) return null;
   return (
@@ -1130,7 +1131,7 @@ function SettingsPanel({
     it.id === "access" && current && !isBoomin(current) ? "Mod links, guest door" : it.sub;
   const [releases, setReleases] = useState<RepoRelease[] | null | "err">(null);
   useEffect(() => {
-    fetch("https://api.github.com/repos/Boomin-Ai/producer/releases?per_page=8")
+    fetch(`https://api.github.com/repos/${REPO_SLUG}/releases?per_page=8`)
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
       .then((rs: RepoRelease[]) => setReleases(rs))
       .catch(() => setReleases("err"));
@@ -1139,7 +1140,7 @@ function SettingsPanel({
     text.split(/(#\d+|https?:\/\/\S+)/g).map((part, k) => {
       if (/^#\d+$/.test(part))
         return (
-          <a key={k} className="upd-ref" onClick={() => openUrl(`https://github.com/Boomin-Ai/producer/issues/${part.slice(1)}`).catch(() => {})}>
+          <a key={k} className="upd-ref" onClick={() => openUrl(`${REPO_URL}/issues/${part.slice(1)}`).catch(() => {})}>
             {part}
           </a>
         );
@@ -1170,7 +1171,7 @@ function SettingsPanel({
             Rooms
           </button>
           <span className="rm-filters-title">Settings{current ? ` · ${current.name}` : ""}</span>
-          <div className="set-producer-brand"><strong>Producer</strong><span>BETA{appVersion ? ` v${appVersion}` : ""}</span></div>
+          <div className="set-producer-brand"><strong>Liveroom</strong><span>BETA{appVersion ? ` v${appVersion}` : ""}</span></div>
         </div>
         <div className="set-nav-list">
           {SETTINGS_SECTIONS.map((it) => (
@@ -1225,7 +1226,7 @@ function SettingsPanel({
         <div className="set-upd">
           <div className="set-upd-status" role="status" aria-live="polite">
             {updater.state === "installing" || updater.state === "restarting" ? (
-              updater.state === "installing" ? "Installing the update. Producer will restart when installation finishes…" : "Restarting Producer…"
+              updater.state === "installing" ? "Installing the update. Liveroom will restart when installation finishes…" : "Restarting Liveroom…"
             ) : updater.state === "ready" || updater.state === "installed" ? (
               <>{updater.state === "installed" ? "The update is installed." : "An update is ready."} <button className="linkish" onClick={updater.restart}>{updater.state === "installed" ? "Restart to finish" : "Restart to install"}{updater.version ? ` ${updater.version}` : ""}</button></>
             ) : updater.state === "downloading" ? (
@@ -1281,7 +1282,7 @@ function SettingsPanel({
         <div className="set-list">
           <div className="cr-sheet-row">
             <span className="cr-sheet-row-name">Report a bug</span>
-            <span className="cr-sheet-row-sub">goes straight to the people who build Producer</span>
+            <span className="cr-sheet-row-sub">goes straight to the people who build Liveroom</span>
             <button className="cr-ghost" onClick={() => setBugOpen(true)}>Report…</button>
           </div>
         </div>
@@ -1344,7 +1345,6 @@ function SettingsPanel({
             onChanged={onChannelsChanged}
           />
         )}
-        {current && <div className="set-list"><NetworkInviteReset endpoints={[current]} /></div>}
 
 
           </>
@@ -1991,7 +1991,7 @@ function HistoryView({
           <span className="count-pill">{past.length}</span>
         </div>
         {past.length === 0 ? (
-          <div className="empty-strip">Nothing published from Producer yet.</div>
+          <div className="empty-strip">Nothing published from Liveroom yet.</div>
         ) : (
           <div className="job-list">{past.map(row)}</div>
         )}
@@ -2048,7 +2048,7 @@ function useActiveEndpoint(): EndpointInfo | null {
 
 /** The network rail — a left column on the control room home.
  *
- * Discovery is EXACT-HANDLE ONLY, by design: Producer is never handed the
+ * Discovery is EXACT-HANDLE ONLY, by design: Liveroom is never handed the
  * directory list, so the Find tab resolves a handle you were given and
  * nothing more. Connected shows the brands who already said yes, with the
  * inbox of open handshakes above them.
@@ -2059,7 +2059,7 @@ function useActiveEndpoint(): EndpointInfo | null {
  * panel settles the funded deal server-side; nothing here marks anything. */
 const NetworkRail = memo(function NetworkRail({
   rooms,
-  onAddEndpoint,
+  onAddEndpoint: _onAddEndpoint,
   onEnterSeat,
 }: {
   rooms: LiveRoom[];
@@ -2226,7 +2226,7 @@ const NetworkRail = memo(function NetworkRail({
     }
   };
 
-  /** Enter the show through the deal — Producer knocks and opens OUR room in
+  /** Enter the show through the deal — Liveroom knocks and opens OUR room in
    * guest mode on the seat: the green room, natively. No browser, no window,
    * no link. Only the BENEFICIARY of a funded (or free, accepted) deal can. */
   const [entering, setEntering] = useState<string | null>(null);
@@ -2339,7 +2339,8 @@ const NetworkRail = memo(function NetworkRail({
     };
   }, [endpointId, load]);
 
-  if (activeEp && !boomin) return <NetworkInviteCard onJoin={onAddEndpoint} />;
+  // Liveroom is self-hosted only: no Boomin Network invitation.
+  if (activeEp && !boomin) return null;
   if (!endpointId) return null;
 
   const liveNow = status?.network?.live_now ?? 0;
@@ -2543,7 +2544,7 @@ const NetworkRail = memo(function NetworkRail({
                             <button
                               className="net-accept net-deal-enter"
                               disabled={busy || entering === d.id}
-                              title="Knock on the host's room through this deal — opens your guest seat in its own window. Your Producer scene is the camera."
+                              title="Knock on the host's room through this deal — opens your guest seat in its own window. Your Liveroom scene is the camera."
                               onClick={() => void enterDeal(d, c.counterparty.name)}
                             >
                               {entering === d.id ? "Knocking…" : "Enter the show"}
@@ -2857,7 +2858,7 @@ function DealSheet({
   const delivery = metered
     ? `By the meter: every minute ${earn ? `your © source bound to ${bindingText ?? "the sponsor"} shows on "${d.room_title ?? "your room"}"` : `${otherName}'s © source bound to ${bindingText ?? "your handle"} shows on "${d.room_title ?? "their room"}"`} accrues $${(metered.cents / 100).toFixed(2)}. Delivered at the cap (${usd(d.amount_cents)}) or when the run ends${d.rate_card_locked ? "; the rate is locked" : ""}.`
     : d.min_stage_minutes != null
-      ? `By the clock: delivered once ${earn ? "you have" : `${otherName} has`} been on ${earn ? `${otherName}'s` : "your"} stage ${d.min_stage_minutes} min, as published by the host's Producer. If the host removes ${earn ? "you" : "them"} early after ${earn ? "you were" : "they were"} on stage, it is delivered anyway.`
+      ? `By the clock: delivered once ${earn ? "you have" : `${otherName} has`} been on ${earn ? `${otherName}'s` : "your"} stage ${d.min_stage_minutes} min, as published by the host's Liveroom. If the host removes ${earn ? "you" : "them"} early after ${earn ? "you were" : "they were"} on stage, it is delivered anyway.`
       : d.room_id
         ? `By presence: delivered the moment the host admits ${earn ? "you" : otherName} into "${d.room_title ?? "the room"}". The admission is the evidence.`
         : `By hand: ${earn ? "you mark" : `${otherName} marks`} it delivered when the work is done.`;
@@ -2936,7 +2937,7 @@ function DealSheet({
             <div className="deal-term">
               <span>Enter</span>
               <p>
-                Knock on {otherName}'s {d.room_title ? `"${d.room_title}"` : "room"} through this deal, from here — your guest seat opens in its own window. Your Producer scene is the camera.
+                Knock on {otherName}'s {d.room_title ? `"${d.room_title}"` : "room"} through this deal, from here — your guest seat opens in its own window. Your Liveroom scene is the camera.
                 No link, no browser. When {otherName} admits you, the deal knows it's you.
               </p>
             </div>
@@ -3003,7 +3004,7 @@ function DealSheet({
  * stay on their server; a Boomin workspace sits beside it in the switcher).
  * "Not now" is remembered in the Rust-side prefs store — forever, until the
  * user asks for it back in Settings. No badge, no counter, no re-prompt. */
-function NetworkInviteCard({ onJoin }: { onJoin: () => void }) {
+export function NetworkInviteCard({ onJoin }: { onJoin: () => void }) {
   const dismissed = useNetworkInviteDismissed();
   // Unknown yet, or dismissed: the rail is simply absent — no placeholder.
   if (dismissed !== false) return null;
@@ -3159,7 +3160,7 @@ function FirewallBanner() {
   return (
     <div className="cr-firewall" role="status">
       <span className="cr-firewall-text">
-        Windows Firewall may block guests — Allow Producer
+        Windows Firewall may block guests — Allow Liveroom
         {state === "failed" && (
           <span className="cr-firewall-sub">
             {detail ? ` · ${detail}` : " · the prompt was declined; guests may not connect"}
@@ -3167,7 +3168,7 @@ function FirewallBanner() {
         )}
       </span>
       <button className="cr-primary cr-firewall-btn" disabled={state === "busy"} onClick={() => void allow()}>
-        {state === "busy" ? "Waiting for Windows…" : state === "failed" ? "Try again" : "Allow Producer"}
+        {state === "busy" ? "Waiting for Windows…" : state === "failed" ? "Try again" : "Allow Liveroom"}
       </button>
     </div>
   );
@@ -3698,7 +3699,7 @@ function HomeRail({
         {railIc.manager}
       </button>
       <button className={`producer-messages-button${messagesOpen?' on':''}`} title="Messages" aria-label="Messages" aria-expanded={messagesOpen} onClick={onMessages}>{railIc.messages}{unread>0&&<span className="producer-messages-badge">{unread>99?'99+':unread}</span>}</button>
-      <button title="Join a Producer" aria-label="Join a Producer" onClick={onJoin}>{railIc.link}</button>
+      <button title="Join a Liveroom" aria-label="Join a Liveroom" onClick={onJoin}>{railIc.link}</button>
       <div className="home-rail-spring" />
       <button title="New post" onClick={onCompose}>{railIc.plus}</button>
       <button className={`home-settings-button${settingsOpen ? " on" : ""}`} title={updateAvailable ? "Settings — update available" : "Settings"} aria-label={updateAvailable ? "Settings — update available" : "Settings"} onClick={onSettings}>

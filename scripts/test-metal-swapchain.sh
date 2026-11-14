@@ -4,7 +4,7 @@ cd "$(dirname "$0")/.."
 repo_dir="$PWD"
 lab_dir="$repo_dir/src-tauri/target/cutout-lab"
 source_dir="$lab_dir/engine-source"
-engine_contents="${PRODUCER_ENGINE_DIR:-/Applications/Producer.app/Contents}"
+engine_contents="${PRODUCER_ENGINE_DIR:-/Applications/Liveroom.app/Contents}"
 bash scripts/build-cutout-metal-lab.sh --prepare-only
 baseline="$lab_dir/swapchain-baseline"
 mkdir -p "$baseline"

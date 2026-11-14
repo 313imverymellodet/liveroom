@@ -1,5 +1,5 @@
 /* Deterministic actual-readiness.c control-flow test. The fake OBS/graphics
- * backend never loads libobs, creates a device, or opens Producer. Real pixel
+ * backend never loads libobs, creates a device, or opens Liveroom. Real pixel
  * behavior is covered separately by graphics-cache-proof.inc.m. */
 #include "sets_v2/readiness.h"
 #include <assert.h>

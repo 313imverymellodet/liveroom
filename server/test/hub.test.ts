@@ -66,12 +66,12 @@ describe("[grant] the DO enforces media.screen on the screen peer", () => {
   it("drops a guest's screen offer without media.screen and relays it with the grant", async () => {
     const state = new FakeState();
     const hub = new RealtimeHub(asState(state), env);
-    const host = await connect(state, hub, { "X-Producer-User": "host:g1", "X-Producer-Room": "r1", "X-Producer-Role": "host" });
+    const host = await connect(state, hub, { "X-Liveroom-User": "host:g1", "X-Liveroom-Room": "r1", "X-Liveroom-Role": "host" });
     const guest = await connect(state, hub, {
-      "X-Producer-User": "guest:g1",
-      "X-Producer-Room": "r1",
-      "X-Producer-Role": "guest",
-      "X-Producer-Grants": JSON.stringify(["media.camera", "media.mic"]),
+      "X-Liveroom-User": "guest:g1",
+      "X-Liveroom-Room": "r1",
+      "X-Liveroom-Role": "guest",
+      "X-Liveroom-Grants": JSON.stringify(["media.camera", "media.mic"]),
     });
     host.sent.length = 0; // discard the initial audience-control snapshot
     await hub.webSocketMessage(guest as never, JSON.stringify({ type: "signal", payload: { peer: "screen", sdp: "offer" } }));
@@ -82,10 +82,10 @@ describe("[grant] the DO enforces media.screen on the screen peer", () => {
     expect(host.frames()[0]).toMatchObject({ type: "signal", from: "guest:g1", payload: { sdp: "offer" } });
 
     const sharer = await connect(state, hub, {
-      "X-Producer-User": "guest:g2",
-      "X-Producer-Room": "r1",
-      "X-Producer-Role": "guest",
-      "X-Producer-Grants": JSON.stringify(["media.camera", "media.screen"]),
+      "X-Liveroom-User": "guest:g2",
+      "X-Liveroom-Room": "r1",
+      "X-Liveroom-Role": "guest",
+      "X-Liveroom-Grants": JSON.stringify(["media.camera", "media.screen"]),
     });
     await hub.webSocketMessage(sharer as never, JSON.stringify({ type: "signal", payload: { peer: "screen", sdp: "offer" } }));
     expect(host.frames().at(-1)).toMatchObject({ from: "guest:g2", payload: { peer: "screen" } });
@@ -94,7 +94,7 @@ describe("[grant] the DO enforces media.screen on the screen peer", () => {
   it("a socket from before grants (no header) is a guest on the default bundle: no screen", async () => {
     const state = new FakeState();
     const hub = new RealtimeHub(asState(state), env);
-    const guest = await connect(state, hub, { "X-Producer-User": "guest:g1", "X-Producer-Room": "r1" });
+    const guest = await connect(state, hub, { "X-Liveroom-User": "guest:g1", "X-Liveroom-Room": "r1" });
     await hub.webSocketMessage(guest as never, JSON.stringify({ type: "signal", payload: { peer: "screen" } }));
     expect(guest.frames()[0]).toMatchObject({ code: "grant_required" });
   });

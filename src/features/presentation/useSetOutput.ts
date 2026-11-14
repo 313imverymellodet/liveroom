@@ -246,7 +246,7 @@ export function useSetOutput(session:RehearsalSession,roomId:string|null,sources
  useEffect(()=>{let stopped=false;const required=session.package.requires??[];
   if(!required.length){setFeatures({key:requirements,error:''});return;}
   visualCapabilities??=invoke<string[]>('live_set_v2_capabilities').catch(()=>[]);
-  void visualCapabilities.then(supported=>{if(stopped)return;const missing=required.filter(f=>!supported.includes(f));setFeatures({key:requirements,error:missing.length?'This Producer engine does not support '+missing.join(', ')+'. Update Producer to use this set.':''});});
+  void visualCapabilities.then(supported=>{if(stopped)return;const missing=required.filter(f=>!supported.includes(f));setFeatures({key:requirements,error:missing.length?'This Liveroom engine does not support '+missing.join(', ')+'. Update Liveroom to use this set.':''});});
   return()=>{stopped=true;};
  },[requirements]);
  const featuresReady=features.key===requirements&&!features.error;

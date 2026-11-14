@@ -15,7 +15,7 @@ vm.runInNewContext(compile(read('nativePairProof')),{exports:pairExports,__env:{
 const fixture={version:1,workspace:{endpointId:'11111111-1111-4111-8111-111111111111',brandSlug:'kleveland'},
  localRoomId:'22222222-2222-4222-8222-222222222222',remoteRoomId:'33333333-3333-4333-8333-333333333333'};
 const raw=JSON.stringify({version:1,runId:'44444444-4444-4444-8444-444444444444',fixture});
-function harness({env={DEV:true,VITE_PRODUCER_NATIVE_PAIR_PROOF:'1',VITE_PRODUCER_NETWORK_DIAGNOSTICS:'1',VITE_PRODUCER_NATIVE_PAIR_RUN:raw},appId='ai.boomin.producer.sets-v2-dev',native=true}={}){
+function harness({env={DEV:true,VITE_PRODUCER_NATIVE_PAIR_PROOF:'1',VITE_PRODUCER_NETWORK_DIAGNOSTICS:'1',VITE_PRODUCER_NATIVE_PAIR_RUN:raw},appId='app.liveroom.studio.sets-v2-dev',native=true}={}){
  let now=0,ready=true,current=true,visible=true,calls=0,identifierCalls=0,cancelled=0,disposer;
  const saved=new Map(),reports=[],storage={getItem:key=>saved.get(key)??null,setItem:(key,value)=>saved.set(key,value)};
  const driver={status:()=>({phase:'idle',attempted:false}),run:async value=>{assert.deepEqual(JSON.parse(JSON.stringify(value)),fixture);calls++;return {reason:'completed',diagnostics:{samples:Array.from({length:60},(_,i)=>({elapsedMs:i*1000})),sampleCount:60}};},cancel:()=>{cancelled++;}};
@@ -79,7 +79,7 @@ test('a running or previously attempted driver is left untouched',async()=>{
 test('hidden UI waits, then times out without starting a driver',async()=>{
  const h=harness();h.visible(false);assert.equal(await h.exports.runConfiguredNativePair(raw,h.deps),'not_ready');assert.equal(h.calls,0);
 });
-for(const options of [{env:{DEV:false}},{env:{DEV:true,VITE_PRODUCER_NATIVE_PAIR_PROOF:'1'}},{appId:'ai.boomin.producer'},{native:false}]){
+for(const options of [{env:{DEV:false}},{env:{DEV:true,VITE_PRODUCER_NATIVE_PAIR_PROOF:'1'}},{appId:'app.liveroom.studio'},{native:false}]){
  test('production, missing opt-in, wrong identity and browser cannot launch: '+JSON.stringify(options),async()=>{
   const h=harness(options);await h.exports.launchNativePairFromEnvironment();assert.equal(h.calls,0);assert.equal(h.saved.size,0);assert.equal(h.reports.length,0);
  });

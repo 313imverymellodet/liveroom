@@ -290,7 +290,7 @@ export async function djFeedRoomProof(tones: string, vinyl?: PresentationPackage
       for (let i = 0; i < credit.length; i += 4) {
         if (credit[i] > 105 && credit[i + 1] > 95 && credit[i + 2] > 120) creditPixels++;
       }
-      if (creditPixels < 30) throw Error('Producer.dev credit did not render');
+      if (creditPixels < 30) throw Error('Liveroom.dev credit did not render');
       const lineup = vinylCovers.map((id, index) => ({ id, distances: assertCover(idle.context,
         [60 + index * 246, 1222, 221, 221], covers, index) }));
       checks.push({ label: 'Credit and four sleeves on native output', creditPixels, lineup });

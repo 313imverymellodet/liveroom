@@ -1,7 +1,7 @@
 ; Tauri v2 NSIS installer hooks (bundle.windows.nsis.installerHooks).
 ;
-; Guests reach Producer's WebRTC media ports directly, so Windows Firewall
-; must allow inbound traffic to Producer.exe on EVERY profile. Left to the
+; Guests reach Liveroom's WebRTC media ports directly, so Windows Firewall
+; must allow inbound traffic to Liveroom.exe on EVERY profile. Left to the
 ; first-run prompt, the rule lands on whichever profile the user happens to
 ; be on (often "Public" only), and guest media silently never connects.
 ; Rust's firewall_status() detects a missing rule at runtime and offers an
@@ -16,7 +16,7 @@
 ; no-op on a first install or if the wait times out.
 
 !macro NSIS_HOOK_PREINSTALL
-  DetailPrint "Waiting for Producer to close"
+  DetailPrint "Waiting for Liveroom to close"
   StrCpy $R1 0
   IfFileExists "$INSTDIR\${MAINBINARYNAME}.exe" 0 producer_lock_done
   producer_lock_wait:
@@ -34,15 +34,15 @@
 !macroend
 
 !macro NSIS_HOOK_POSTINSTALL
-  DetailPrint "Allowing Producer through Windows Firewall (all profiles)"
-  nsExec::ExecToLog 'netsh advfirewall firewall delete rule name="Boomin Producer"'
+  DetailPrint "Allowing Liveroom through Windows Firewall (all profiles)"
+  nsExec::ExecToLog 'netsh advfirewall firewall delete rule name="Liveroom"'
   Pop $0
-  nsExec::ExecToLog 'netsh advfirewall firewall add rule name="Boomin Producer" dir=in action=allow program="$INSTDIR\${MAINBINARYNAME}.exe" enable=yes profile=any'
+  nsExec::ExecToLog 'netsh advfirewall firewall add rule name="Liveroom" dir=in action=allow program="$INSTDIR\${MAINBINARYNAME}.exe" enable=yes profile=any'
   Pop $0
 !macroend
 
 !macro NSIS_HOOK_PREUNINSTALL
-  DetailPrint "Removing the Producer firewall rule"
-  nsExec::ExecToLog 'netsh advfirewall firewall delete rule name="Boomin Producer"'
+  DetailPrint "Removing the Liveroom firewall rule"
+  nsExec::ExecToLog 'netsh advfirewall firewall delete rule name="Liveroom"'
   Pop $0
 !macroend

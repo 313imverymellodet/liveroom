@@ -1,8 +1,8 @@
-/** A SEAT WITH MEDIA — the sending half, native to Producer.
+/** A SEAT WITH MEDIA — the sending half, native to Liveroom.
  *
  * When the host hands a seat camera / mic / screen (the Jamie pattern:
  * api `POST /live/guests/:id/grants` on the seat's monitor row, host-only),
- * the seat's Producer opens the same leg the guest page opens
+ * the seat's Liveroom opens the same leg the guest page opens
  * (server/guest/src/hostLink.ts): camera + mic on the MAIN peer, the screen
  * on the SCREEN peer, and the host's program back on main as the return
  * feed. It runs on the seat's OWN participant row — the monitor row — so
@@ -40,7 +40,7 @@ export interface SeatMediaSpec {
   camera: boolean;
   mic: boolean;
   screen: boolean;
-  /** Prefer the Producer virtual camera (the seat's own stage) by label. */
+  /** Prefer the Liveroom virtual camera (the seat's own stage) by label. */
   camLabel?: string | null;
 }
 
@@ -145,7 +145,7 @@ export class SeatMediaLeg implements ProgramSource {
       // No camera is not the end of the seat: it can still receive the
       // program and share a screen. Say so on the feed window.
       monitorLog(`seat-media: media open failed: ${String(e)}`);
-      this.set({ mediaError: "Producer needs camera and microphone access to send your feed." });
+      this.set({ mediaError: "Liveroom needs camera and microphone access to send your feed." });
     }
     if (!this.alive) return;
     void this.run();
@@ -200,7 +200,7 @@ export class SeatMediaLeg implements ProgramSource {
 
   /** The share as SERVER TRUTH: `POST /guest/:code/screen {sharing}` opens
    *  (closes) the seat's `media.screen` contribution interval — the same
-   *  door the guest page uses. The host's Producer hears the interval on
+   *  door the guest page uses. The host's Liveroom hears the interval on
    *  the room channel and places (removes) the seat's MOD SCREEN feed from
    *  it (v0.4.32), so "on set" for a screen is never a guess. Best effort:
    *  a server without the route still gets the share over the peer. */
@@ -224,7 +224,7 @@ export class SeatMediaLeg implements ProgramSource {
     const audio = this.spec.mic ? { echoCancellation: true, noiseSuppression: true, autoGainControl: true } : false;
     let stream = await navigator.mediaDevices.getUserMedia({ video: this.spec.camera, audio });
     if (this.spec.camera && this.spec.camLabel) {
-      // The seat's own Producer stage as its camera, when the virtual camera runs.
+      // The seat's own Liveroom stage as its camera, when the virtual camera runs.
       const want = this.spec.camLabel.toLowerCase();
       const devices = await navigator.mediaDevices.enumerateDevices().catch(() => [] as MediaDeviceInfo[]);
       const vcam = devices.find((d) => d.kind === "videoinput" && d.label.toLowerCase().includes(want));

@@ -2,7 +2,7 @@ export interface Env {
   DB: D1Database;
   MEDIA: R2Bucket;
 
-  /** Full-rights endpoint token — pasted into the Producer desktop app. */
+  /** Full-rights endpoint token — pasted into the Liveroom desktop app. */
   PRIMARY_TOKEN?: string;
   /** Optional publish/read/media-upload token for agents, CLI, MCP, CI.
    *  Can never touch channels, credentials, or configuration. */

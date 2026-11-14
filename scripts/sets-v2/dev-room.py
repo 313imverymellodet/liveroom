@@ -14,11 +14,11 @@ import sys
 import urllib.request
 
 root = Path(__file__).resolve().parents[2]
-runtime = Path(os.environ.get('PRODUCER_PROBE_APP', '/Applications/Producer.app'))
+runtime = Path(os.environ.get('PRODUCER_PROBE_APP', '/Applications/Liveroom.app'))
 target = Path(os.environ.get('PRODUCER_SETS_V2_APP_TARGET', '/private/tmp/producer-sets-v2-app-check'))
-stage = root / 'src-tauri/target/sets-v2-dev/Producer Sets v2 Dev.app'
+stage = root / 'src-tauri/target/sets-v2-dev/Liveroom Sets v2 Dev.app'
 config = json.loads((root / 'src-tauri/tauri.sets-v2-dev.conf.json').read_text())
-if config['identifier'] != 'ai.boomin.producer.sets-v2-dev':
+if config['identifier'] != 'app.liveroom.studio.sets-v2-dev':
     raise SystemExit('Refusing to build the v2 development app without its isolated identity')
 # A cold Tauri build needs room for dependencies, linking and the staged app.
 # This is a conservative preflight, not a prediction of exact compiler usage.
@@ -37,7 +37,7 @@ for destination in [target, stage.parent]:
                          f'only {free / 1024**3:.2f} GiB is available. '
                          'Free space before rebuilding; no build or staging changes were made.')
 if not (runtime / 'Contents/Frameworks/libobs.framework').is_dir():
-    raise SystemExit('Installed Producer runtime not found')
+    raise SystemExit('Installed Liveroom runtime not found')
 # Keep local staging aligned with the versioned Metal fixes. The installed
 # production bundle can predate the source lock; never silently copy that
 # older backend into a newly built dev binary.
@@ -52,7 +52,7 @@ if metal_patches:
     if not metal_backend.exists() or any(actual.get(k)!=v for k,v in expected.items()) or actual.get('binary_sha256')!=hashlib.sha256(metal_backend.read_bytes()).hexdigest():
         raise SystemExit('Build and test the pinned Metal backend first: bash scripts/build-cutout-metal-lab.sh')
 if subprocess.run(['pgrep', '-f', str(stage / 'Contents/MacOS/producer')], stdout=subprocess.DEVNULL).returncode == 0:
-    raise SystemExit('Close only Producer Sets v2 Dev before replacing its bundle')
+    raise SystemExit('Close only Liveroom Sets v2 Dev before replacing its bundle')
 # Exercise the exact shim before spending time compiling or replacing the app.
 # This catches the full-size titlebar inset regression shared by both previews.
 stage.parent.mkdir(parents=True, exist_ok=True)
@@ -86,7 +86,7 @@ for name in ['decision-room','open-floor','atmosphere','just-facts']:
     original=root/'docs/shows'/(name+'.json')
     destination=library/original.name
     if not destination.exists():shutil.copyfile(original,destination)
-original_grants=Path.home()/'Library/Application Support/ai.boomin.producer/set-media-files.json'
+original_grants=Path.home()/'Library/Application Support/app.liveroom.studio/set-media-files.json'
 if original_grants.is_file() and not (profile/'set-media-files.json').exists():
     shutil.copyfile(original_grants,profile/'set-media-files.json')
 # This isolated desktop app needs the Rust library and binary only. Avoid
@@ -130,7 +130,7 @@ if metal_backend:
 plist = stage / 'Contents/Info.plist'
 with plist.open('rb') as stream:
     info = plistlib.load(stream)
-info.update(CFBundleIdentifier=config['identifier'], CFBundleDisplayName='Producer Sets v2 Dev', CFBundleName='producer', CFBundleExecutable='producer')
+info.update(CFBundleIdentifier=config['identifier'], CFBundleDisplayName='Liveroom Sets v2 Dev', CFBundleName='producer', CFBundleExecutable='producer')
 with plist.open('wb') as stream:
     plistlib.dump(info, stream)
 subprocess.run(['codesign', '--force', '--sign', '-', '--entitlements',

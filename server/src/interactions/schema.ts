@@ -74,7 +74,7 @@ const clampInt = (v: unknown, min: number, max: number, dflt: number): number =>
 };
 
 /** Accepts both the contract's envelope (`spec.options`, `input.roles`,
- *  `visibility.reveal`, `timing.collect_ms`) and the short form Producer
+ *  `visibility.reveal`, `timing.collect_ms`) and the short form Liveroom
  *  sends (`options: [a, b]`, `reveal`, `input.who`). Everything the server
  *  owns (id, state, version, opened_at, reveal_at) is stamped by the caller. */
 export function parseInteractionCreate(body: unknown, ctx: { roomId: string; runId: string | null; id?: string }): InteractionDoc {

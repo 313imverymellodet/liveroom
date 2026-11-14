@@ -23,7 +23,7 @@ replace('producer_vcam_device_present())', 'producer_vcam_device_present(false))
 replace('@"7626645E-4425-469E-9D8B-97E0FA59AC75";',
         '@"7626645E-4425-469E-9D8B-97E0FA59AC75";')
 replace('    vcam->videoInfo.output_width = 1920;\n    vcam->videoInfo.output_height = 1080;', '''    if (vcam->portrait && (uint64_t) selected->width * 16 != (uint64_t) selected->height * 9) {
-        obs_output_set_last_error(vcam->output, "Choose Producer's Portrait output before starting the portrait camera.");
+        obs_output_set_last_error(vcam->output, "Choose Liveroom's Portrait output before starting the portrait camera.");
         return false;
     }
     vcam->videoInfo.output_width = vcam->portrait ? 1080 : 1920;
@@ -78,7 +78,7 @@ static void producer_retire_portrait_camera(void)
         dispatch_async(dispatch_get_main_queue(), ^{
             static ProducerRetiredCameraDelegate *delegate = [ProducerRetiredCameraDelegate new];
             OSSystemExtensionRequest *request = [OSSystemExtensionRequest
-                deactivationRequestForExtension:@"ai.boomin.producer.portrait-camera-extension" queue:dispatch_get_main_queue()];
+                deactivationRequestForExtension:@"app.liveroom.studio.portrait-camera-extension" queue:dispatch_get_main_queue()];
             request.delegate = delegate;
             [[OSSystemExtensionManager sharedManager] submitRequest:request];
         });
@@ -99,7 +99,7 @@ replace('        OSStatus result = CMIODeviceStartStream(vcam->deviceID, vcam->s
         if (actualFormat) CFRelease(actualFormat);
         if (formatResult != noErr || readResult != noErr ||
             actualDimensions.width != vcam->videoInfo.output_width || actualDimensions.height != vcam->videoInfo.output_height) {
-            obs_output_set_last_error(vcam->output, "Allow Producer's camera extension update in macOS, then reconnect the camera using the selected orientation.");
+            obs_output_set_last_error(vcam->output, "Allow Liveroom's camera extension update in macOS, then reconnect the camera using the selected orientation.");
             return false;
         }
         producer_retire_portrait_camera();

@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { openUrl } from '@tauri-apps/plugin-opener';
 import { version } from '../../package.json';
 import './entry.css';
+import { REPO_URL } from "../brand";
 
 type EntryStage = 'welcome' | 'access' | 'signin';
 const stages: { id: EntryStage; label: string }[] = [
@@ -14,16 +15,15 @@ const stages: { id: EntryStage; label: string }[] = [
 export function EntryFrame({ children, stage = 'signin' }: { children: ReactNode; stage?: EntryStage }) {
   const current = stages.findIndex(item => item.id === stage);
   return (
-    <section className={`entry-shell entry-stage-${stage}`} aria-label="Producer setup">
+    <section className={`entry-shell entry-stage-${stage}`} aria-label="Liveroom setup">
       <header className="entry-header" data-tauri-drag-region>
         <div className="entry-identity">
           <img src="/brand/producer-mark.png" width="36" height="36" alt="" />
-          <span>Producer</span><span className="entry-beta">Beta</span>
+          <span>Liveroom</span><span className="entry-beta">Beta</span>
         </div>
-        <span className="entry-network">by Boomin</span>
       </header>
       <div className="entry-workspace">
-        <aside className="entry-story" aria-label="Producer studio">
+        <aside className="entry-story" aria-label="Liveroom studio">
           <div className="entry-story-copy">
             <span className="entry-eyebrow">Your desktop studio</span>
             <h2>Stop posting.<br /><span>Start producing.</span></h2>
@@ -53,7 +53,7 @@ export function EntryFrame({ children, stage = 'signin' }: { children: ReactNode
       </div>
       <footer className="entry-footer">
         <span>Open-source. Built for creators.</span>
-        <div><span>v{version}</span><button type="button" onClick={() => void openUrl('https://producer.dev').catch(() => {})}>producer.dev <span aria-hidden="true">↗</span></button></div>
+        <div><span>v{version}</span><button type="button" onClick={() => void openUrl(REPO_URL).catch(() => {})}>Source code <span aria-hidden="true">↗</span></button></div>
       </footer>
     </section>
   );

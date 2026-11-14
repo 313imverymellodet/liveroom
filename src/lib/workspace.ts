@@ -1,4 +1,4 @@
-// The ACTIVE WORKSPACE — which connected brand Producer is acting as.
+// The ACTIVE WORKSPACE — which connected brand Liveroom is acting as.
 //
 // Endpoints are (base_url, brand_slug) rows sharing one user-scoped token, so a
 // brand switch is just "which endpoint id every call uses". Rooms and

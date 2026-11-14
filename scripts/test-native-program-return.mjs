@@ -47,7 +47,7 @@ try {
  const old=(await get(path+'/guests')).guests??[];
  for(const guest of old.filter(g=>/^Native (subscription|program) [0-9a-f]{8}$/.test(g.display_name??'')&&g.state==='admitted'))await command('fixture_revoke',{operation:'revoke',participant_id:guest.id});
  const link=await command('link',{operation:'link',rotate:true});const joinUrl=new URL(link.join_url);assert.equal(joinUrl.origin,'http://localhost:5175');
- const {chromium}=await import('/Users/klevelandbishop/Library/Application Support/Producer RTC Pilot/browser/node_modules/playwright-core/index.mjs');
+ const {chromium}=await import('/Users/klevelandbishop/Library/Application Support/Liveroom RTC Pilot/browser/node_modules/playwright-core/index.mjs');
  browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,args:['--use-fake-ui-for-media-stream','--use-fake-device-for-media-stream','--autoplay-policy=no-user-gesture-required','--mute-audio']});
  page=await browser.newPage();let errors=0;page.on('pageerror',()=>errors++);
  const name='Native program '+randomUUID().slice(0,8);

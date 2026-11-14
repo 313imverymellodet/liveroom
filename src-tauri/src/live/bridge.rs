@@ -3,7 +3,7 @@
 //! Anything that becomes PIXELS is driven from the host over a local path;
 //! the network only carries state. A browser source on the set loads
 //! `http://127.0.0.1:<port>/overlay` (the vote bar, embedded below) and polls
-//! `/state.json`, which Producer writes from the interaction frames it
+//! `/state.json`, which Liveroom writes from the interaction frames it
 //! receives — so what is on air follows the host's clock and works with zero
 //! server. Loopback only, ephemeral port, no dependencies: a hand-rolled
 //! HTTP/1.0 responder on std::net is all a GET of a few KB needs.
@@ -180,7 +180,7 @@ pub fn start() -> EngineResult<u16> {
     }
     // A fixed port first, so a room document's overlay URL survives a
     // relaunch; an ephemeral one if something else holds it (the source is
-    // re-pointed by Producer in that case).
+    // re-pointed by Liveroom in that case).
     let listener = TcpListener::bind("127.0.0.1:47119")
         .or_else(|_| TcpListener::bind("127.0.0.1:0"))
         .map_err(|e| EngineError::Other(e.to_string()))?;

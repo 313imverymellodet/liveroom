@@ -1,6 +1,6 @@
 /** Modified bounded adaptation of Nordcraft core styling/style.css.ts
  * getNodeStyles keyframe emission. Upstream Apache-2.0; see NOTICE and LICENSE.
- * Producer restricts keys, values, duration and selectors before CSS emission.
+ * Liveroom restricts keys, values, duration and selectors before CSS emission.
  */
 export function motionCss(name: string, property: 'opacity' | 'transform', from: string | number, to: string | number, durationMs: number, clockMs?: number) {
   if (!/^motion_[a-zA-Z0-9_-]+$/.test(name)) throw new Error('Invalid animation name.');

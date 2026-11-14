@@ -8,7 +8,7 @@ export async function discoverAuthoringTarget(workspace:{revision:number;feature
  return negotiateAuthoringTarget({version,native,effects,scene3d},workspace);
 }
 export function negotiateAuthoringTarget(engine:{version:string;native:boolean;effects:string[];scene3d:boolean},workspace:{revision:number;features:string[]}):AuthoringTarget{
- if(engine.version!=='0.4.78'||!engine.native)throw Error('This app has no verified design-compiler capability profile. Update Producer before generating.');
+ if(engine.version!=='0.4.78'||!engine.native)throw Error('This app has no verified design-compiler capability profile. Update Liveroom before generating.');
  if(workspace.revision!==AUTHORING_CATALOG.revision||!Array.isArray(workspace.features))throw Error('This workspace needs a matching design compiler update.');
  const available=['core@1',...AUTHORING_CATALOG.runtimeCapabilities,...engine.effects,...(engine.scene3d?['scene3d@1']:[]),...AUTHORING_CATALOG.features.filter(f=>f.startsWith('shader.'))];
  const features=AUTHORING_CATALOG.features.filter(f=>available.includes(f)&&workspace.features.includes(f));

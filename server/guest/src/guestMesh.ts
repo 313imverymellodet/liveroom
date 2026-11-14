@@ -84,7 +84,7 @@ export class GuestMesh {
     if (update.version < this.version) return;
     if (update.version === this.version && (source !== "host" || this.confirmed)) return;
     this.version = update.version;
-    // The server copy is a CACHE that Producer writes fire-and-forget; the host
+    // The server copy is a CACHE that Liveroom writes fire-and-forget; the host
     // channel is live truth. Only the latter confirms.
     this.confirmed = source === "host";
     this.onStage = new Set(Array.isArray(update.on_stage) ? update.on_stage : []);
@@ -106,7 +106,7 @@ export class GuestMesh {
     const theyAreOnStage = this.onStage.has(peerId) && this.audible.has(peerId);
     // MAY LISTEN ON AN UNCONFIRMED LIST, MAY NOT SPEAK ON ONE.
     //
-    // The cold-start list comes from the server's cached copy, which Producer
+    // The cold-start list comes from the server's cached copy, which Liveroom
     // writes fire-and-forget and can therefore be stale. Stale-too-SMALL is
     // merely degraded — you mesh with fewer people and correct on the next push.
     // Stale-too-LARGE is the dangerous direction, and the worst case is two

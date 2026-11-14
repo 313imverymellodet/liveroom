@@ -101,7 +101,7 @@ fn key() -> Result<String, String> {
             std::env::var_os("HOME").ok_or("Home directory unavailable")?,
         )
         .join(
-            "Library/Application Support/ai.boomin.producer.sets-v2-dev/secrets/deepgram-key.txt",
+            "Library/Application Support/app.liveroom.studio.sets-v2-dev/secrets/deepgram-key.txt",
         );
         if let Ok(raw) = std::fs::read_to_string(path) {
             let value = raw.trim().trim_matches('"').trim();

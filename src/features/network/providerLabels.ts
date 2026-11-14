@@ -16,6 +16,6 @@ export function producerInvitationLabel(invitation?:{joinUrl:string;apiBase:stri
  try{
   const link=new URL(invitation.joinUrl),api=new URL(invitation.apiBase);
   if(!link.username&&!link.password&&!api.username&&!api.password&&boominInvitationOrigins.has(link.origin)&&api.origin==='https://api.boomin.ai')return 'BOOMIN NETWORK';
- }catch{/* Unrecognized issuers keep the neutral Producer label. */}
+ }catch{/* Unrecognized issuers keep the neutral Liveroom label. */}
  return independentLabel;
 }

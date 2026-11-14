@@ -5,7 +5,7 @@ import "./GuestRoomPage.css";
 //
 // The opposite of the render page in every way. That one is headless, silent and
 // invisible; this one is the only human-facing surface in the whole guest flow,
-// and its audience is someone who has never heard of Producer and was sent a link
+// and its audience is someone who has never heard of Liveroom and was sent a link
 // by a friend who is about to go live. So: no account, no install, no jargon.
 //
 // They see themselves, pick a camera and mic, and press one button. Media then
@@ -47,8 +47,8 @@ async function acceptQuietly(code: string): Promise<void> {
 
 export default function GuestJoinPage({ code }: { code: string }) {
   const [search] = useSearchParams();
-  // Producer opens this page for the beneficiary of a deal with `?cam=producer`
-  // so the Producer virtual camera is the default pick, and `?name=` so the
+  // Liveroom opens this page for the beneficiary of a deal with `?cam=producer`
+  // so the Liveroom virtual camera is the default pick, and `?name=` so the
   // person sees themselves named before the invite row is even read.
   const preferProducerCam = search.get("cam") === "producer";
   const nameHint = sanitizeName(search.get("name"));
@@ -158,7 +158,7 @@ export default function GuestJoinPage({ code }: { code: string }) {
       setDevices(list.filter((d) => d.kind === "videoinput" || d.kind === "audioinput"));
       if (!camera) {
         // Labels are populated now that permission is granted, so this is the
-        // first moment the Producer virtual camera can be told apart.
+        // first moment the Liveroom virtual camera can be told apart.
         const producerCam = preferProducerCam
           ? list.find((d) => d.kind === "videoinput" && /producer|boomin/i.test(d.label))
           : undefined;
@@ -416,7 +416,7 @@ export default function GuestJoinPage({ code }: { code: string }) {
         </p>
         <p className="guest-room-fine" style={S.fine}>
           Powered by{" "}
-          <a href="https://producer.dev" target="_blank" rel="noreferrer" style={S.plug}>Producer</a>
+          <a href="https://producer.dev" target="_blank" rel="noreferrer" style={S.plug}>Liveroom</a>
         </p>
       </div>
       {/* The host's voice. Separate element so the preview above stays muted and

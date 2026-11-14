@@ -21,5 +21,5 @@ export type AuthoringTarget = { catalogRevision: number; features: string[] };
 export function requireFeatures(target: AuthoringTarget, features: string[]) {
   if (target.catalogRevision !== AUTHORING_CATALOG.revision) throw Error('Authoring catalog changed. Refresh capabilities before generating.');
   const missing = features.filter(f => !target.features.includes(f));
-  if (missing.length) throw Error(`Target cannot render: ${missing.join(', ')}. Update Producer or change the requested design.`);
+  if (missing.length) throw Error(`Target cannot render: ${missing.join(', ')}. Update Liveroom or change the requested design.`);
 }

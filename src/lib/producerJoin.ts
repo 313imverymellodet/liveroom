@@ -12,7 +12,7 @@ export function parseProducerJoinLink(raw:string,apiOverride?:string):ProducerJo
  const path=u.pathname.replace(/\/+$/,'');
  const direct=/^\/(?:connect\/)?guest\/(room\/)?((?:gr_|gi_)[A-Za-z0-9_-]{16,120})$/.exec(path);
  const pretty=hosted.has(u.hostname)?/^\/[A-Za-z0-9_-]+\/guest\/[a-z0-9-]+\/((?:gr_|gi_)[A-Za-z0-9_-]{16,120})$/.exec(path):null;
- const code=direct?.[2]??pretty?.[1];if(!code)throw Error('This is not a Producer room or guest invitation link.');
+ const code=direct?.[2]??pretty?.[1];if(!code)throw Error('This is not a Liveroom room or guest invitation link.');
  if(direct&&!!direct[1]!==code.startsWith('gr_'))throw Error('The guest link has an invalid room credential.');
  let apiBase=hosted.has(u.hostname)?'https://api.boomin.ai':u.origin;
  if(apiOverride?.trim()){

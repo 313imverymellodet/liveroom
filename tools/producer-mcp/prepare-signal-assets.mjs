@@ -1,5 +1,5 @@
 import{homedir}from'node:os';import{join}from'node:path';
-const setsDir=process.env.PRODUCER_SETS_DIR??join(homedir(),'Documents','Producer Sets');
+const setsDir=process.env.PRODUCER_SETS_DIR??join(homedir(),'Documents','Liveroom Sets');
 import{readFile,writeFile}from'node:fs/promises';import{chromium}from'./node_modules/playwright-core/index.mjs';
 const paths={signalCode:'<path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-16-2 20"/>',signalCpu:'<rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 1v4m6-4v4M9 19v4m6-4v4M1 9h4m-4 6h4m14-6h4m-4 6h4"/><rect x="9" y="9" width="6" height="6" rx="1"/>',signalDatabase:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/>',signalCloud:'<path d="M6 18a5 5 0 0 1-1-10 7 7 0 0 1 13-1 5.5 5.5 0 0 1 0 11Z"/>',signalSpark:'<path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5ZM21 1v5m-2.5-2.5h5"/>',signalShield:'<path d="M12 2 3 6v6c0 5 9 10 9 10s9-5 9-10V6Z"/><path d="m8 12 3 3 5-6"/>',signalLayers:'<path d="m12 2 10 6-10 6L2 8Zm-10 10 10 6 10-6M2 16l10 6 10-6"/>',signalBox:'<path d="m12 2 9 5v10l-9 5-9-5V7Zm-9 5 9 5 9-5M12 12v10M7 5l9 5"/>',signalTerminal:'<path d="m4 5 7 7-7 7m9 0h8"/>'};
 const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});

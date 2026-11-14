@@ -4,7 +4,7 @@ import {getIdentifier} from '@tauri-apps/api/app';
 import {reportNetworkDevResult} from './networkDevReport';
 import {validateNativePairFixture,type NativePairFixture,type NativePairProof} from './nativePairProof';
 
-const APP='ai.boomin.producer.sets-v2-dev';
+const APP='app.liveroom.studio.sets-v2-dev';
 const CONSUMED_KEY='producer:dev:native-pair:last-consumed-run';
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 type Launch={version:1;runId:string;fixture:NativePairFixture};

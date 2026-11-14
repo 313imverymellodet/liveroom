@@ -25,11 +25,11 @@ if (Test-Path -LiteralPath $installDir) { throw 'Qualification install directory
 # not isolate its profile. A fresh hosted account and absent known-folder
 # profiles establish isolation without editing a user's existing application.
 $profiles = @(
-  (Join-Path ([Environment]::GetFolderPath('ApplicationData')) 'ai.boomin.producer'),
-  (Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'ai.boomin.producer')
+  (Join-Path ([Environment]::GetFolderPath('ApplicationData')) 'app.liveroom.studio'),
+  (Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'app.liveroom.studio')
 ) | Select-Object -Unique
 foreach ($profile in $profiles) {
-  if (Test-Path -LiteralPath $profile) { throw 'Existing Producer profile: refusing installed smoke test' }
+  if (Test-Path -LiteralPath $profile) { throw 'Existing Liveroom profile: refusing installed smoke test' }
 }
 $receipt = [ordered]@{
   schema = 'producer.windows-installed-proof/1'
@@ -61,7 +61,7 @@ try {
   Wait-OwnedProcess $p 120 'NSIS install'
   $installed = $true
   $receipt.stage = 'installed_files'
-  foreach ($must in @('producer.exe','uninstall.exe','obs.dll','obs-plugins\64bit\obs-browser.dll','obs-plugins\64bit\Producer Helper.exe','data\obs-plugins\win-dshow\obs-virtualcam-module64.dll','data\obs-plugins\win-dshow\placeholder.png')) {
+  foreach ($must in @('producer.exe','uninstall.exe','obs.dll','obs-plugins\64bit\obs-browser.dll','obs-plugins\64bit\Liveroom Helper.exe','data\obs-plugins\win-dshow\obs-virtualcam-module64.dll','data\obs-plugins\win-dshow\placeholder.png')) {
     if (-not (Test-Path -LiteralPath (Join-Path $installDir $must))) { throw "Installed engine payload missing $must" }
   }
   $exe = Join-Path $installDir 'producer.exe'

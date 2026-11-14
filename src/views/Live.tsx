@@ -234,11 +234,11 @@ const PRESETS: { value: LivePreset; label: string; needsServer: boolean }[] = [
 const STREAM_SETUP: Partial<Record<LivePreset, { url: string; hint: string }>> = {
   facebook: {
     url: "https://www.facebook.com/live/producer/",
-    hint: "Open Facebook Live Producer and choose Streaming software. Copy the server URL and stream key here; enable Persistent stream key in Facebook to reuse it. Start sending, check the preview, then click Go Live in Facebook.",
+    hint: "Open Facebook Live Liveroom and choose Streaming software. Copy the server URL and stream key here; enable Persistent stream key in Facebook to reuse it. Start sending, check the preview, then click Go Live in Facebook.",
   },
   instagram: {
     url: "https://www.instagram.com/",
-    hint: "Open Instagram → Create → Live video. Paste the URL and a fresh key for each broadcast. Keep Live Producer open, then confirm Go Live there once the preview appears.",
+    hint: "Open Instagram → Create → Live video. Paste the URL and a fresh key for each broadcast. Keep Live Liveroom open, then confirm Go Live there once the preview appears.",
   },
   rumble: {
     url: "https://rumble.com/live",
@@ -444,12 +444,12 @@ function WindowPickerList({
   );
 }
 
-/** Producer's own window in a capture list. Capturing it puts the preview
+/** Liveroom's own window in a capture list. Capturing it puts the preview
  * inside the preview: every frame contains the last one, so dragging any
  * source looks like an explosion of copies. That is the mirror, not a
  * transform bug — the chip says so before the click. */
 function selfCaptureNote(w: { owner?: string }) {
-  return w.owner === "Producer" ? " (this app — captures itself)" : "";
+  return w.owner === "Liveroom" ? " (this app — captures itself)" : "";
 }
 
 /** Window chips for a window source's settings strip: pick a different
@@ -781,7 +781,7 @@ function SourceSettingsStrip({
 
 /** The Guest component: one row for the whole panel, expanding to whoever is
  * in it. Guests arrive through a shared room link, so the list is the server's
- * roster rather than anything Producer decided.
+ * roster rather than anything Liveroom decided.
  *
  * Waiting guests are shown but NOT on the broadcast. The link is public, so
  * admitting is an explicit act — otherwise anyone holding the URL would appear
@@ -811,7 +811,7 @@ export function GuestPanel({
   roster: RoomGuest[];
   error: string | null;
   items: LiveItem[];
-  /** host = this Producer runs the show (unchanged path). mod = a member
+  /** host = this Liveroom runs the show (unchanged path). mod = a member
    * holding room control on someone else's room: admit / remove / stage /
    * order through the server, nothing local. viewer = read-only. */
   role: RoomRole;
@@ -1676,7 +1676,7 @@ function WindowSourceForm({ onAdd }: { onAdd: (id: number, title: string) => voi
 
 /** Device picker for a source. The list comes straight from the engine, so
  * whatever the OS exposes — built-in camera, capture card, USB mic, audio
- * interface, second display — appears here without Producer knowing the
+ * interface, second display — appears here without Liveroom knowing the
  * hardware. Switching applies in place: the source keeps its position, size
  * and place in the stack. */
 function DevicePicker({ itemId, kind, device, onClose }: { itemId: string; kind: CaptureKind; device?: string | null; onClose: () => void }) {
@@ -1906,7 +1906,7 @@ function PermBanner({
                 ? `${r.label} isn’t granted — drag the chip in, then relaunch`
                 : askable
                   ? `${r.label} isn’t granted`
-                  : `${r.label} was turned off — switch Producer back on in Settings`}
+                  : `${r.label} was turned off — switch Liveroom back on in Settings`}
             </span>
             <button
               className="rm-perm-fix"
@@ -2677,7 +2677,7 @@ export function LiveView({
   /** The seat sheet's empty state → leave the room, open Settings → Access
    * (same leave path as Open Integrations). */
   onOpenAccess?: () => void;
-  /** GUEST MODE: this Producer holds a seat in someone else's room. The
+  /** GUEST MODE: this Liveroom holds a seat in someone else's room. The
    * stage is the guest's own scene (their camera); the green-room strip
    * above it is the seat. Leaving the view leaves the seat. */
   seat?: GuestSeatSpec;
@@ -3351,7 +3351,7 @@ export function LiveView({
   /** Experimental: source settings as a horizontal strip above the docked
    * panels — which row's settings are showing. */
   /** R3: recording is independent of streaming — either, both, or neither. */
-  /** R13: Producer as a webcam in Zoom/Meet/Discord. Two separate things —
+  /** R13: Liveroom as a webcam in Zoom/Meet/Discord. Two separate things —
    * the extension being installed (once, with the user's approval) and the
    * output actually running. */
   const [vcamState, setVcamState] = useState<VcamStatus | null>(null);
@@ -3487,7 +3487,7 @@ export function LiveView({
           return;
         }
         if (st.state === "needs_approval") {
-          notify("Click Approve to open System Settings for Producer Virtual Camera.", { key: "banner", tone: "warning", ttl: 12000 });
+          notify("Click Approve to open System Settings for Liveroom Virtual Camera.", { key: "banner", tone: "warning", ttl: 12000 });
           return;
         }
       }
@@ -3633,7 +3633,7 @@ export function LiveView({
   /** Room-owned facts every monitor seat reads (chat handles). */
   const roomInfoRef = useRef<MonitorRoomInfo>({});
   // Who WE are in this room. "host" until the access route says otherwise
-  // (and forever, on a server without the route). A mod's Producer must not
+  // (and forever, on a server without the route). A mod's Liveroom must not
   // load guest render pages — those would be a second host peer on every
   // guest's channel — nor post a stage list derived from its own engine.
   const [roomRole, setRoomRole] = useState<RoomRole>("host");
@@ -4125,7 +4125,7 @@ export function LiveView({
     if (!endpointRef.current || !cfg.server_room_id) return;
     const st = modStageRef.current;
     if (st.pending) return;
-    if (!sourceProtocolRef.current) { notifyError("The host needs the updated Producer build to confirm source changes.", { key: "guests" }); return; }
+    if (!sourceProtocolRef.current) { notifyError("The host needs the updated Liveroom build to confirm source changes.", { key: "guests" }); return; }
     const want = !st.confirmed.includes(guestId);
     const commandId = controlRef.current?.sourceAction("participant.stage", guestId, want);
     if (!commandId) return;
@@ -4198,7 +4198,7 @@ export function LiveView({
     try {
       await team.setRoomRole(ep, sid, memberId, grant);
       dismissKey("mods");
-      notify("Seated — they take the seat when they open this room in Producer.", { key: "banner", tone: "success", check: true });
+      notify("Seated — they take the seat when they open this room in Liveroom.", { key: "banner", tone: "success", check: true });
       return true;
     } catch (e) {
       notifyError(e, { key: "mods" });
@@ -4809,7 +4809,7 @@ export function LiveView({
     // session (switching rooms mid-stream adopts the running scene).
     if (room && !roomApplied.current && snap.engine_ready && snap.session_state === "idle") {
       // WHOSE set is this? A Boomin room may be someone else's: a mod's or a
-      // viewer's Producer must not mount its own camera, screen, mic and
+      // viewer's Liveroom must not mount its own camera, screen, mic and
       // scenes as if it ran the show (the founder's Windows mod saw
       // its own desktop where the host's program belonged). The answer is
       // the access route's; until it lands nothing local is applied, and
@@ -4866,7 +4866,7 @@ export function LiveView({
         ipc.liveUpdateRoom(room.id, { config: serializeConfig(migrated) }).catch(() => {});
       }
       // Start the local chat bridge before restoring its browser source.
-      // Its port can change when another Producer instance holds the default.
+      // Its port can change when another Liveroom instance holds the default.
       if ((opened.sources.extras ?? []).some((e) => isChatOverlay(e.spec))) {
         const url = await overlayBridge.chatStart();
         const extras = (opened.sources.extras ?? []).map((e) => isChatOverlay(e.spec) ? { ...e, spec: { kind: "overlay" as const, url } } : e);
@@ -4962,7 +4962,7 @@ export function LiveView({
     });
   }, [room, savedRoomConfig]);
 
-  // A Producer appearance renders its own room but must never run that room's
+  // A Liveroom appearance renders its own room but must never run that room's
   // host roster/heartbeat. Consume local authorization independently of the
   // deliberately skipped host poll, including the exact receipt from Home.
   useEffect(()=>{
@@ -5764,7 +5764,7 @@ export function LiveView({
   });
 
   // ── Room control channel (#47) ──────────────────────────────────────────
-  // The host's Producer holds one socket to the room's Durable Object: it
+  // The host's Liveroom holds one socket to the room's Durable Object: it
   // publishes the scene list (ids + names, never looks) so mod seats see it
   // with the active scene lit, and it receives `scene.cut` frames from mods
   // holding room.scene — applied exactly as the host's own keypress, which
@@ -5863,7 +5863,7 @@ export function LiveView({
   useEffect(() => {
     if (!room?.id || !cfg.server_room_id || seat) return;
     // Open server: the host only (a mod runs views/ModSeat.tsx). Boomin: any
-    // role — a mod's Producer lights the host's list off `scene.cut` frames
+    // role — a mod's Liveroom lights the host's list off `scene.cut` frames
     // and takes the tally on `interactions:control` (the hub gates it).
     if (roomRole !== "host" && !boominRoom) return;
     const sid = cfg.server_room_id;
@@ -5938,7 +5938,7 @@ export function LiveView({
             if (frame.type === "audience.invite.request" && roomRoleRef.current === "host" && typeof f.id === "string") void inviteAudience(f.id);
             if (frame.type === "audience.error" && f.code === "publisher_busy") publisherRejected = true;
             if (frame.type === "audience.error") setAudienceError(f.code === "publisher_busy"
-              ? "Another Producer session controls this room. Close that room session, then reopen this one."
+              ? "Another Liveroom session controls this room. Close that room session, then reopen this one."
               : String(f.code));
             if (frame.type === "audience.capacity") setAudienceError("The direct video limit has been reached. New viewers can still chat and vote. Increase the limit only if this computer and upload connection have spare capacity.");
             if (frame.type === "audience.viewer" && roomRoleRef.current === "host" && typeof f.id === "string") {
@@ -6045,7 +6045,7 @@ export function LiveView({
             if (command.status === "applied" && roomRoleRef.current !== "host") {
               setHostScenes((h) => h ? { ...h, active_scene_id: command.scene_id } : h);
             } else if (command.status === "failed" || command.status === "expired") {
-              notifyError(command.error ?? "Producer did not confirm the scene cut.", { key: "guests" });
+              notifyError(command.error ?? "Liveroom did not confirm the scene cut.", { key: "guests" });
             }
             return;
           }
@@ -6054,7 +6054,7 @@ export function LiveView({
             const ownershipError = code === "publisher_busy" || code === "stale_publisher" || code === "host_unavailable";
             if (ownershipError) publisherRejected = true;
             notifyError(code === "publisher_busy"
-              ? "Another Producer session controls this room. Close that room session, then reopen this one."
+              ? "Another Liveroom session controls this room. Close that room session, then reopen this one."
               : code === "stale_publisher"
                 ? "This connection no longer controls the room. Reopen the room on the host device."
               : code ?? "Room control unavailable", { key: ownershipError ? "room-publisher" : "guests" });
@@ -6140,7 +6140,7 @@ export function LiveView({
     return () => window.clearTimeout(t);
   }, [scenes, activeScene, boominRoom, roomRole, cfg.server_room_id,seat]);
 
-  /** Boomin, a mod's Producer: the host's scene directory as the room config
+  /** Boomin, a mod's Liveroom: the host's scene directory as the room config
    * carries it, the active one lit by `scene.cut` frames. Null on the host
    * (its own list is the truth) and on an open server (ModSeat). */
   const [hostScenes, setHostScenes] = useState<{ scenes: { id: string; name: string }[]; active_scene_id: string | null } | null>(null);
@@ -6206,7 +6206,7 @@ export function LiveView({
       }
       const res = await guestsIpc.modLink(ep.id, sid!);
       if (await copyText(res.mod_url)) {
-        notify("Mod link copied — whoever opens it in Producer can admit, stage, order, remove and cut scenes. They never appear on the set.", { key: "banner", tone: "success", check: true, ttl: 6000 });
+        notify("Mod link copied — whoever opens it in Liveroom can admit, stage, order, remove and cut scenes. They never appear on the set.", { key: "banner", tone: "success", check: true, ttl: 6000 });
       } else {
         notify(res.mod_url, { key: "banner", tone: "info", ttl: 8000 });
       }
@@ -6218,7 +6218,7 @@ export function LiveView({
   };
 
   // ── Interactions: the two-choice vote (#51) ────────────────────────────
-  // The room's RoomState DO is authoritative; this Producer opens, starts,
+  // The room's RoomState DO is authoritative; this Liveroom opens, starts,
   // reveals and closes through the server and reads the running tally off
   // its control socket (`interaction:host`). The bar on the SET is a browser
   // source on the local bridge fed from HERE — never from the server — so
@@ -6248,11 +6248,11 @@ export function LiveView({
    * Created once per room; re-pointed if the bridge moved (port). */
   const ensureVoteOverlay = async () => {
     // The vote bar is a source on the HOST's stage; a mod opens the vote on
-    // the server and the host's Producer places the overlay. No banner.
+    // the server and the host's Liveroom places the overlay. No banner.
     if (!isHostRef.current) return;
     const url = await overlayBridge.start();
     const c = cfgRef.current;
-    // The bar's source is the overlay that points at THIS Producer's bridge
+    // The bar's source is the overlay that points at THIS Liveroom's bridge
     // (127.0.0.1/overlay) — found by where it points, never by its label, so
     // a renamed source still counts and a sponsor's overlay is never
     // hijacked. It is an ordinary overlay otherwise: Sources row, eye, drag,
@@ -6398,7 +6398,7 @@ export function LiveView({
 
   // ── The contribution ledger (#50) ──────────────────────────────────────
   // Presence is the server's (it follows the stage list we publish). Two
-  // things only this Producer knows are published from here: an OVERLAY
+  // things only this Liveroom knows are published from here: an OVERLAY
   // source with a binding (a sponsor's logo) being shown or hidden, and the
   // RUN — started when we go live, stopped at End, then read back as the
   // run report.
@@ -6436,8 +6436,8 @@ export function LiveView({
 
   const [runReport, setRunReport] = useState<{ run_id: string | null; rows: Contribution[] } | null>(null);
   const prevStateRef = useRef<string>("idle");
-  /** When this Producer went live — the run's bracket on Boomin, which has
-   * no run route for Producer rooms (the roster poll is the heartbeat and a
+  /** When this Liveroom went live — the run's bracket on Boomin, which has
+   * no run route for Liveroom rooms (the roster poll is the heartbeat and a
    * lapse ends the run server-side; `run_id` stays null on its rows). */
   const runStartedAtRef = useRef<number | null>(null);
   useEffect(() => {
@@ -6459,7 +6459,7 @@ export function LiveView({
         const startedAt = runStartedAtRef.current;
         const endedAt = Date.now();
         if (boominRoomRef.current) {
-          // End closes what THIS Producer opened: every bound overlay still
+          // End closes what THIS Liveroom opened: every bound overlay still
           // showing gets its interval closed now (the picture stays; a
           // later show opens a fresh interval), so the report is whole and
           // a metered deal settles on End rather than on the heartbeat lapse.
@@ -6880,7 +6880,7 @@ export function LiveView({
           // …and a GUEST's return leg captures it too. The device only ever
           // started for monitor seats, so a host with guests and no mod in the
           // room never started it at all: the guest page went looking for
-          // "Producer Virtual Camera", found no such device, and sat on
+          // "Liveroom Virtual Camera", found no such device, and sat on
           // "Waiting for the show" forever. The guest's own camera reached the
           // stage fine — this is the other direction, and it was never wired.
           //
@@ -6972,7 +6972,7 @@ export function LiveView({
               // the host's microphone. Both are labels, because a browser's
               // deviceIds are salted per origin and can never match ours.
               if (micDeviceLabel) u.searchParams.set("mic", micDeviceLabel);
-              u.searchParams.set("program", vcamState?.device_name ?? "Producer Virtual Camera");
+              u.searchParams.set("program", vcamState?.device_name ?? "Liveroom Virtual Camera");
               // No media.return_feed → the page never opens the return leg.
               u.searchParams.set("feed", "0");
             }
@@ -7031,7 +7031,7 @@ export function LiveView({
               u.searchParams.set("track", "screen");
             } else {
               if (micDeviceLabel) u.searchParams.set("mic", micDeviceLabel);
-              u.searchParams.set("program", vcamState?.device_name ?? "Producer Virtual Camera");
+              u.searchParams.set("program", vcamState?.device_name ?? "Liveroom Virtual Camera");
               if (!resolveGrants(seat).has("media.return_feed")) u.searchParams.set("feed", "0");
             }
             const existing = (sourcesRef.current.items ?? []).find(i => i.id === id);
@@ -7242,17 +7242,17 @@ export function LiveView({
       case "dj":
         return isHost ? <DJPanel key={roomId ?? "local"} roomId={roomId ?? "local"} enabled={docApplied} mini={formDockOf("dj") === "top"} /> : <div className="rm-rows-empty">The host controls the room’s DJ mix.</div>;
       case "scenes":
-        // A mod's Producer on Boomin: the HOST's scenes, read from the room's
+        // A mod's Liveroom on Boomin: the HOST's scenes, read from the room's
         // directory, the active one lit by the server's `scene.cut` frames.
         // A click is `POST …/scene`; nothing here touches our own engine.
-        // The LOCAL list never renders off-host: this Producer holds no set
+        // The LOCAL list never renders off-host: this Liveroom holds no set
         // for the room, so its own scenes would be a lie about the picture.
         if (!isHost) {
           if (!hostScenes) {
             return (
               <div className="rm-scenes">
                 <div className="rm-rows-empty">
-                  {accessPending ? "Checking your seat…" : "The host's scenes appear here once their Producer opens the room."}
+                  {accessPending ? "Checking your seat…" : "The host's scenes appear here once their Liveroom opens the room."}
                 </div>
               </div>
             );
@@ -7260,7 +7260,7 @@ export function LiveView({
           return (
             <div className="rm-scenes">
               {hostScenes.scenes.length === 0 && (
-                <div className="rm-rows-empty">The host hasn't published scenes yet — they appear once their Producer opens the room.</div>
+                <div className="rm-rows-empty">The host hasn't published scenes yet — they appear once their Liveroom opens the room.</div>
               )}
               {hostScenes.scenes.map((p, i) => (
                 <div
@@ -7392,7 +7392,7 @@ export function LiveView({
         />;
       case "sources": {
         if (!isHost) {
-          return <div className="rm-rows-empty">The set is the host's. Cut scenes and run the roster from here; sources live in their Producer.</div>;
+          return <div className="rm-rows-empty">The set is the host's. Cut scenes and run the roster from here; sources live in their Liveroom.</div>;
         }
         if (overlayInline) {
           return (
@@ -7778,7 +7778,7 @@ export function LiveView({
           />
         );
       case "mixer":
-        if (!isHost) return <div className="rm-rows-empty">Audio is mixed in the host's Producer.</div>;
+        if (!isHost) return <div className="rm-rows-empty">Audio is mixed in the host's Liveroom.</div>;
         return (
               <div className="rm-strips">
                 {/* Every audio-bearing source gets a strip — mics first, then
@@ -8078,7 +8078,7 @@ export function LiveView({
           {isHost && !boominRoom && (
             <button
               className="rm-guest-modlink rm-head-modlink"
-              title="Mint a link another Producer opens to help run this room: admit, stage, order, remove, and cut scenes. Never on the set."
+              title="Mint a link another Liveroom opens to help run this room: admit, stage, order, remove, and cut scenes. Never on the set."
               onClick={() => void mintModLink()}
             >
               Mod link
@@ -8122,7 +8122,7 @@ export function LiveView({
     }
     if (id === "scenes") {
       // Off-host the list is the host's directory: no transition to set, no
-      // scene to save from a set this Producer does not hold.
+      // scene to save from a set this Liveroom does not hold.
       if (!isHost) return null;
       return (
         <>
@@ -8699,7 +8699,7 @@ export function LiveView({
       {anyPop && <div className="rm-pop-backdrop" onClick={closePops} />}
 
       <header className={`rm-top${layoutEdit?" is-editing":""}`} data-tauri-drag-region>
-        <div className="rm-window-drag-handle" data-tauri-drag-region title="Drag to move Producer" aria-label="Drag to move Producer" />
+        <div className="rm-window-drag-handle" data-tauri-drag-region title="Drag to move Liveroom" aria-label="Drag to move Liveroom" />
         {/* The way DOWN and the way AROUND both live at the FAR LEFT, apart
           * from the transport cluster: collapse first, then edit. */}
         <button
@@ -8921,7 +8921,7 @@ export function LiveView({
             onClick={toggleStudio}
             disabled={!engineOk || studioBusy}
             aria-pressed={studioOn}
-            title="Broadcast the studio — the whole Producer window goes out"
+            title="Broadcast the studio — the whole Liveroom window goes out"
           >
             {ic.layout}
             {studioOn ? "Studio on" : "Studio"}
@@ -8937,7 +8937,7 @@ export function LiveView({
             title={
               vcamState?.installed
                 ? "Appear as a webcam in Zoom, Meet and Discord"
-                : vcamState?.error ?? "Install Producer's virtual camera"
+                : vcamState?.error ?? "Install Liveroom's virtual camera"
             }
           >
             {ic.cam}
@@ -9039,7 +9039,7 @@ export function LiveView({
               </div>
               <div className="rm-ctrl-row">
                 <span className="rm-ctrl-label">Bitrate</span>
-                <span className="rm-ctrl-value" title="Producer negotiates the best rate every channel accepts">Auto</span>
+                <span className="rm-ctrl-value" title="Liveroom negotiates the best rate every channel accepts">Auto</span>
               </div>
             </Pop>
           )}
@@ -9232,7 +9232,7 @@ export function LiveView({
                 {snapshot.disabled
                   ? "Live engine not bundled in this build."
                   : snapshot.engine_ready && !snapshot.bootstrap_ok
-                    ? "The live engine failed to initialize. Reopen Producer after checking the engine setup."
+                    ? "The live engine failed to initialize. Reopen Liveroom after checking the engine setup."
                     : "Warming up the engine…"}
               </div>
             )}
@@ -9596,10 +9596,10 @@ export function LiveView({
           <RoleCard access={roomAccess} compact pending={accessPending} />
         </div>
         <span className="rm-foot-item">
-          Producer v{appVersion ?? "…"}
+          Liveroom v{appVersion ?? "…"}
           {/* Quiet by design: it sits beside the version, reads as label text
               until hovered, and never competes with the stream state. */}
-          <button className="rm-foot-bug" onClick={() => setBugOpen(true)} title="Tell us what went wrong — it goes straight to the people who build Producer">
+          <button className="rm-foot-bug" onClick={() => setBugOpen(true)} title="Tell us what went wrong — it goes straight to the people who build Liveroom">
             Report a bug
           </button>
         </span>
@@ -9624,7 +9624,7 @@ export function LiveView({
           <span className="rm-foot-q">{quality === "off" ? "idle" : quality}</span>
         </span>
         {studioOn && (
-          <span className="rm-foot-item rm-foot-studio" title="Studio output: the program is the whole Producer window; the stage and the return feed show the room">
+          <span className="rm-foot-item rm-foot-studio" title="Studio output: the program is the whole Liveroom window; the stage and the return feed show the room">
             Studio
           </span>
         )}

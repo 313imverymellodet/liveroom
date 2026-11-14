@@ -2,7 +2,7 @@
   "name": "producer-guest",
   "private": true,
   "version": "0.1.0",
-  "description": "Origin-relative guest pages served by the self-hosted Producer server. Built output is committed to ../public/guest so `wrangler deploy` needs no build step.",
+  "description": "Origin-relative guest pages served by the self-hosted Liveroom server. Built output is committed to ../public/guest so `wrangler deploy` needs no build step.",
   "license": "AGPL-3.0-only",
   "type": "module",
   "scripts": {

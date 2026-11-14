@@ -56,13 +56,13 @@ if windows_only:
 for platform, name in {
     'windows-x86_64-msi': f'Producer_{version}_x64_en-US.msi',
     'linux-x86_64-deb': f'Producer_{version}_amd64.deb',
-    'linux-x86_64-rpm': f'Producer-{version}-1.x86_64.rpm',
+    'linux-x86_64-rpm': f'Liveroom-{version}-1.x86_64.rpm',
 }.items():
     if name in assets and (not windows_only or platform.startswith('windows-')):
         platforms[platform] = name
 manifest = {
     'version': version,
-    'notes': f'Producer {tag}',
+    'notes': f'Liveroom {tag}',
     'pub_date': datetime.now(timezone.utc).isoformat(timespec='seconds'),
     'platforms': {},
 }
@@ -105,9 +105,9 @@ receipt['windowsOnly'] = windows_only
 notes_path = Path('docs') / f'RELEASE-{version}.md'
 assert notes_path.is_file(), f'Missing release notes: {notes_path}'
 verification_note = (
-    "Windows updater payloads passed signature verification against Producer’s pinned public key before publication. This Windows patch is available as a manual installer. See verification.json for exact artifact hashes."
+    "Windows updater payloads passed signature verification against Liveroom’s pinned public key before publication. This Windows patch is available as a manual installer. See verification.json for exact artifact hashes."
     if windows_only else
-    "Updater payloads passed signature verification against Producer’s pinned public key before publication. macOS installers passed signing, notarization and stapling. See verification.json for exact artifact hashes."
+    "Updater payloads passed signature verification against Liveroom’s pinned public key before publication. macOS installers passed signing, notarization and stapling. See verification.json for exact artifact hashes."
 )
 (out / 'release-notes.md').write_text(notes_path.read_text() + "\n\n" + verification_note + "\n")
 subprocess.run(['gh', 'release', 'upload', tag, str(out / 'latest.json'), str(out / 'verification.json'), '--clobber', '--repo', repo], check=True)

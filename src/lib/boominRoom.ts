@@ -1,14 +1,14 @@
 // The room channel on BOOMIN (api #392), mapped onto the open server's frames.
 //
-// Producer keeps one control loop (views/Live.tsx) and one socket class
+// Liveroom keeps one control loop (views/Live.tsx) and one socket class
 // (lib/roomControl.ts). What differs between the two backends is the wire:
 // the open server speaks `{type: …}` frames on a control socket; Boomin's
 // room Durable Object publishes `{channels, action, payload}` and reaches
-// Producer through a ticket (`POST /live/rooms/:id/channel-ticket`) and an
+// Liveroom through a ticket (`POST /live/rooms/:id/channel-ticket`) and an
 // upgrade (`GET /live/rooms/channel?ticket=`). This module is the pure
 // translation, in both directions, so Live.tsx never learns the difference:
 //
-//   Boomin action            → Producer frame
+//   Boomin action            → Liveroom frame
 //   scene.cut   (stage)      → { type: "scene.cut", scene_id, from, server_now }
 //   stage       (stage)      → { type: "stage", on_stage, version } (lib/stageTruth.ts)
 //   contribution.opened      → { type: "contribution.opened", contribution }
@@ -63,7 +63,7 @@ export function boominAudienceUrl(interactionId: string, appUrl = BOOMIN_APP_URL
   return `${appUrl.replace(/\/+$/, "")}/a/${encodeURIComponent(interactionId)}`;
 }
 
-/** The channels a Producer holds on the room DO. `interactions:control` is
+/** The channels a Liveroom holds on the room DO. `interactions:control` is
  *  refused by the hub unless the ticket's `can.interactions` is true (a mod
  *  has it; a viewer does not) — the refusal is a harmless error frame. */
 export const BOOMIN_ROOM_CHANNELS = ["stage", "contributions", "interactions", "interactions:control", "set:operator"] as const;
@@ -138,7 +138,7 @@ export function parseBoominFrame(raw: unknown): BoominFrame | null {
 }
 
 /** Boomin's projection (api realtime/interaction-state.ts) is the same
- *  document Producer renders, minus a few defaults the open server always
+ *  document Liveroom renders, minus a few defaults the open server always
  *  fills. Returns null unless it is recognisably an interaction. */
 export function normalizeBoominInteraction(raw: unknown, serverNow?: number): BoominInteraction | null {
   if (!raw || typeof raw !== "object") return null;
@@ -212,9 +212,9 @@ export function boominVoteBody(input: { a: string; b: string; prompt: string; wh
   };
 }
 
-/** Producer's scene list as Boomin room config. The server's schema is
+/** Liveroom's scene list as Boomin room config. The server's schema is
  *  strict and stage-shaped (every scene needs a `kind`, the config a
- *  `stage_enabled`); a Producer room's stage is the engine, so the config is
+ *  `stage_enabled`); a Liveroom room's stage is the engine, so the config is
  *  a scene DIRECTORY: ids + labels a mod can cut to, nothing the web stage
  *  would render (`stage_enabled: false`). Ids are cut to the schema's 40. */
 export function boominStageConfig(
@@ -230,7 +230,7 @@ export function boominStageConfig(
   };
 }
 
-/** Read the scene directory back (a mod's Producer, from `GET /live/rooms`). */
+/** Read the scene directory back (a mod's Liveroom, from `GET /live/rooms`). */
 export function scenesFromBoominConfig(config: unknown): { scenes: { id: string; name: string }[]; active_scene_id: string | null } {
   const c = (config && typeof config === "object" ? config : {}) as { scenes?: unknown; active_scene_id?: unknown };
   const scenes = Array.isArray(c.scenes)
@@ -242,7 +242,7 @@ export function scenesFromBoominConfig(config: unknown): { scenes: { id: string;
   return { scenes, active_scene_id: typeof c.active_scene_id === "string" ? c.active_scene_id : null };
 }
 
-/** Group a Boomin ledger (no run ids for Producer rooms) into the run that
+/** Group a Boomin ledger (no run ids for Liveroom rooms) into the run that
  *  just ended: every interval that overlaps [startedAt, endedAt]. */
 export function contributionsInWindow<T extends { started_at: string; ended_at: string | null }>(
   rows: readonly T[],

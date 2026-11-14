@@ -1,6 +1,6 @@
-# Self-hosting Producer
+# Self-hosting Liveroom
 
-Deploy your own Producer backend to your own Cloudflare account. When
+Deploy your own Liveroom backend to your own Cloudflare account. When
 you're done: the desktop app posts and schedules through **your**
 server, media lives in **your** storage, your schedule fires 24/7 with
 your laptop closed, and nothing ever touches Boomin. Cost at personal
@@ -12,7 +12,7 @@ Time: ~20 minutes for the server, plus ~10 minutes per platform app.
 
 - A free [Cloudflare account](https://dash.cloudflare.com/sign-up)
 - [Node.js](https://nodejs.org) ≥ 20 (for `npm`/`npx`)
-- This repo: `git clone https://github.com/Boomin-Ai/producer && cd producer/server && npm install` (the server lives in the `server/` directory of the Producer repo; the old `producer-server` repo is archived)
+- This repo: `git clone https://github.com/Boomin-Ai/producer && cd producer/server && npm install` (the server lives in the `server/` directory of the Liveroom repo; the old `producer-server` repo is archived)
 
 ## 2. Create the database and bucket
 
@@ -55,7 +55,7 @@ Wrangler prints your worker URL — something like
 
 ## 5. Connect the desktop app
 
-In Producer: **Add workspace → Use your own server**, paste your worker
+In Liveroom: **Add workspace → Use your own server**, paste your worker
 URL and your `PRIMARY_TOKEN`. The app validates the token against
 `/v1/session` and stores it in your OS keychain. (This first
 authenticated call also teaches the server its own public URL, which
@@ -97,14 +97,14 @@ For each platform you want, set the app id in `wrangler.toml` under
 3. Redirect URI: `https://<your-worker-url>/oauth/callback/threads`
 4. `THREADS_APP_ID` + `THREADS_APP_SECRET` as above.
 
-Then in Producer, connecting a channel opens your browser at your own
+Then in Liveroom, connecting a channel opens your browser at your own
 server's consent flow — sign in, approve, done. Channel authorization is
 always a human browser action; automation tokens can never mint channels.
 
 ## 7. Guests (host ↔ guest video, no Boomin)
 
-Two self-hosted Producers — or a Producer and anyone with a browser — can
-do a host/guest show entirely on your worker. Producer talks to the same
+Two self-hosted Producers — or a Liveroom and anyone with a browser — can
+do a host/guest show entirely on your worker. Liveroom talks to the same
 `/v1/app/live/…` and `/v1/connect/guest…` routes it uses on Boomin, so
 nothing in the app changes; only the base URL does.
 
@@ -126,12 +126,12 @@ Objects with SQLite storage backend are available" (100k requests/day,
 
 **Setup:** `SIGNALING_SECRET` (step 3) is all it needs. It signs the
 120-second tickets that open a signaling socket and derives each guest's
-render key. Rotating it changes every guest render URL, so Producer
+render key. Rotating it changes every guest render URL, so Liveroom
 recreates its guest browser sources on the next roster poll.
 
 **How a show works:**
 
-1. In Producer, open the room's Guests panel → *Share link*. The worker
+1. In Liveroom, open the room's Guests panel → *Share link*. The worker
    mints a room join code (`…/connect/guest/room/gr_…`). Only its hash is
    stored, so the link is shown once; rotating it (`rotate: true`) invalidates
    the old one and revokes anyone still *waiting* on it — admitted guests
@@ -139,7 +139,7 @@ recreates its guest browser sources on the next roster poll.
 2. A guest opens the link, types a name, and lands in **waiting**. Nothing
    they send can reach the show until you admit them (or you turned on
    `auto_admit` for a trusted panel).
-3. Admitting hands Producer a stable render URL for that guest
+3. Admitting hands Liveroom a stable render URL for that guest
    (`…/connect/guest/render/<id>?k=gk_…`) which becomes a browser source.
    Kicking someone is a server-side flip — the source keeps its framing and
    the guest's next reconnect is refused.
@@ -176,7 +176,7 @@ directory and redeploy.
 
 ## 8. Verify the laptop-closed promise
 
-Schedule a test post a few minutes out, quit Producer entirely, and
+Schedule a test post a few minutes out, quit Liveroom entirely, and
 watch the post land. The worker's every-minute cron is the scheduler —
 your machine is not involved.
 

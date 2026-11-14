@@ -1,6 +1,6 @@
 #!/bin/bash
 # extract-engine.sh — R1 fallback path (LIVE-REVIEW.md §7 R1, v1.1.1 note):
-# produce the Producer engine artifact by extracting libobs + the §5.2 plugin
+# produce the Liveroom engine artifact by extracting libobs + the §5.2 plugin
 # allowlist from the official signed OBS release DMG pinned in engine/obs.lock.
 # Emits the exact same artifact layout as build-engine.sh (source/CI path).
 set -euo pipefail
@@ -91,12 +91,12 @@ if [[ -f "$REPO_ROOT/engine/obs-studio/COPYING" ]]; then
   cp "$REPO_ROOT/engine/obs-studio/COPYING" "$STAGE/licenses/COPYING.obs-studio"
 fi
 
-# The official renderer lacks Producer's current-frame handoff. Rebuild only
+# The official renderer lacks Liveroom's current-frame handoff. Rebuild only
 # that renderer from the same OBS pin and run its real-GPU checks locally.
 PRODUCER_ENGINE_DIR="$STAGE" "$REPO_ROOT/scripts/build-cutout-metal-lab.sh"
 cp "$REPO_ROOT/src-tauri/target/cutout-lab/libobs-metal-current-frame.dylib" "$STAGE/Frameworks/libobs-metal.dylib"
 
-# The extracted OBS camera pair uses OBS's identifiers. Build Producer's pair
+# The extracted OBS camera pair uses OBS's identifiers. Build Liveroom's pair
 # from the same pinned source downloaded by the standalone Metal builder.
 export PRODUCER_OBS_SOURCE="$REPO_ROOT/src-tauri/target/cutout-lab/engine-source"
 export PRODUCER_SIMDE_INCLUDE="$REPO_ROOT/src-tauri/target/cutout-lab/simde"

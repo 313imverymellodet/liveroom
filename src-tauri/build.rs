@@ -31,7 +31,7 @@ fn link_window_vibrancy_macos() {
     println!("cargo:rustc-link-lib=framework=WebKit");
 }
 
-/// Link the Producer engine artifact (libobs + plugin allowlist; see
+/// Link the Liveroom engine artifact (libobs + plugin allowlist; see
 /// engine/obs.lock and LIVE-REVIEW.md). When no artifact is present the app
 /// still builds — live features compile to stubs.
 fn link_live_engine() {

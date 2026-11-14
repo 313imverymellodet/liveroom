@@ -1,4 +1,4 @@
-/** THE Select — one control for every choice in Producer (v0.4.32).
+/** THE Select — one control for every choice in Liveroom (v0.4.32).
  *
  * Replaces every native `<select>` in src/views: a 32px GLASS trigger
  * (`--surface-2`, hairline, `--r-ctl`, chevron) and a portaled glass

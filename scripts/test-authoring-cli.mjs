@@ -7,7 +7,7 @@ const directory=await mkdtemp(join(tmpdir(),'producer-authoring-cli-'));
 const run=(...args)=>spawnSync(process.execPath,['scripts/generate-set.mjs',...args],{encoding:'utf8'});
 try{
  const cap=run('capabilities');assert.equal(cap.status,0,cap.stderr);assert.equal(JSON.parse(cap.stdout).catalog.revision,2);
- const plan={schema:'producer.design-plan/1',id:'cli-studio',name:'CLI studio',background:'#101010',layouts:[{id:'main',name:'Main',orientation:'landscape',elements:[{id:'title',kind:'text',bounds:[40,40,1200,120],text:'Producer',field:'title'}]}]};
+ const plan={schema:'producer.design-plan/1',id:'cli-studio',name:'CLI studio',background:'#101010',layouts:[{id:'main',name:'Main',orientation:'landscape',elements:[{id:'title',kind:'text',bounds:[40,40,1200,120],text:'Liveroom',field:'title'}]}]};
  const input=join(directory,'plan.json'),out=join(directory,'studio.set.json');await writeFile(input,JSON.stringify(plan));
  const compiled=run('compile','--plan',input,'--out',out);assert.equal(compiled.status,0,compiled.stderr);const metadata=JSON.parse(compiled.stdout);assert.equal(metadata.nativeReadiness,'not-tested');
  const original=await readFile(out,'utf8');assert.equal(run('compile','--plan',input,'--out',out).status,1);assert.equal(await readFile(out,'utf8'),original,'CLI never overwrites a Set');

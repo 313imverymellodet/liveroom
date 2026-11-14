@@ -110,7 +110,7 @@ export async function mountWorld(canvas, input, options) {
  try{await build();return api;}catch(e){api.dispose();throw e;}
 }
 
-// Native transport is authored by Producer, never by an imported package.
+// Native transport is authored by Liveroom, never by an imported package.
 if(document.documentElement.dataset.scene3dHost==='1'){
  const root=new URL('.',location.href);let source,controller,disposed=false,receiptSerial=0,session=0,marker=[];
  const report=async state=>{const canvas=document.querySelector('canvas');if(canvas)canvas.dataset.scene3dStatus=JSON.stringify(state);if(state.ready){for(const[i,value]of[state.revision,session].entries()){for(let part=0;part<3;part++){const chunk=Math.floor(value/2**(part*24));marker[i*3+part].style.backgroundColor=`rgb(${chunk%256},${Math.floor(chunk/256)%256},${Math.floor(chunk/65536)%256})`;}}}try{await fetch(new URL('receipt',root),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...state,serial:++receiptSerial,session})});}catch{}};

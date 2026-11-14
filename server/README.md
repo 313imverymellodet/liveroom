@@ -1,9 +1,9 @@
 # producer-server
 
-> The sovereignty backend for [Producer](https://github.com/Boomin-Ai/producer).
+> The sovereignty backend for [Liveroom](../README.md) (a fork of [Producer by Boomin](https://github.com/Boomin-Ai/producer)).
 > Your server, your storage, your keys. AGPL-3.0.
 
-producer-server is the self-hosted Producer backend: a single-user
+producer-server is the self-hosted Liveroom backend: a single-user
 Cloudflare Worker (Hono + D1 + R2 + cron) you deploy to your own
 account with one `wrangler deploy`. It schedules and publishes your
 posts 24/7 — laptop closed — with your own platform keys, for $0 at
@@ -14,7 +14,7 @@ contract; the desktop app, CLI, and agents are equal clients of either.
 
 ## Status
 
-**Working alpha.** The worker implements the full Producer contract
+**Working alpha.** The worker implements the full Liveroom contract
 ([`contract/openapi.yaml`](./contract/openapi.yaml), the project's
 spine): bearer auth with two token classes, channel OAuth for BYO Meta
 apps (Instagram, Facebook Pages, Threads), upload slots into private R2
@@ -28,7 +28,7 @@ engine and acceptance paths are covered by tests and a local smoke.
 **Live guests** are open too: rooms, shareable join links, a waiting
 room, admit/kick, the stage list, and WebRTC signaling through a
 SQLite-backed Durable Object (free plan). Media flows peer-to-peer
-between the host's Producer and the guest's browser; the worker only
+between the host's Liveroom and the guest's browser; the worker only
 introduces them. Two self-hosted Producers can do host ↔ guest with zero
 Boomin.
 

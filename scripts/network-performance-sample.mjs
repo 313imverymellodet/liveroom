@@ -10,7 +10,7 @@ import {performance} from 'node:perf_hooks';
 import {setTimeout as delay} from 'node:timers/promises';
 
 const execute=promisify(execFile),MAX_ROWS=65536,MAX_BYTES=8*1024*1024;
-export const HELP=`Passive Producer process sampler (Node 24+)
+export const HELP=`Passive Liveroom process sampler (Node 24+)
   node scripts/network-performance-sample.mjs --pid PID --duration SECONDS --interval MS --out PATH --stage LABEL
 
 All options are required. Duration: 1–120 seconds. Interval: 1000–120000 ms.
@@ -84,7 +84,7 @@ export function parseWindows(text){
 }
 
 /** Snapshot ancestry only. A helper reparented to launchd/systemd is excluded,
- * even if its name resembles Producer or it belonged to an earlier snapshot. */
+ * even if its name resembles Liveroom or it belonged to an earlier snapshot. */
 export function processFamily(rows,rootPid){
   const byId=new Map(rows.map(row=>[row.pid,row])),children=new Map();
   if(!byId.has(rootPid))return [];

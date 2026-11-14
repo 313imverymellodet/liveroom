@@ -53,7 +53,7 @@ void producer_set_v2_transition_program_release(void){if(effect_leases&&!--effec
 size_t producer_set_v2_transition_effect_compilations(void){return atomic_load(&effect_compilations);}
 static const char *name(void *p) {
   (void)p;
-  return "Producer set v2 live transition";
+  return "Liveroom set v2 live transition";
 }
 static uint32_t width(void *p) { return ((struct transition *)p)->width; }
 static uint32_t height(void *p) { return ((struct transition *)p)->height; }

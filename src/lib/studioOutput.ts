@@ -11,7 +11,7 @@ export type StudioScene = "room" | "studio";
 
 export function outputSceneFor(consumer: StudioConsumer, studioOn: boolean): StudioScene {
   // v0.4.48: the RETURN feed follows the program into the studio. "Broadcast
-  // the studio" has to mean every output, or a host using Producer as their
+  // the studio" has to mean every output, or a host using Liveroom as their
   // camera in Meet or Zoom sends the bare stage while the stream sends the
   // studio — the same switch, two different pictures.
   //

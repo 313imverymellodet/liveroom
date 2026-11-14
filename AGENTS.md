@@ -1,4 +1,4 @@
-# Shared Producer build requirements
+# Shared Liveroom build requirements
 
 Read `docs/MACOS-BUILDS.md` before changing Mac setup, native features,
 packaging, signing, installers or releases. These requirements apply to both
@@ -7,7 +7,7 @@ the bundled native development path. `bun run dev` is frontend-only;
 `tauri dev` without an engine is not a live/camera qualification build.
 
 - Supported production Mac builds must include a matching native live engine,
-  browser/CEF helpers, recording muxer, and Producer's camera plugin/provider.
+  browser/CEF helpers, recording muxer, and Liveroom's camera plugin/provider.
   Set `PRODUCER_REQUIRE_ENGINE=1` before Rust compilation and run the engine
   preflight. Do not silently ship an engine-less Intel replacement.
 - Keep `guest-rtc-production` in production Mac builds. The initial Intel

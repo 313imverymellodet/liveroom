@@ -1,5 +1,5 @@
 // Compiled with the pinned libobs-metal sources. The C entry point is optional:
-// Producer keeps its previous-frame path when an older engine lacks it.
+// Liveroom keeps its previous-frame path when an older engine lacks it.
 import Metal
 
 private final class ProducerCopyCompletion: @unchecked Sendable {

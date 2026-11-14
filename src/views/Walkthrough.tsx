@@ -167,10 +167,10 @@ export function Walkthrough({
   // it: a panel at --r-card with a hairline, an 11px/0.16em group label in
   // its head, and rows at 10px the way every list in the room is drawn. The
   // first cut was pill buttons and a gradient headline — generic, and nothing
-  // else in Producer looks like that.
+  // else in Liveroom looks like that.
   if (step === "welcome") {
     return (
-      <div className="walk-veil" role="dialog" aria-modal="true" aria-label="Welcome to your Room, Producer">
+      <div className="walk-veil" role="dialog" aria-modal="true" aria-label="Welcome to your Room, Liveroom">
         <div className="walk-panel">
           <div className="walk-panel-head">
             <span className="walk-live-dot" />
@@ -178,7 +178,7 @@ export function Walkthrough({
           </div>
           <div className="walk-panel-body">
             <h1 className="walk-title">
-              Welcome to your Room, <span className="walk-title-you">Producer</span>
+              Welcome to your Room, <span className="walk-title-you">Liveroom</span>
             </h1>
             <p className="walk-body">{copy.body}</p>
             <ul className="walk-steps" aria-label="What you'll do">

@@ -1,4 +1,4 @@
-﻿# dev-windows.ps1 -- Producer dev loop on Windows WITH the live engine.
+﻿# dev-windows.ps1 -- Liveroom dev loop on Windows WITH the live engine.
 #
 #   .\scripts\dev-windows.ps1            # tauri dev: Vite HMR + debug exe + engine
 #   .\scripts\dev-windows.ps1 -Build     # just build the debug exe (no launch)

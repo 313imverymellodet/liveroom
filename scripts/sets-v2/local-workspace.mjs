@@ -7,14 +7,14 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {createRequire} from 'node:module';
 import {parseEnv} from 'node:util';
-const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),profile=path.join(os.homedir(),'Library/Application Support/ai.boomin.producer.sets-v2-dev/local-workspace');
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),profile=path.join(os.homedir(),'Library/Application Support/app.liveroom.studio.sets-v2-dev/local-workspace');
 const envFile=path.join(profile,'workspace.env'),workspace=path.join(profile,'workspace.json');
 if(!fs.existsSync(envFile)||!fs.existsSync(workspace))throw Error('Initialize the private Sets v2 local workspace before starting it.');
 // launchd owns the dev service independently of an interactive tool session.
 // The job is loaded for this login only; no login-startup plist is installed.
 if(process.argv.includes('--background')){
  if(process.platform!=='darwin')throw Error('Background dev service currently requires macOS launchd.');
- const label='ai.boomin.producer.sets-v2-local-workspace',domain=`gui/${process.getuid()}`,job=`${domain}/${label}`;
+ const label='app.liveroom.studio.sets-v2-local-workspace',domain=`gui/${process.getuid()}`,job=`${domain}/${label}`;
  const check=spawnSync('/bin/launchctl',['print',job],{stdio:'ignore'});
  if(check.status!==0){
   const xml=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');

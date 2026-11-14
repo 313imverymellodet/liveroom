@@ -4,7 +4,7 @@ import json,sqlite3,shutil,datetime,os
 from pathlib import Path
 root=Path(__file__).resolve().parents[2]
 identity=json.loads((root/'src-tauri/tauri.sets-v2-dev.conf.json').read_text())['identifier']
-assert identity=='ai.boomin.producer.sets-v2-dev'
+assert identity=='app.liveroom.studio.sets-v2-dev'
 profile=Path.home()/'Library/Application Support'/identity
 library=profile/'sets-library';library.mkdir(parents=True,exist_ok=True)
 backup=profile/'module-cutover-backups'/datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ');backup.mkdir(parents=True,exist_ok=False);os.chmod(backup,0o700)

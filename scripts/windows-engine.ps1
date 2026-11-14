@@ -81,7 +81,7 @@ if inner:
 
 function Test-EngineGate([string]$dir) {
   # The closure gate is bash (Git for Windows ships it); it proves the artifact
-  # is self-contained and carries every Producer-owned replacement.
+  # is self-contained and carries every Liveroom-owned replacement.
   $bash = "C:\Program Files\Git\bin\bash.exe"
   if (-not (Test-Path $bash)) { $bash = "bash" }
   $posix = ($dir -replace '\\', '/') -replace '^([A-Za-z]):', '/$1'

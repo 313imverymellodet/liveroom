@@ -97,12 +97,12 @@ CREATE TABLE IF NOT EXISTS connect_sessions (
 -- Durable Object per guest and per room) and keeps the roster + stage list;
 -- media flows device to device and never touches the worker. Same tables
 -- and DTOs as Boomin's hosted API minus every brand/org/deal column, so the
--- Producer desktop app speaks to either without a fork.
+-- Liveroom desktop app speaks to either without a fork.
 
 CREATE TABLE IF NOT EXISTS live_rooms (
   id TEXT PRIMARY KEY,
   title TEXT,
-  -- Producer's OWN room id (its local SQLite row). Never the PK — a client
+  -- Liveroom's OWN room id (its local SQLite row). Never the PK — a client
   -- must not choose identity here — just a lookup key that makes
   -- registration idempotent across retries, reinstalls, second machines.
   external_ref TEXT UNIQUE,
@@ -122,11 +122,11 @@ CREATE TABLE IF NOT EXISTS live_rooms (
   -- Monotonic, single-writer: clients apply an update only if newer.
   stage_version INTEGER NOT NULL DEFAULT 0,
   stage_capacity INTEGER NOT NULL DEFAULT 4,
-  -- Last time the host's Producer touched this room (roster poll / stage
+  -- Last time the host's Liveroom touched this room (roster poll / stage
   -- publish). A heartbeat, not a flag: a crashed host stops stamping.
   host_seen_at INTEGER,
   -- The OPEN run (a go-live → end span). Contributions opened while a run is
-  -- open carry its id; NULL between runs. Producer starts one when it goes
+  -- open carry its id; NULL between runs. Liveroom starts one when it goes
   -- live and stops it at End, then reads the run report.
   run_id TEXT,
   run_started_at INTEGER,
@@ -150,12 +150,12 @@ CREATE TABLE IF NOT EXISTS live_room_guests (
   -- admitted; 'invite' guests were sent to a specific named person.
   joined_via TEXT NOT NULL DEFAULT 'invite' CHECK (joined_via IN ('invite', 'room_link')),
   -- 'control' rows are MOD seats minted by the host's mod link (kind
-  -- 'producer', control grants, no media): another Producer opens the link
+  -- 'producer', control grants, no media): another Liveroom opens the link
   -- and gets the roster + scene list, never a source on the set.
   seat TEXT NOT NULL DEFAULT 'guest' CHECK (seat IN ('guest', 'control')),
   -- PARTICIPANT KIND = how strong the identity behind the row is, never what
   -- it may do. 'visitor': the code is the whole credential. 'producer':
-  -- another Producer instance (producer_ref = display metadata, never a
+  -- another Liveroom instance (producer_ref = display metadata, never a
   -- credential). 'audience' is reserved: audiences are DO-only, never a row
   -- per phone. 'member' / 'connection' need Boomin identities and are refused
   -- here (422 network_unavailable).

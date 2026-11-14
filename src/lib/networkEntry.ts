@@ -10,7 +10,7 @@ export class NetworkEntryRequests{
   const id=this.ids.get(key)!;
   const task=(async()=>{
    const reply=await request(id);const body=reply.body as {join_url?:string;error?:{code?:string;message?:string}}|undefined;
-   if(!reply.available||reply.status<200||reply.status>=300||!body?.join_url)throw Error(`${body?.error?.code?body.error.code+': ':''}${body?.error?.message??'This server could not open the Producer guest seat.'}`);
+   if(!reply.available||reply.status<200||reply.status>=300||!body?.join_url)throw Error(`${body?.error?.code?body.error.code+': ':''}${body?.error?.message??'This server could not open the Liveroom guest seat.'}`);
    this.ids.delete(key);return body as T;
   })();
   this.pending.set(key,task);

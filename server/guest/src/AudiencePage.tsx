@@ -263,7 +263,7 @@ export default function AudiencePage({ code }: { code: string }) {
         {message && <p style={S.note}>{message}</p>}
         <p style={S.fine}>
           No account, nothing to install. This page only sends what you tap.{" "}
-          Powered by <a href="https://producer.dev" target="_blank" rel="noreferrer" style={S.plug}>Producer</a>
+          Powered by <a href="https://producer.dev" target="_blank" rel="noreferrer" style={S.plug}>Liveroom</a>
         </p>
       </div>
     </div>

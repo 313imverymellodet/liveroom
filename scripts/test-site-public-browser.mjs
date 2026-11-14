@@ -35,7 +35,7 @@ try{
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,kind+' at '+width);
   assert.equal(await page.locator('script,iframe').count(),0);
   await page.locator('.brand-mark').evaluate(img=>img.decode());assert.ok(await page.locator('.brand-mark').evaluate(img=>img.naturalWidth)>0);
-  await page.keyboard.press('Tab');assert.equal(await page.evaluate(()=>document.activeElement?.getAttribute('aria-label')),'Producer home');
+  await page.keyboard.press('Tab');assert.equal(await page.evaluate(()=>document.activeElement?.getAttribute('aria-label')),'Liveroom home');
   if(kind==='set')assert.equal(await page.getByRole('link',{name:'Download Set'}).getAttribute('href'),'/kleveland/set/djaylas-kitchen/download');
   if(process.env.PRODUCER_SITE_PREVIEW_DIR)await page.screenshot({path:resolve(process.env.PRODUCER_SITE_PREVIEW_DIR,`${kind}-${width}.png`),fullPage:true});
   await page.close();passed++;
@@ -57,5 +57,5 @@ try{
  for(const path of ['/kleveland','/kleveland/set/djaylas-kitchen']){
   await page.goto('https://producer.dev'+path);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'long authored text '+path);passed++;
  }
- await page.close();console.log(`Producer public browser: ${passed} real layout, keyboard, preview-decode and long-text checks passed (fixture network only).`);
+ await page.close();console.log(`Liveroom public browser: ${passed} real layout, keyboard, preview-decode and long-text checks passed (fixture network only).`);
 }finally{globalThis.fetch=originalFetch;await browser.close();}

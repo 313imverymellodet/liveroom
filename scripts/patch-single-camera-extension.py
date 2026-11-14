@@ -16,10 +16,10 @@ s=s.replace('    private var _videoDescription: CMFormatDescription!', '''    pr
             throw NSError(domain: "ProducerCamera", code: 1, userInfo: [NSLocalizedDescriptionKey: "Unsupported camera format"])
         }
         formatLock.lock()
-        // A receiver cannot silently override the active Producer canvas.
+        // A receiver cannot silently override the active Liveroom canvas.
         if !fromSink && sinkStarted && index != selectedFormatIndex {
             formatLock.unlock()
-            throw NSError(domain: "ProducerCamera", code: 2, userInfo: [NSLocalizedDescriptionKey: "Reconnect the camera using Producer's selected orientation"])
+            throw NSError(domain: "ProducerCamera", code: 2, userInfo: [NSLocalizedDescriptionKey: "Reconnect the camera using Liveroom's selected orientation"])
         }
         if fromSink && index != selectedFormatIndex && _streamingCounter > 0 {
             formatLock.unlock()

@@ -1,4 +1,4 @@
-// ── The guest render target — the page Producer loads in a browser source ─────
+// ── The guest render target — the page Liveroom loads in a browser source ─────
 //
 // Route: /connect/guest/render/:id?k=<render_key>&mic=<device label>
 //
@@ -17,7 +17,7 @@
 //
 // Media is PEER-TO-PEER: this page and the guest's browser connect directly.
 // The server only introduces them (a signaling ticket + ICE servers), so a guest
-// appearance costs nothing per minute. One page per guest — Producer renders each
+// appearance costs nothing per minute. One page per guest — Liveroom renders each
 // as its own browser source, which is what gives independent framing on the stage
 // and an independent fader in the mixer.
 
@@ -44,7 +44,7 @@ export default function GuestRenderPage({ id }: { id: string }) {
   const micLabel = params.get("mic");
   const programLabel = params.get("program");
   // `?track=screen` makes this the SCREEN page: the second browser source
-  // Producer loads for a guest who holds media.screen. It shares the guest's
+  // Liveroom loads for a guest who holds media.screen. It shares the guest's
   // signaling channel with the camera page, so every frame is tagged with the
   // peer it belongs to and each page answers only its own. The screen page
   // receives the share and nothing else: no mic capture, no program return
@@ -52,7 +52,7 @@ export default function GuestRenderPage({ id }: { id: string }) {
   // would clobber the camera page's reading for the same guest.
   const peer: HostPeer = params.get("track") === "screen" ? "screen" : "main";
   const isScreen = peer === "screen";
-  // `?feed=0`: Producer's statement that this participant does not hold
+  // `?feed=0`: Liveroom's statement that this participant does not hold
   // media.return_feed. Nothing goes back — no host mic, no program — so a
   // capture CEF may deny or hang is never even attempted for them. The
   // guest page gates the same thing on its side; this saves the work.

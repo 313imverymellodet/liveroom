@@ -17,7 +17,7 @@ struct mirror {
     uint32_t width, height;
     LONG mirrored;
 };
-static const char *name(void *p) { (void)p; return "Producer virtual camera placement"; }
+static const char *name(void *p) { (void)p; return "Liveroom virtual camera placement"; }
 static void *create(obs_data_t *s, obs_source_t *self) {
     (void)s;
     struct mirror *p = calloc(1, sizeof(*p));

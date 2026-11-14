@@ -1,5 +1,5 @@
 #!/bin/bash
-# check-no-qt.sh — M-L1 / A9 gate: the shipped Producer.app dependency closure
+# check-no-qt.sh — M-L1 / A9 gate: the shipped Liveroom.app dependency closure
 # must contain no Qt, no Chromium Embedded Framework, no Sparkle, and no OBS
 # frontend/scripting libraries, despite upstream's default plugin graph.
 # Scans every Mach-O file in the bundle (executables, dylibs, frameworks,
@@ -7,7 +7,7 @@
 # framework directories.
 set -euo pipefail
 
-APP="${1:?usage: check-no-qt.sh /path/to/Producer.app}"
+APP="${1:?usage: check-no-qt.sh /path/to/Liveroom.app}"
 # M-L7.1: CEF and the frontend-api shim are sanctioned bundle members;
 # Qt, Sparkle, and scripting remain forbidden (the A9 assertion).
 FORBIDDEN='Qt[A-Za-z]*\.framework|libQt|Sparkle\.framework|obs-scripting'

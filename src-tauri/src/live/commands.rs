@@ -739,7 +739,7 @@ pub async fn live_apply_scene(
 
 /// Devices behind a source picker: cameras and capture cards, microphones
 /// and audio interfaces, displays. Straight from libobs, so anything the OS
-/// exposes shows up without Producer knowing the hardware.
+/// exposes shows up without Liveroom knowing the hardware.
 #[tauri::command]
 pub async fn live_source_devices(
     state: State<'_, AppState>,
@@ -1004,8 +1004,8 @@ pub async fn live_vcam_output(state: State<'_, AppState>, on: bool) -> EngineRes
     state.live.set_virtual_cam(on).map_err(map)
 }
 
-/// Studio output (live/studio.rs): broadcast the whole Producer window. The
-/// The engine needs the Producer window's native capture identifier.
+/// Studio output (live/studio.rs): broadcast the whole Liveroom window. The
+/// The engine needs the Liveroom window's native capture identifier.
 #[tauri::command]
 pub async fn live_set_studio(
     app: tauri::AppHandle,
@@ -1025,7 +1025,7 @@ pub async fn live_set_studio(
             unsafe { crate::live::ffi::producer_window_id(ns_window as *mut std::ffi::c_void) };
         if on && id == 0 {
             return Err(EngineError::Other(
-                "could not identify Producer's own window".into(),
+                "could not identify Liveroom's own window".into(),
             ));
         }
         id as usize
@@ -1590,7 +1590,7 @@ pub async fn live_set_v2_report(
     #[cfg(all(feature = "sets-v2-dev", target_os = "macos"))]
     {
         use tauri::Manager;
-        if app.config().identifier != "ai.boomin.producer.sets-v2-dev" {
+        if app.config().identifier != "app.liveroom.studio.sets-v2-dev" {
             return Err("Not the isolated v2 app".into());
         }
         let bytes = serde_json::to_vec_pretty(&result).map_err(|e| e.to_string())?;
@@ -1666,7 +1666,7 @@ pub fn live_set_v2_dev_workspace(
             .map_err(|_| "Development storage unavailable")?;
         db.execute("INSERT INTO endpoints (id,kind,name,base_url) VALUES (?1,'connected','Sets v2 Local',?2) ON CONFLICT(id) DO UPDATE SET base_url=excluded.base_url",params![config.endpoint_id,config.base_url]).map_err(|_|"Could not save development workspace")?;
         db.execute(
-            "UPDATE live_rooms SET endpoint_id=?1 WHERE name='Producer dev smoke'",
+            "UPDATE live_rooms SET endpoint_id=?1 WHERE name='Liveroom dev smoke'",
             params![config.endpoint_id],
         )
         .map_err(|_| "Could not bind development room")?;

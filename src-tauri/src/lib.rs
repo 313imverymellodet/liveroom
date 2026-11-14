@@ -193,7 +193,7 @@ pub fn run() {
             }
             #[cfg(all(feature = "guest-rtc-pilot", debug_assertions))]
             if std::env::var("PRODUCER_RTC_ROOM_DEV_FIXTURE").as_deref() == Ok("1")
-                && app.config().identifier != "ai.boomin.producer.rtc-pilot"
+                && app.config().identifier != "app.liveroom.studio.rtc-pilot"
             {
                 return Err(std::io::Error::other(
                     "RTC development requires its isolated app identifier",
@@ -201,7 +201,7 @@ pub fn run() {
                 .into());
             }
             #[cfg(feature = "sets-v2-dev")]
-            if app.config().identifier != "ai.boomin.producer.sets-v2-dev" {
+            if app.config().identifier != "app.liveroom.studio.sets-v2-dev" {
                 return Err(std::io::Error::other(
                     "Sets v2 development requires its isolated app identifier",
                 )
@@ -506,7 +506,7 @@ pub fn run() {
                         let _ = win.set_focus();
                     }
                 }
-                // §5.5: no daemon — closing Producer ends the stream. The
+                // §5.5: no daemon — closing Liveroom ends the stream. The
                 // engine bounds the stop wait itself (≤ ~15s with an active
                 // session).
                 #[cfg(feature = "guest-rtc-pilot")]

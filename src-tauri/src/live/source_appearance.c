@@ -205,7 +205,7 @@ static const char *SHADER_DISPLAY=
  "Vert VS(Vert v){Vert o;o.pos=mul(float4(v.pos.xyz,1.0),ViewProj);o.uv=v.uv;return o;}"
  "float4 PS(Vert v):TARGET{return image.Sample(px,v.uv);}"
  "technique Draw{pass{vertex_shader=VS(v);pixel_shader=PS(v);}}";
-static const char *shader_name(void *unused){(void)unused;return "Producer shader layer";}
+static const char *shader_name(void *unused){(void)unused;return "Liveroom shader layer";}
 static uint32_t shader_width(void *data){return ((struct shader_source*)data)->width;}
 static uint32_t shader_height(void *data){return ((struct shader_source*)data)->height;}
 static void shader_scalar(gs_effect_t *e,const char *name,float v){gs_effect_set_float(gs_effect_get_param_by_name(e,name),v);}

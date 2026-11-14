@@ -60,7 +60,7 @@ test('unsupported, denied, revision conflict and private upstream errors are san
  }
  await assert.rejects(createPublicationClient('scope',async()=>{throw Error('PRIVATE_TOKEN');}).list(),error=>error.code==='failed'&&!error.message.includes('PRIVATE'));
 });
-test('response admission rejects malformed URLs/metadata and only constructs canonical Producer links',async()=>{
+test('response admission rejects malformed URLs/metadata and only constructs canonical Liveroom links',async()=>{
  for(const broken of [{...row,handle:'evil.example/x'},{...row,handle:'not_canonical'},{...row,slug:'../secret'},{...row,sha256:'token'},{...row,version:null}]){
   const client=createPublicationClient('scope',async()=>({available:true,status:200,body:{publications:[broken]}}));await assert.rejects(client.list(),error=>error.code==='invalid_response');
  }

@@ -4,7 +4,7 @@
 
 use crate::error::EngineResult;
 
-const SERVICE: &str = "ai.boomin.producer";
+const SERVICE: &str = "app.liveroom.studio";
 
 fn entry(endpoint_id: &str) -> EngineResult<keyring::Entry> {
     Ok(keyring::Entry::new(SERVICE, endpoint_id)?)

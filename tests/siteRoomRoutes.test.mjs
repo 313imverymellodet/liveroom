@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import worker from "../site/_worker.js";
 
-test("Producer serves the branded room without redirecting or forwarding credentials", async () => {
+test("Liveroom serves the branded room without redirecting or forwarding credentials", async () => {
   const previous = globalThis.fetch;
   let target;
   globalThis.fetch = async (url, options) => {
@@ -19,7 +19,7 @@ test("Producer serves the branded room without redirecting or forwarding credent
     assert.equal(response.headers.get("set-cookie"), null);
     assert.equal(response.headers.get("cache-control"), "no-store");
     const html = await response.text();
-    assert.match(html, /content="Producer"/);
+    assert.match(html, /content="Liveroom"/);
     assert.match(html, /content="https:\/\/producer.dev\/kleveland\/audience\/producer-demo"/);
   } finally { globalThis.fetch = previous; }
 });

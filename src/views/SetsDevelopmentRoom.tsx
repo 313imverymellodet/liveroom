@@ -106,7 +106,7 @@ export function SetsDevelopmentRoom() {
     bootstrap.current??=(async () => {
       const smoke = await invoke<boolean>("live_set_v2_smoke_enabled");
       const timingRoom=import.meta.env.DEV&&import.meta.env.VITE_CONTROL_TIMING_ROOM==='1';
-      const name = djVinyl ? 'Internet DJ Vinyl Test' : djRoom ? 'Internet DJ Test' : timingRoom ? "Producer control timing acceptance" : authoringReview ? "Producer authoring acceptance" : atmosphere ? "Atmosphere Studio" : studio ? "Producer 3D Studio" : scene3d ? "Producer 3D GPU lab" : new URLSearchParams(location.search).has("roomColor") ? "Producer color check" : smoke ? "Producer dev smoke" : "Producer dev";
+      const name = djVinyl ? 'Internet DJ Vinyl Test' : djRoom ? 'Internet DJ Test' : timingRoom ? "Liveroom control timing acceptance" : authoringReview ? "Liveroom authoring acceptance" : atmosphere ? "Atmosphere Studio" : studio ? "Liveroom 3D Studio" : scene3d ? "Liveroom 3D GPU lab" : new URLSearchParams(location.search).has("roomColor") ? "Liveroom color check" : smoke ? "Liveroom dev smoke" : "Liveroom dev";
       const workspace=djRoom?null:await invoke<{endpointId:string;serverRoomId:string;runProof?:boolean;moduleBindings:import('../../shared/set-runtime/contract').ModuleBindings}|null>('live_set_v2_dev_workspace');
       if(workspace)setActiveEndpointId(workspace.endpointId);
       const rooms = await ipc.liveListRooms();
@@ -146,7 +146,7 @@ export function SetsDevelopmentRoom() {
         if(config.presentation?.package?.id===atmosphereSet.id&&JSON.stringify(config.presentation.package)!==JSON.stringify(atmosphereSet)){config.presentation.package=atmosphereSet;await ipc.liveUpdateRoom(room.id,{config:JSON.stringify(config)});room={...room,config:JSON.stringify(config)};}
         if(!config.presentation?.package){
           // Reuse one existing camera binding without adding duplicate sources.
-          const previous=rooms.filter(r=>r.name==='Producer 3D Studio').sort((a,b)=>(b.config?.length??0)-(a.config?.length??0))[0];
+          const previous=rooms.filter(r=>r.name==='Liveroom 3D Studio').sort((a,b)=>(b.config?.length??0)-(a.config?.length??0))[0];
           const prior=JSON.parse(previous?.config||'{}'),host=prior.presentation?.bindings?.host;
           const camera=prior.sources?.extras?.find((s:{id:string})=>s.id===host);
           const remote=await guests.request(workspace.endpointId,'POST','/v1/app/live/rooms',{title:name,external_ref:room.id});
@@ -206,7 +206,7 @@ export function SetsDevelopmentRoom() {
   if (!room)
     return (
       <main className="shell">
-        <div className="boot">{error || "Opening Producer dev…"}</div>
+        <div className="boot">{error || "Opening Liveroom dev…"}</div>
       </main>
     );
   return (

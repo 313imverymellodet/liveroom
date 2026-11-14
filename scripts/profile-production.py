@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only macOS process-family profiling for an installed Producer app.
+"""Read-only macOS process-family profiling for an installed Liveroom app.
 
 Examples:
   python3 scripts/profile-production.py --out /tmp/producer-baseline --duration 300
@@ -7,7 +7,7 @@ Examples:
   python3 scripts/profile-production.py --out /tmp/producer-baseline --mark room.open
   python3 scripts/profile-production.py --out /tmp/producer-baseline --status
 
-This does not modify, restart, inject into, or control Producer. It records no
+This does not modify, restart, inject into, or control Liveroom. It records no
 command arguments, screen/audio, room names, text, URLs, credentials or keys.
 """
 from __future__ import annotations
@@ -38,7 +38,7 @@ MARKERS = (
     "edit.enter", "edit.exit", "camera.toggle", "microphone.toggle", "click",
     "record.begin", "record.end", "stream.begin", "stream.end",
 )
-SUFFIX = "/Producer.app/Contents/MacOS/producer"
+SUFFIX = "/Liveroom.app/Contents/MacOS/producer"
 STOP = False
 
 
@@ -218,7 +218,7 @@ def percent(current, previous, elapsed):
 
 def sampler_cpu():
     # RUSAGE_CHILDREN includes the completed /bin/ps child, including one reaped
-    # by subprocess.run after a timeout. Never count Producer CPU as overhead.
+    # by subprocess.run after a timeout. Never count Liveroom CPU as overhead.
     return (sum(resource.getrusage(resource.RUSAGE_SELF)[:2]),
             sum(resource.getrusage(resource.RUSAGE_CHILDREN)[:2]))
 
@@ -315,11 +315,11 @@ def run(args):
             consecutive_errors = 0
             root = rows.get(root_pid) if root_pid else None
             if root and (not is_producer(root) or root_start and root["start"] != root_start):
-                root = None  # Never attribute a reused PID to a previous Producer.
+                root = None  # Never attribute a reused PID to a previous Liveroom.
             if root is None and (root_pid is None or args.follow_restarts and not args.pid):
                 candidates = [row for row in rows.values() if is_producer(row)]
                 if len(candidates) > 1:
-                    raise RuntimeError("multiple Producer instances detected; specify --pid to avoid mixing baselines (PIDs: " + ", ".join(str(r["pid"]) for r in candidates) + ")")
+                    raise RuntimeError("multiple Liveroom instances detected; specify --pid to avoid mixing baselines (PIDs: " + ", ".join(str(r["pid"]) for r in candidates) + ")")
                 root = candidates[0] if candidates else None
             if root:
                 if root_start != root["start"] or root_pid != root["pid"]:
@@ -391,7 +391,7 @@ def self_test():
             raise AssertionError(value)
         except ValueError:
             pass
-    text = "123 1 Wed Nov 4 10:21:30 2026 2:03.45 1024 99.2 /Applications/Producer.app/Contents/MacOS/producer\n124 123 Wed Nov 4 10:21:31 2026 0:01.10 2048 4.0 /Applications/Producer.app/Contents/Frameworks/Producer Helper (GPU).app/Contents/MacOS/Producer Helper (GPU)\n125 1 Wed Nov 4 10:21:31 2026 0:12.10 4096 8.0 /System/Library/WebKit.WebContent\n"
+    text = "123 1 Wed Nov 4 10:21:30 2026 2:03.45 1024 99.2 /Applications/Liveroom.app/Contents/MacOS/producer\n124 123 Wed Nov 4 10:21:31 2026 0:01.10 2048 4.0 /Applications/Liveroom.app/Contents/Frameworks/Liveroom Helper (GPU).app/Contents/MacOS/Liveroom Helper (GPU)\n125 1 Wed Nov 4 10:21:31 2026 0:12.10 4096 8.0 /System/Library/WebKit.WebContent\n"
     rows = parse_ps(text)
     assert len(rows) == 3 and is_producer(rows[123])
     selected = family(rows, 123)
@@ -448,10 +448,10 @@ def self_test():
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", type=Path, help="Profile directory. Logs rotate; session/status metadata is replaced on a new run.")
-    parser.add_argument("--pid", type=int, help="Pin to one Producer PID and its start identity; never follows PID reuse.")
+    parser.add_argument("--pid", type=int, help="Pin to one Liveroom PID and its start identity; never follows PID reuse.")
     parser.add_argument("--duration", type=float, default=300, help="Seconds to observe; 0 runs until interrupted. Default: 300.")
     parser.add_argument("--interval", type=float, default=2, help="Poll interval in seconds, minimum 0.5. Default: 2.")
-    parser.add_argument("--follow-restarts", action="store_true", help="In auto-detect mode, follow a single new Producer after the prior app exits.")
+    parser.add_argument("--follow-restarts", action="store_true", help="In auto-detect mode, follow a single new Liveroom after the prior app exits.")
     parser.add_argument("--hash-binary", action="store_true", help="Record SHA-256 of the executable file when an app is detected; adds one-time I/O.")
     parser.add_argument("--max-mb", type=int, default=16, help="Maximum size of each JSONL file, MiB. Default: 16.")
     parser.add_argument("--keep", type=int, default=3, help="Archives per JSONL file, in addition to the current file. Default: 3.")

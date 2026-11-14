@@ -166,7 +166,7 @@ pub async fn dj_library(app: tauri::AppHandle) -> Result<Library, String> {
         .audio_dir()
         .or_else(|_| app.path().home_dir().map(|p| p.join("Music")))
         .map_err(|e| e.to_string())?
-        .join("Producer");
+        .join("Liveroom");
     tauri::async_runtime::spawn_blocking(move || {
         let _lock = LIBRARY_LOCK.lock().map_err(|e| e.to_string())?;
         let mut lib = read(&root)?;

@@ -115,7 +115,7 @@ static void mask_params(struct group *g,const struct group *mask,float density,f
 }
 static const char *name(void *unused) {
   (void)unused;
-  return "Producer set v2 ordered group";
+  return "Liveroom set v2 ordered group";
 }
 static uint32_t width(void *data) { return ((struct group *)data)->width; }
 static uint32_t height(void *data) { return ((struct group *)data)->height; }

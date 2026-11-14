@@ -295,7 +295,7 @@ export function SoundboardPanel({ roomId, enabled, compact = false }: { roomId: 
             </section>
             <details className="sb-settings sb-controllers">
               <summary>Stream Deck and shortcuts</summary>
-              <p>Install the Producer Sounds plugin and paste this connection into its settings.</p>
+              <p>Install the Liveroom Sounds plugin and paste this connection into its settings.</p>
               <div className="sb-toolbar">
                 <button onClick={() => void sounds.pairing().then(value => setPair(JSON.stringify(value))).catch(e => setError(String(e)))}>Show pairing connection</button>
                 {pair && <button onClick={() => void navigator.clipboard.writeText(pair).catch(() => setError('Select and copy the connection field.'))}>Copy connection</button>}

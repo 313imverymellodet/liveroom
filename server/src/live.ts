@@ -1,5 +1,5 @@
 // Live rooms + guests — the routes. Same paths as Boomin's hosted API so the
-// Producer desktop app and the guest pages need no fork. TWO route families
+// Liveroom desktop app and the guest pages need no fork. TWO route families
 // with deliberately different auth:
 //
 //   /v1/app/live/…      — the HOST. Primary endpoint token ONLY. An
@@ -91,7 +91,7 @@ liveHostRoutes.get("/rooms", async (c) => {
   return c.json({ rooms: rooms.map(publicRoom) });
 });
 
-/** Idempotent by external_ref. Registration is lazy by contract: Producer
+/** Idempotent by external_ref. Registration is lazy by contract: Liveroom
  *  creates rooms offline and only calls this the first time a room needs
  *  something server-side. */
 liveHostRoutes.post("/rooms", async (c) => {
@@ -128,12 +128,12 @@ liveHostRoutes.delete("/rooms/:id", async (c) => {
   return c.json({ ok: true });
 });
 
-/** The roster Producer polls (~3s). Stamps host_seen_at. */
+/** The roster Liveroom polls (~3s). Stamps host_seen_at. */
 liveHostRoutes.get("/rooms/:id/guests", async (c) => {
   return c.json({ guests: await roomRoster(c.env, origin(c.req.url), c.req.param("id")) });
 });
 
-/** Producer publishes who is on stage. Authoritative, versioned, pushed. The
+/** Liveroom publishes who is on stage. Authoritative, versioned, pushed. The
  *  server does NOT police the media path — it cannot, once peers hold a direct
  *  connection. It is authoritative about WHO IS ON STAGE; receivers enforce
  *  that by refusing to receive from anyone not on the list. */
@@ -188,7 +188,7 @@ liveHostRoutes.post("/rooms/:id/guests", async (c) => {
     roomId: c.req.param("id"),
     displayName: typeof body.display_name === "string" ? body.display_name : null,
     // `kind: producer` is honoured only as the presence of a producer_ref —
-    // the ref IS what makes the row a Producer's; the kind is never asserted bare.
+    // the ref IS what makes the row a Liveroom's; the kind is never asserted bare.
     producerRef: typeof body.producer_ref === "string" ? body.producer_ref : body.kind === "producer" ? "producer" : null,
   });
   // invite_url is returned EXACTLY ONCE (only its hash is stored); render_url
@@ -215,7 +215,7 @@ liveHostRoutes.post("/guests/:id/grants", async (c) => {
   return c.json({ guest: { ...publicGuest(guest), grants: grantList(guest) } });
 });
 
-/** The host mints a mod link (#47): a control seat another Producer opens. */
+/** The host mints a mod link (#47): a control seat another Liveroom opens. */
 liveHostRoutes.post("/rooms/:id/mod-link", async (c) => {
   const body = await jsonBody<{ display_name?: unknown }>(c);
   const result = await createModSeat(c.env, origin(c.req.url), {
@@ -238,7 +238,7 @@ liveHostRoutes.get("/rooms/:id/mods", async (c) => {
   return c.json({ mods: (rows.results ?? []).map((g) => ({ ...publicGuest(g), grants: grantList(g) })) });
 });
 
-/** The host's Producer joins the room channel's CONTROL side: it publishes
+/** The host's Liveroom joins the room channel's CONTROL side: it publishes
  *  its scene list there and receives mods' scene cuts as frames. */
 liveHostRoutes.post("/rooms/:id/control-session", async (c) => {
   const room = await loadRoom(c.env, c.req.param("id"));
@@ -264,7 +264,7 @@ liveHostRoutes.get("/rooms/:id/contributions", async (c) => {
   return c.json({ contributions: rows.map(publicContribution), run_id });
 });
 
-/** Runs bracket a show: start when Producer goes live, stop at End. The
+/** Runs bracket a show: start when Liveroom goes live, stop at End. The
  *  stop closes every open interval; the client then reads the report. */
 liveHostRoutes.post("/rooms/:id/runs", async (c) => {
   const body = await jsonBody<{ action?: unknown }>(c);
@@ -394,7 +394,7 @@ connectGuestRoutes.post("/guest/:code/share", async (c) => {
   return c.json({ contribution: row ? publicContribution(row) : null });
 });
 
-/** The RENDER side's ticket — what Producer's browser source uses. NOT gated
+/** The RENDER side's ticket — what Liveroom's browser source uses. NOT gated
  *  on acceptance: the host adds the source while building the show, long
  *  before the guest arrives; the page renders nothing until the guest
  *  publishes. This is why the ticket is not in the URL: a browser source's URL
@@ -428,7 +428,7 @@ connectGuestRoutes.post("/guest/:code/room-session", async (c) => {
 });
 
 /** The render page reports what it is actually receiving. Authorised by the
- *  render key, which only the host's own Producer holds — a guest cannot make
+ *  render key, which only the host's own Liveroom holds — a guest cannot make
  *  a failing connection look healthy. */
 connectGuestRoutes.post("/guest/render/:id/quality", async (c) => {
   const guest = await guestByRenderKey(c.env, c.req.param("id"), c.req.query("k") ?? "");
@@ -475,12 +475,12 @@ connectGuestRoutes.get("/guest-signal", async (c) => {
   }
 
   const forwarded = new Request(c.req.url, c.req.raw);
-  forwarded.headers.set("X-Producer-User", `${role}:${guestId}`);
-  forwarded.headers.set("X-Producer-Room", row.room_id);
-  forwarded.headers.set("X-Producer-Role", role);
+  forwarded.headers.set("X-Liveroom-User", `${role}:${guestId}`);
+  forwarded.headers.set("X-Liveroom-Room", row.room_id);
+  forwarded.headers.set("X-Liveroom-Role", role);
   // Grants come from the ROW at connect, not the ticket: the ticket sealed
   // them at mint (≤ 120 s ago); the row is what a revoke since then changed.
-  if (role === "guest") forwarded.headers.set("X-Producer-Grants", JSON.stringify(grantList(row)));
+  if (role === "guest") forwarded.headers.set("X-Liveroom-Grants", JSON.stringify(grantList(row)));
   return realtime.get(realtime.idFromName(guestChannelName(guestId))).fetch(forwarded);
 });
 
@@ -500,14 +500,14 @@ connectGuestRoutes.get("/guest-room-signal", async (c) => {
 
   const forwarded = new Request(c.req.url, c.req.raw);
   // Identity is the GUEST id, which is what `to` targets when one guest offers to another.
-  forwarded.headers.set("X-Producer-User", guestId);
-  forwarded.headers.set("X-Producer-Room", roomId);
-  forwarded.headers.set("X-Producer-Role", "guest");
-  forwarded.headers.set("X-Producer-Grants", JSON.stringify(grantList(row)));
+  forwarded.headers.set("X-Liveroom-User", guestId);
+  forwarded.headers.set("X-Liveroom-Room", roomId);
+  forwarded.headers.set("X-Liveroom-Role", "guest");
+  forwarded.headers.set("X-Liveroom-Grants", JSON.stringify(grantList(row)));
   return realtime.get(realtime.idFromName(roomChannelName(roomId))).fetch(forwarded);
 });
 
-/** The room channel's CONTROL side: the host's Producer (sub "host") or a
+/** The room channel's CONTROL side: the host's Liveroom (sub "host") or a
  *  mod seat (sub "control:<id>", grants sealed at mint and re-read from the
  *  row here). Same DO as the guests' room channel, so a cut is one hop. */
 connectGuestRoutes.get("/room-control", async (c) => {
@@ -515,10 +515,10 @@ connectGuestRoutes.get("/room-control", async (c) => {
   const claims = await verifyTicket(secret, c.req.query("ticket") ?? "", "room-control");
   if (!claims || !claims.room) throw new ApiError(401, "invalid_ticket", "Control ticket is invalid or expired.");
   const forwarded = new Request(c.req.url, c.req.raw);
-  forwarded.headers.set("X-Producer-Room", claims.room);
+  forwarded.headers.set("X-Liveroom-Room", claims.room);
   if (claims.sub === "host") {
-    forwarded.headers.set("X-Producer-User", "host");
-    forwarded.headers.set("X-Producer-Role", "host");
+    forwarded.headers.set("X-Liveroom-User", "host");
+    forwarded.headers.set("X-Liveroom-Role", "host");
   } else {
     const [kind, seatId] = claims.sub.split(":");
     if (kind !== "control" || !seatId) throw new ApiError(401, "invalid_ticket", "Control ticket is malformed.");
@@ -526,9 +526,9 @@ connectGuestRoutes.get("/room-control", async (c) => {
     if (!row || row.room_id !== claims.room || row.seat !== "control" || row.status !== "accepted") {
       throw new ApiError(410, "guest_unavailable", "This mod seat is no longer active.");
     }
-    forwarded.headers.set("X-Producer-User", `control:${row.id}`);
-    forwarded.headers.set("X-Producer-Role", "control");
-    forwarded.headers.set("X-Producer-Grants", JSON.stringify(grantList(row)));
+    forwarded.headers.set("X-Liveroom-User", `control:${row.id}`);
+    forwarded.headers.set("X-Liveroom-Role", "control");
+    forwarded.headers.set("X-Liveroom-Grants", JSON.stringify(grantList(row)));
   }
   return realtime.get(realtime.idFromName(roomChannelName(claims.room))).fetch(forwarded);
 });
@@ -558,6 +558,6 @@ guestPageRoutes.get("/guest/room/:code", guestPage);
 guestPageRoutes.get("/guest/render/:id", guestPage);
 guestPageRoutes.get("/guest/:code", guestPage);
 // The mod link lands on the same bundle: a browser shows "open this in
-// Producer" with the link; Producer itself never loads the page — it reads
+// Liveroom" with the link; Liveroom itself never loads the page — it reads
 // the code off the URL and speaks /v1/connect/mod/:code directly.
 guestPageRoutes.get("/mod/:code", guestPage);

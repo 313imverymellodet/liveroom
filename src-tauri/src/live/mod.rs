@@ -1,4 +1,4 @@
-//! Producer Live — libobs host (LIVE-REVIEW.md). Compiled against the engine
+//! Liveroom Live — libobs host (LIVE-REVIEW.md). Compiled against the engine
 //! artifact when present (`have_engine` cfg set by build.rs); otherwise the
 //! stubs keep the app building and the IPC surface truthful about it.
 
@@ -44,7 +44,7 @@ pub mod soundboard;
 /// into the camera extension (build-camera-extension.sh), Windows patches it
 /// into the DirectShow filter (engine/patches/win-dshow). The guest page
 /// matches the device by this label. Ungated: the no-engine build reports it.
-pub const VCAM_DEVICE_NAME: &str = "Producer Virtual Camera";
+pub const VCAM_DEVICE_NAME: &str = "Liveroom Virtual Camera";
 
 /// Wire shape of a preview cutout (CSS px, window client coordinates). The
 /// engine build converts it to engine::PreviewRect; the stub only needs a type.
@@ -503,7 +503,7 @@ impl Live {
         serde_json::json!({ "engine_ready": false, "disabled": true, "reason": "engine not bundled" })
     }
 
-    /// Quit path (§5.5: closing Producer ends the stream). Bounded by the
+    /// Quit path (§5.5: closing Liveroom ends the stream). Bounded by the
     /// engine's own stop wait (≤ ~15s with an active session, instant idle).
     #[cfg(have_engine)]
     pub fn shutdown(&self) {
@@ -1108,7 +1108,7 @@ pub fn report_dir() -> Option<PathBuf> {
 /// and it MATTERS here in a way it does not on macOS: a Win32 window belongs to
 /// the thread that created it, and that thread must pump messages. A preview
 /// HWND created on the engine thread hangs the UI the moment anything sends it
-/// a message --- which is what "Producer (Not Responding)" looked like.
+/// a message --- which is what "Liveroom (Not Responding)" looked like.
 pub(crate) static MAIN_APP: std::sync::OnceLock<tauri::AppHandle> = std::sync::OnceLock::new();
 #[cfg(have_engine)]
 pub(crate) static MAIN_THREAD: std::sync::OnceLock<std::thread::ThreadId> =

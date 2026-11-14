@@ -187,10 +187,10 @@ unsafe fn set_bool(d: *mut ffi::obs_data_t, k: &str, v: bool) {
     ffi::obs_data_set_bool(d, cstr(k).as_ptr(), v);
 }
 
-/// The settings every Producer video encoder shares — CBR at `bitrate_kbps`
+/// The settings every Liveroom video encoder shares — CBR at `bitrate_kbps`
 /// with a keyframe every 2s (what every RTMP service asks for and what makes
 /// a recording scrubbable) — plus each family's own quality vocabulary,
-/// pinned to the values OBS's own defaults use at 32.1.2 so a Producer
+/// pinned to the values OBS's own defaults use at 32.1.2 so a Liveroom
 /// stream looks like an OBS stream on the same GPU:
 ///
 /// * NVENC  `preset` p5, `tune` hq, `multipass` qres, `profile` high,

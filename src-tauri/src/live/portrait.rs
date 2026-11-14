@@ -92,7 +92,7 @@ struct Capture {
     param: *mut c_void,
 }
 extern "C" fn output_name(_: *mut c_void) -> *const std::ffi::c_char {
-    b"Producer portrait preview\0".as_ptr().cast()
+    b"Liveroom portrait preview\0".as_ptr().cast()
 }
 extern "C" fn output_create(
     _: *mut ffi::obs_data_t,
@@ -223,7 +223,7 @@ impl Portrait {
         let preview_width = width.min(1080);
         let preview_height = preview_width * height / width;
         let canvas = obs_canvas_create_private(
-            CString::new("Producer portrait").unwrap().as_ptr(),
+            CString::new("Liveroom portrait").unwrap().as_ptr(),
             &mut info,
             2 | 8 | 16,
         );

@@ -28,17 +28,17 @@ try{
  async function connect(width,height) {
   if(process.env.PRODUCER_CAMERA_ALLOW_RETIRED!=='1')await page.waitForFunction(async()=>{
    const devices=await navigator.mediaDevices.enumerateDevices();
-   return !devices.some(d=>d.kind==='videoinput'&&d.label==='Producer Portrait Camera');
+   return !devices.some(d=>d.kind==='videoinput'&&d.label==='Liveroom Portrait Camera');
   },null,{timeout:8000});
   await page.evaluate(async({width,height})=>{
    window.mirrorProof?.stream.getTracks().forEach(t=>t.stop());
    const devices=await navigator.mediaDevices.enumerateDevices();
-   const device=devices.find(d=>d.kind==='videoinput'&&d.label==='Producer Virtual Camera');
-   if(!device)throw Error('Single Producer camera is unavailable');
-   if(!window.allowRetired&&devices.filter(d=>d.kind==='videoinput'&&/^Producer (Virtual|Portrait) Camera$/.test(d.label)).length!==1)throw Error('Expected exactly one selectable Producer camera');
+   const device=devices.find(d=>d.kind==='videoinput'&&d.label==='Liveroom Virtual Camera');
+   if(!device)throw Error('Single Liveroom camera is unavailable');
+   if(!window.allowRetired&&devices.filter(d=>d.kind==='videoinput'&&/^Liveroom (Virtual|Portrait) Camera$/.test(d.label)).length!==1)throw Error('Expected exactly one selectable Liveroom camera');
    if(window.singleCameraId&&window.singleCameraId!==device.deviceId)throw Error('Camera identity changed across orientations');
    window.singleCameraId=device.deviceId;
-   if(!window.allowRetired&&devices.some(d=>d.kind==='videoinput'&&d.label==='Producer Portrait Camera'))throw Error('Retired portrait device is still registered');
+   if(!window.allowRetired&&devices.some(d=>d.kind==='videoinput'&&d.label==='Liveroom Portrait Camera'))throw Error('Retired portrait device is still registered');
    const stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{deviceId:{exact:device.deviceId},width:{exact:width},height:{exact:height}}});
    const video=document.createElement('video');video.muted=true;video.srcObject=stream;document.body.append(video);await video.play();
    window.mirrorProof={video,stream,track:stream.getVideoTracks()[0]};
@@ -64,5 +64,5 @@ try{
  }
  await page.evaluate(()=>window.mirrorProof.stream.getTracks().forEach(t=>t.stop()));
  await writeFile('/private/tmp/producer-live-mirror-proof.json',JSON.stringify({passed:true,samples},null,2));
- console.log('PASS: one Producer camera switches landscape → portrait → landscape; live mirror and restore preserve each receiving track.');
+ console.log('PASS: one Liveroom camera switches landscape → portrait → landscape; live mirror and restore preserve each receiving track.');
 }finally{await browser.close();}

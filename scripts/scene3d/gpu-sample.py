@@ -2,10 +2,10 @@
 """Local system GPU samples annotated by the opt-in native acceptance phase.
 
 Includes all applications: compare adjacent controlled phases, never attribute
-an individual system percentage entirely to Producer. Stops on final receipt.
+an individual system percentage entirely to Liveroom. Stops on final receipt.
 """
 import datetime,json,os,pathlib,plistlib,subprocess,time
-proof=pathlib.Path.home()/'Library/Application Support/ai.boomin.producer.sets-v2-dev/sets-v2-ui-proof.json'
+proof=pathlib.Path.home()/'Library/Application Support/app.liveroom.studio.sets-v2-dev/sets-v2-ui-proof.json'
 out=pathlib.Path(os.environ.get('PRODUCER_GPU_PROOF','/private/tmp/producer-scene3d-gpu.jsonl'))
 started=datetime.datetime.now(datetime.timezone.utc).isoformat()
 with out.open('w') as stream:

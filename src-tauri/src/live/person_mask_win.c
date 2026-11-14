@@ -69,7 +69,7 @@ static DWORD WINAPI worker(void *data) {
     const OrtApiBase *(ORT_API_CALL *base)(void)=(void *)GetProcAddress(lib,"OrtGetApiBase");
     if(!base || !(api=base()->GetApi(ORT_API_VERSION))) goto done;
     size_t length=0; const uint8_t *model=producer_person_mask_model(&length);
-    if(!ok(api,api->CreateEnv(ORT_LOGGING_LEVEL_WARNING,"Producer Cutout",&env)) ||
+    if(!ok(api,api->CreateEnv(ORT_LOGGING_LEVEL_WARNING,"Liveroom Cutout",&env)) ||
        !ok(api,api->CreateSessionOptions(&opts)) ||
        !ok(api,api->SetIntraOpNumThreads(opts,1)) ||
        !ok(api,api->SetInterOpNumThreads(opts,1)) ||
@@ -158,7 +158,7 @@ static void *create(obs_data_t *s, obs_source_t *ctx) {
     struct pm_win *f=calloc(1,sizeof(*f)); if(!f)return NULL;
     f->ctx=ctx; InitializeCriticalSection(&f->lock); f->generation=1;
     obs_enter_graphics();
-    char *error=NULL; f->effect=gs_effect_create(PRODUCER_PERSON_MASK_EFFECT,"Producer Cutout",&error);
+    char *error=NULL; f->effect=gs_effect_create(PRODUCER_PERSON_MASK_EFFECT,"Liveroom Cutout",&error);
     if(error) { fprintf(stderr,"[cutout] shader: %s\n",error); bfree(error); }
     f->src=gs_texrender_create(GS_RGBA,GS_ZS_NONE); f->analysis=gs_texrender_create(GS_BGRA,GS_ZS_NONE);
     f->blur_a=gs_texrender_create(GS_RGBA,GS_ZS_NONE); f->blur_b=gs_texrender_create(GS_RGBA,GS_ZS_NONE); f->refine=gs_texrender_create(GS_RGBA,GS_ZS_NONE);

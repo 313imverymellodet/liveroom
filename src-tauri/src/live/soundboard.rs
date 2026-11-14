@@ -50,9 +50,9 @@ impl Soundboard {
             for i in 0..2 {
                 if self.sources[i].is_null() {
                     let name = if i == 0 {
-                        c"Producer Sounds"
+                        c"Liveroom Sounds"
                     } else {
-                        c"Producer Sound Preview"
+                        c"Liveroom Sound Preview"
                     };
                     let s = ffi::obs_source_create(
                         c"producer_soundboard".as_ptr(),

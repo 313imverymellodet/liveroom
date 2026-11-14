@@ -31,7 +31,7 @@ const bundle = await build({
 });
 const js = bundle.outputFiles.find(file => file.path.endsWith('.js')).text;
 const css = bundle.outputFiles.find(file => file.path.endsWith('.css')).text;
-const html = '<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Producer setup preview</title><link rel="stylesheet" href="/fonts/instrument-sans/font.css"><link rel="stylesheet" href="/entry.css"></head><body><div id="root"></div><script src="/entry.js"></script></body></html>';
+const html = '<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Liveroom setup preview</title><link rel="stylesheet" href="/fonts/instrument-sans/font.css"><link rel="stylesheet" href="/entry.css"></head><body><div id="root"></div><script src="/entry.js"></script></body></html>';
 const server = createServer(async (req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname;
   if (path === '/entry.js' || path === '/entry.css') { res.setHeader('Content-Type', path.endsWith('js') ? 'text/javascript' : 'text/css'); res.end(path.endsWith('js') ? js : css); return; }
@@ -84,7 +84,7 @@ try {
     assert(dimensions.scrollWidth <= dimensions.width, `${label}: horizontal overflow ${JSON.stringify(dimensions)}`);
     assert(dimensions.scrollHeight <= dimensions.height, `${label}: desktop controls require page scrolling ${JSON.stringify(dimensions)}`);
   }
-  const signIn = await pageFor('signin'); await signIn.getByRole('heading', { name: 'Sign in to Producer', exact: true }).waitFor();
+  const signIn = await pageFor('signin'); await signIn.getByRole('heading', { name: 'Sign in to Liveroom', exact: true }).waitFor();
   await bounds(signIn, '1280×800 sign in'); await capture(signIn, '01-sign-in');
   assert.equal(await signIn.getByRole('button', { name: 'Email me a code', exact: true }).count(), 1);
   assert(await signIn.getByLabel('Email', { exact: true }).evaluate(el => el === document.activeElement));
@@ -112,8 +112,8 @@ try {
   const screen = welcome.getByRole('listitem').filter({ hasText: 'Screen recording' }); await screen.getByRole('button', { name: 'Open Settings', exact: true }).click();
   await welcome.waitForFunction(() => window.calls.some(c => c.command === 'live_screen_coach' && c.args.action === 'chip_show'));
   await welcome.evaluate(() => { window.fixture.screen = 'granted'; });
-  await welcome.getByRole('button', { name: 'Restart Producer', exact: true }).waitFor(); assert(await welcome.getByRole('button', { name: 'Skip for now', exact: true }).isDisabled());
-  await welcome.getByRole('button', { name: 'Restart Producer', exact: true }).click(); await welcome.waitForFunction(() => window.relaunchRequested);
+  await welcome.getByRole('button', { name: 'Restart Liveroom', exact: true }).waitFor(); assert(await welcome.getByRole('button', { name: 'Skip for now', exact: true }).isDisabled());
+  await welcome.getByRole('button', { name: 'Restart Liveroom', exact: true }).click(); await welcome.waitForFunction(() => window.relaunchRequested);
   assert.equal(await welcome.evaluate(() => window.calls.at(-1).command), 'firstlight_resume');
   results.push('screen-grant restart stays visible and writes its resume marker before relaunch'); await welcome.close();
   const resumed = await pageFor('permissions'); await resumed.getByRole('heading', { name: 'Give your studio access.', exact: true }).waitFor();

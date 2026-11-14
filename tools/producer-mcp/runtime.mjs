@@ -59,10 +59,10 @@ async function previewScript() {
 export async function previewHtml(doc,{review=true}={}) {
   const code=(await previewScript()).replaceAll('</script','<\\/script');
   const data=JSON.stringify(doc).replaceAll('<','\\u003c');
-  return `<!doctype html><html lang="en"><meta charset="utf-8"><title>Producer Set preview</title>
+  return `<!doctype html><html lang="en"><meta charset="utf-8"><title>Liveroom Set preview</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>body{margin:24px;background:#10141c;color:#eee;font:16px system-ui}header{display:flex;gap:20px;align-items:center;margin-bottom:16px}select{font:inherit;padding:8px}#preview{max-width:1100px;margin:auto}.set-preview{position:relative;width:100%;max-height:85vh}.set-preview iframe{position:absolute;border:0;width:100%;height:100%}.set-preview-status{position:absolute;bottom:8px;left:8px;background:#10141c;padding:8px}p{color:#b9c3d2}</style>
-  <header><strong>Producer · Draft preview</strong><label>Layout <select id="layouts"></select></label></header>
-  <p>Browser preview only. Cameras are placeholders; audio-reactive effects use simulated levels. Import the Set into Producer to bind sources and check native output.</p>
+  <header><strong>Liveroom · Draft preview</strong><label>Layout <select id="layouts"></select></label></header>
+  <p>Browser preview only. Cameras are placeholders; audio-reactive effects use simulated levels. Import the Set into Liveroom to bind sources and check native output.</p>
   <div id="preview"></div><section id="review" aria-label="Visual review">${review?'Checking every layout…':'Publication preview · placeholder cameras'}</section><script id="package" type="application/json">${data}</script><script>window.__producerSkipVisualAudit=${!review};${code}</script></html>`;
 }

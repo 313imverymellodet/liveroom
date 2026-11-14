@@ -46,25 +46,25 @@ pub struct Recorder {
     stop_state: Box<StopState>,
 }
 
-/// Where recordings land. ~/Movies/Producer on a Mac, %USERPROFILE%\Videos\
-/// Producer on Windows — created on demand, the place each OS's user looks
+/// Where recordings land. ~/Movies/Liveroom on a Mac, %USERPROFILE%\Videos\
+/// Liveroom on Windows — created on demand, the place each OS's user looks
 /// for anything they recorded.
 pub fn recordings_dir() -> PathBuf {
     let dir = if cfg!(target_os = "windows") {
         let home = std::env::var("USERPROFILE")
             .or_else(|_| std::env::var("HOME"))
             .unwrap_or_else(|_| ".".into());
-        PathBuf::from(home).join("Videos").join("Producer")
+        PathBuf::from(home).join("Videos").join("Liveroom")
     } else {
         let home = std::env::var("HOME").unwrap_or_else(|_| "/tmp".into());
-        PathBuf::from(home).join("Movies").join("Producer")
+        PathBuf::from(home).join("Movies").join("Liveroom")
     };
     let _ = std::fs::create_dir_all(&dir);
     dir
 }
 
 fn filename(stamp: &str) -> String {
-    format!("Producer {stamp}.mp4")
+    format!("Liveroom {stamp}.mp4")
 }
 
 impl Recorder {
@@ -96,10 +96,10 @@ impl Recorder {
             let as_ = ffi::obs_data_create();
             ffi::obs_data_set_int(as_, cstr("bitrate").as_ptr(), 192);
 
-            let (venc, _used) = encoders::create_video("Producer REC H264", vs);
+            let (venc, _used) = encoders::create_video("Liveroom REC H264", vs);
             let aenc = ffi::obs_audio_encoder_create(
                 cstr(encoders::audio_id()).as_ptr(),
-                cstr("Producer REC AAC").as_ptr(),
+                cstr("Liveroom REC AAC").as_ptr(),
                 as_,
                 0,
                 ptr::null_mut(),
@@ -131,7 +131,7 @@ impl Recorder {
             );
             let output = ffi::obs_output_create(
                 cstr("ffmpeg_muxer").as_ptr(),
-                cstr("Producer Recording").as_ptr(),
+                cstr("Liveroom Recording").as_ptr(),
                 settings,
                 ptr::null_mut(),
             );

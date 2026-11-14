@@ -6,7 +6,7 @@
 # so this is a sibling rather than a port — same PURPOSE, different mechanism.
 #
 # What it asserts:
-#   1. NO Qt in the shipped closure. Producer has no QApplication; a Qt-linked
+#   1. NO Qt in the shipped closure. Liveroom has no QApplication; a Qt-linked
 #      binary in the artifact means the build picked up the frontend path and
 #      will fail at load time, not at build time.
 #   2. Every allowlisted plugin is present. A silently-missing plugin is how you
@@ -107,15 +107,15 @@ for m in obs-virtualcam-module64.dll obs-virtualcam-module32.dll; do
 done
 
 # The camera's IDLE image: win-dshow's filter loads placeholder.png from beside
-# its DLL at runtime and upstream's is the OBS logo. The build stages Producer's
+# its DLL at runtime and upstream's is the OBS logo. The build stages Liveroom's
 # (engine/assets/vcam-placeholder.png, the same file macOS bakes into its
 # extension); the gate proves the staged bytes are ours, not upstream's.
 want="$(sha256_of "$REPO_ROOT/engine/assets/vcam-placeholder.png")"
 have="$(sha256_of "$STAGE/data/obs-plugins/win-dshow/placeholder.png" 2>/dev/null || echo missing)"
 if [[ "$want" == "$have" ]]; then
-  echo "  ok   virtual camera placeholder is Producer's"
+  echo "  ok   virtual camera placeholder is Liveroom's"
 else
-  echo "  FAIL virtual camera placeholder is not Producer's (staged $have)" >&2
+  echo "  FAIL virtual camera placeholder is not Liveroom's (staged $have)" >&2
   fail=1
 fi
 
@@ -124,7 +124,7 @@ fi
 # exe, spawned from the RUNNING EXECUTABLE's directory, reports the GPU can
 # encode. bin/ is flattened beside producer.exe, so bin/ is where they must be.
 # A missing helper is not an error anywhere at runtime: the plugin logs one
-# warning and Producer silently streams x264 on a box with a perfectly good
+# warning and Liveroom silently streams x264 on a box with a perfectly good
 # NVENC. Same severity as a missing plugin, for the same reason.
 for pair in obs-nvenc:obs-nvenc-test.exe obs-qsv11:obs-qsv-test.exe obs-ffmpeg:obs-amf-test.exe; do
   plugin="${pair%%:*}"; helper="${pair##*:}"

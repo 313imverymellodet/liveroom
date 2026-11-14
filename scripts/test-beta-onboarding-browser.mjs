@@ -15,7 +15,7 @@ const mocks={
   ModSeat:`import React from 'react';export function ModSeat({link,onLeave}){window.openedMod=link;return <section><h1>Invitation control seat</h1><button onClick={onLeave}>Leave invitation</button></section>;}`,
   SetsDevelopmentRoom:`import React from 'react';export const SetsDevelopmentRoom=()=> <h1>Unexpected development room</h1>;`,
   opener:`export const openUrl=async url=>{window.openedUrls.push(url);};`,
-  appIdentifier:`export const getIdentifier=async()=>{window.appIdentifierReads=(window.appIdentifierReads??0)+1;return window.fixture.appIdentifier??'ai.boomin.producer.sets-v2-dev';};`,
+  appIdentifier:`export const getIdentifier=async()=>{window.appIdentifierReads=(window.appIdentifierReads??0)+1;return window.fixture.appIdentifier??'app.liveroom.studio.sets-v2-dev';};`,
 };
 const bundles=new Map();
 function bundleFor(env={}){
@@ -104,8 +104,8 @@ async function codeStep(page,code='000000'){
 try{
   for(const returning of [false,true]){
     const {page,errors}=await pageFor({returning});
-    await page.getByRole('heading',{name:returning?'Welcome back':'Sign in to Producer',exact:true}).waitFor();
-    await page.getByText('Producer beta requires a Boomin account and workspace.',{exact:false}).waitFor();await noInitialServer(page);
+    await page.getByRole('heading',{name:returning?'Welcome back':'Sign in to Liveroom',exact:true}).waitFor();
+    await page.getByText('Liveroom beta requires a Boomin account and workspace.',{exact:false}).waitFor();await noInitialServer(page);
     assert.equal(await page.evaluate(()=>window.calls.filter(c=>!['list_endpoints','live_set_v2_smoke_enabled'].includes(c.command)).length),0);
     assert.deepEqual(errors,[]);results.push(returning?'signed-out entry requires Boomin':'fresh entry requires Boomin');await page.close();
   }
@@ -130,7 +130,7 @@ try{
     assert.deepEqual(await page.evaluate(()=>window.calls.filter(c=>c.command==='remove_endpoint').map(c=>c.args.endpointId)),['brand']);results.push(keepOwned?'Boomin sign-out preserves existing owned-server Home':'last Boomin sign-out returns to beta sign-in');await page.close();
   }
   {
-    const {page}=await pageFor({membership:'new'});await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();await codeStep(page);
+    const {page}=await pageFor({membership:'new'});await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();await codeStep(page);
     await page.getByRole('button',{name:'Back',exact:true}).click();await noInitialServer(page);await page.getByRole('button',{name:'Email me a code',exact:true}).click();
     assert.equal(await page.getByLabel('Sign-in code',{exact:true}).inputValue(),'');
     await page.getByLabel('Sign-in code',{exact:true}).fill('000000');
@@ -145,7 +145,7 @@ try{
   }
   {
     const {page}=await pageFor({membership:'new',deferCommands:['network_join']});
-    await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();await codeStep(page);
+    await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();await codeStep(page);
     await page.getByRole('button',{name:'Verify & connect',exact:true}).click();await page.getByRole('heading',{name:'Meet your network',exact:true}).waitFor();
     const optIn=page.getByRole('checkbox',{name:/^List my workspace on Boomin/});
     assert.equal(await optIn.isChecked(),false);await optIn.press('Space');assert.equal(await optIn.isChecked(),true);
@@ -188,7 +188,7 @@ try{
     results.push(multipleBrands?'older engine without a brand-selection endpoint ID finishes without inspecting or listing an arbitrary saved workspace':'older engine without a verification endpoint ID finishes without inspecting or listing an arbitrary saved workspace');await page.close();
   }
   {
-    const {page}=await pageFor();await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();
+    const {page}=await pageFor();await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();
     const email=page.getByLabel('Email',{exact:true});assert.equal(await email.getAttribute('autocomplete'),'email');
     await email.fill('creator@example.test');await page.getByRole('button',{name:'Email me a code',exact:true}).click();
     await page.getByRole('heading',{name:'Check your inbox',exact:true}).waitFor();
@@ -208,7 +208,7 @@ try{
     results.push('OTP autofill uses a text field, focuses the code, validates six digits and preserves leading zeros through keyboard submission');await page.close();
   }
   {
-    const {page}=await pageFor({deferCommands:['boomin_request_otp']});await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();
+    const {page}=await pageFor({deferCommands:['boomin_request_otp']});await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();
     const email=page.getByLabel('Email',{exact:true});await email.fill('creator@example.test');
     await page.getByRole('button',{name:'Email me a code',exact:true}).click();await page.waitForFunction(()=>!!window.pendingIpc.boomin_request_otp);
     const form=page.locator('form.entry-form');assert.equal(await form.getAttribute('aria-busy'),'true');
@@ -224,7 +224,7 @@ try{
     results.push('pending code delivery freezes email and alternate actions and rejects duplicate form submission');await page.close();
   }
   {
-    const {page}=await pageFor({deferCommands:['boomin_connect']});await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();
+    const {page}=await pageFor({deferCommands:['boomin_connect']});await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();
     await page.getByRole('button',{name:'Open a mod link',exact:true}).click();await codeStep(page,'001234');
     const invitation=page.getByLabel('Mod link',{exact:true});assert.equal(await invitation.isEnabled(),true);
     await page.getByRole('button',{name:'Verify & connect',exact:true}).click();await page.waitForFunction(()=>!!window.pendingIpc.boomin_connect);
@@ -261,7 +261,7 @@ try{
     results.push('pending verification disables expanded invitation inputs and rejects forced paste/drop without duplicate authentication or a capability-seat jump');await page.close();
   }
   for(const command of ['boomin_request_otp','boomin_connect']){
-    const {page}=await pageFor({deferCommands:[command]});await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();
+    const {page}=await pageFor({deferCommands:[command]});await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();
     if(command==='boomin_connect'){await codeStep(page);await page.getByRole('button',{name:'Verify & connect',exact:true}).click();}
     else{await page.getByLabel('Email',{exact:true}).fill('creator@example.test');await page.getByRole('button',{name:'Email me a code',exact:true}).click();}
     await page.waitForFunction(command=>!!window.pendingIpc[command],command);
@@ -280,32 +280,32 @@ try{
     results.push(command==='boomin_connect'?'verification failure is announced, associated with the form and recovers without opening a workspace':'code-delivery failure is announced and restores retry controls');await page.close();
   }
   {
-    const {page}=await pageFor({multipleBrands:true});await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();await codeStep(page);await page.getByRole('button',{name:'Verify & connect',exact:true}).click();
+    const {page}=await pageFor({multipleBrands:true});await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();await codeStep(page);await page.getByRole('button',{name:'Verify & connect',exact:true}).click();
     await page.getByRole('heading',{name:'Choose a workspace',exact:true}).waitFor();await page.getByRole('button',{name:'Use a different email',exact:true}).waitFor();await noInitialServer(page);
     await page.getByRole('button',{name:'First brand',exact:false}).click();await page.getByRole('heading',{name:'Saved workspace Home'}).waitFor();assert.equal(await page.evaluate(()=>window.activeEndpoint),'brand-first');results.push('multi-brand beta sign-in keeps the workspace selection path');await page.close();
   }
   {
-    const {page}=await pageFor();await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();await page.evaluate(()=>window.renderDirect({start:'server',allowServerConnection:false}));await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();await noInitialServer(page);results.push('stale/direct server start cannot bypass fresh-primary requirement');await page.close();
+    const {page}=await pageFor();await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();await page.evaluate(()=>window.renderDirect({start:'server',allowServerConnection:false}));await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();await noInitialServer(page);results.push('stale/direct server start cannot bypass fresh-primary requirement');await page.close();
   }
   {
-    const {page}=await pageFor();await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();await page.evaluate(()=>window.renderDirect({allowServerConnection:true}));await page.getByRole('button',{name:'Sign in with email',exact:true}).click();await page.getByRole('button',{name:'Advanced: custom API root',exact:true}).click();await page.getByLabel('API root (advanced)',{exact:true}).fill('https://custom.example.test');
-    await page.evaluate(()=>window.renderDirect({allowServerConnection:false}));await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();await noInitialServer(page);await codeStep(page);await page.getByRole('button',{name:'Verify & connect',exact:true}).click();await page.waitForFunction(()=>window.calls.some(c=>c.command==='boomin_connect'));assert.equal(await page.evaluate(()=>window.calls.filter(c=>['boomin_request_otp','boomin_connect'].includes(c.command)).every(c=>c.args.apiRoot===null)),true);results.push('beta entry ignores a retained custom API root after permission changes');await page.close();
+    const {page}=await pageFor();await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();await page.evaluate(()=>window.renderDirect({allowServerConnection:true}));await page.getByRole('button',{name:'Sign in with email',exact:true}).click();await page.getByRole('button',{name:'Advanced: custom API root',exact:true}).click();await page.getByLabel('API root (advanced)',{exact:true}).fill('https://custom.example.test');
+    await page.evaluate(()=>window.renderDirect({allowServerConnection:false}));await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();await noInitialServer(page);await codeStep(page);await page.getByRole('button',{name:'Verify & connect',exact:true}).click();await page.waitForFunction(()=>window.calls.some(c=>c.command==='boomin_connect'));assert.equal(await page.evaluate(()=>window.calls.filter(c=>['boomin_request_otp','boomin_connect'].includes(c.command)).every(c=>c.args.apiRoot===null)),true);results.push('beta entry ignores a retained custom API root after permission changes');await page.close();
   }
   {
-    const {page}=await pageFor({noBrands:true});await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();await codeStep(page);await page.getByRole('button',{name:'Verify & connect',exact:true}).click();
+    const {page}=await pageFor({noBrands:true});await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();await codeStep(page);await page.getByRole('button',{name:'Verify & connect',exact:true}).click();
     await page.getByText('this account has no workspace yet — create one in the Boomin web app first',{exact:false}).waitFor();await noInitialServer(page);
     assert.equal(await page.evaluate(()=>window.fixture.endpoints.length),0);assert.equal(await page.getByRole('heading',{name:'Saved workspace Home'}).count(),0);
     await page.getByRole('button',{name:'Create a Boomin account',exact:false}).click();assert.deepEqual(await page.evaluate(()=>window.openedUrls),['https://boomin.ai/signup']);
     await page.getByRole('button',{name:'Back',exact:true}).click();await page.getByLabel('Email',{exact:true}).fill('other@example.test');results.push('workspace-less account stays at sign-in with an explicit Boomin account/workspace recovery link');await page.close();
   }
   {
-    const {page}=await pageFor({listError:true});await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();await noInitialServer(page);results.push('endpoint lookup failure keeps beta entry closed to new owned-server registration');await page.close();
+    const {page}=await pageFor({listError:true});await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();await noInitialServer(page);results.push('endpoint lookup failure keeps beta entry closed to new owned-server registration');await page.close();
   }
   {
     const {page}=await pageFor({firstLightDone:false,endpoints:[owned]});await page.getByRole('heading',{name:'Permissions setup'}).waitFor();await page.getByRole('button',{name:'Continue permissions'}).click();await page.getByRole('heading',{name:'Saved workspace Home'}).waitFor();results.push('FirstLight remains ahead of normal routing');await page.close();
   }
   {
-    const {page}=await pageFor();await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();
+    const {page}=await pageFor();await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();
     const disclosure=page.getByRole('button',{name:'Open a mod link',exact:true});
     assert.equal(await disclosure.getAttribute('aria-expanded'),'false');assert.equal(await page.getByLabel('Mod link',{exact:true}).count(),0);
     const controls=await disclosure.getAttribute('aria-controls');assert.ok(controls);
@@ -314,16 +314,16 @@ try{
     await disclosure.press('Space');assert.equal(await disclosure.getAttribute('aria-expanded'),'false');assert.equal(await page.getByLabel('Mod link',{exact:true}).count(),0);
     await disclosure.press('Enter');await page.getByLabel('Mod link',{exact:true}).fill('https://host.example.test/connect/mod/gm_synthetic_invitation');await page.getByLabel('Mod link',{exact:true}).press('Enter');
     await page.getByRole('heading',{name:'Invitation control seat'}).waitFor();assert.equal(await page.evaluate(()=>window.openedMod.origin),'https://host.example.test');assert.equal(await page.evaluate(()=>window.fixture.endpoints.length),0);
-    await page.getByRole('button',{name:'Leave invitation'}).click();await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();await noInitialServer(page);
+    await page.getByRole('button',{name:'Leave invitation'}).click();await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();await noInitialServer(page);
     assert.equal(await page.getByRole('button',{name:'Open a mod link',exact:true}).getAttribute('aria-expanded'),'false');
     results.push('keyboard invitation disclosure announces its state and preserves account-free capability entry and return');await page.close();
   }
   {
-    const {page}=await pageFor({native:false});await page.getByRole('heading',{name:'Sign in to Producer'}).waitFor();assert(await page.getByRole('button',{name:'Open the desktop app',exact:true}).isDisabled());await noInitialServer(page);assert.equal(await page.evaluate(()=>window.calls.length),0);results.push('browser preview stays static without a native bridge');await page.close();
+    const {page}=await pageFor({native:false});await page.getByRole('heading',{name:'Sign in to Liveroom'}).waitFor();assert(await page.getByRole('button',{name:'Open the desktop app',exact:true}).isDisabled());await noInitialServer(page);assert.equal(await page.evaluate(()=>window.calls.length),0);results.push('browser preview stays static without a native bridge');await page.close();
   }
-  for(const appIdentifier of ['ai.boomin.producer.sets-v2-dev','ai.boomin.producer.windows-network-dev']){
+  for(const appIdentifier of ['app.liveroom.studio.sets-v2-dev','app.liveroom.studio.windows-network-dev']){
     const {page,errors}=await pageFor({endpoints:[boomin,owned],appIdentifier},{DEV:true,VITE_PRODUCER_ENTRY_REVIEW:'1'});
-    await page.getByRole('heading',{name:'Sign in to Producer',exact:true}).waitFor();await noInitialServer(page);
+    await page.getByRole('heading',{name:'Sign in to Liveroom',exact:true}).waitFor();await noInitialServer(page);
     assert.equal(await page.getByRole('heading',{name:'Saved workspace Home'}).count(),0);
     assert.equal(await page.evaluate(()=>window.firstLightMounts??0),0);
     await page.waitForFunction(()=>window.calls.some(call=>call.command==='ui_log'&&call.args.line.startsWith('[entry-review]')));
@@ -336,19 +336,19 @@ try{
   }
   {
     const {page}=await pageFor({endpoints:[boomin],firstLightDone:false},{DEV:true,VITE_PRODUCER_ENTRY_REVIEW:'1'});
-    await page.getByRole('heading',{name:'Sign in to Producer',exact:true}).waitFor();
+    await page.getByRole('heading',{name:'Sign in to Liveroom',exact:true}).waitFor();
     assert.equal(await page.evaluate(()=>window.firstLightMounts??0),0);assert.equal(await page.getByRole('heading',{name:'Permissions setup'}).count(),0);
     assert.deepEqual(await page.evaluate(()=>window.fixture.endpoints),[boomin]);
     results.push('development entry review never mounts FirstLight even when setup was not marked complete');await page.close();
   }
   for(const scenario of [
-    {label:'unknown bundle',env:{DEV:true,VITE_PRODUCER_ENTRY_REVIEW:'1'},appIdentifier:'ai.boomin.producer',identifierReads:1},
-    {label:'production build',env:{DEV:false,VITE_PRODUCER_ENTRY_REVIEW:'1'},appIdentifier:'ai.boomin.producer.sets-v2-dev',identifierReads:0},
-    {label:'missing DEV flag',env:{VITE_PRODUCER_ENTRY_REVIEW:'1'},appIdentifier:'ai.boomin.producer.sets-v2-dev',identifierReads:0},
+    {label:'unknown bundle',env:{DEV:true,VITE_PRODUCER_ENTRY_REVIEW:'1'},appIdentifier:'app.liveroom.studio',identifierReads:1},
+    {label:'production build',env:{DEV:false,VITE_PRODUCER_ENTRY_REVIEW:'1'},appIdentifier:'app.liveroom.studio.sets-v2-dev',identifierReads:0},
+    {label:'missing DEV flag',env:{VITE_PRODUCER_ENTRY_REVIEW:'1'},appIdentifier:'app.liveroom.studio.sets-v2-dev',identifierReads:0},
   ]){
     const {page,errors}=await pageFor({endpoints:[boomin,owned],appIdentifier:scenario.appIdentifier},scenario.env);
     await page.getByRole('heading',{name:'Saved workspace Home'}).waitFor();
-    assert.equal(await page.getByRole('heading',{name:'Sign in to Producer',exact:true}).count(),0);
+    assert.equal(await page.getByRole('heading',{name:'Sign in to Liveroom',exact:true}).count(),0);
     assert.equal(await page.getByRole('button',{name:'Back to studio',exact:true}).count(),0);
     assert.deepEqual(await page.evaluate(()=>window.fixture.endpoints),[boomin,owned]);
     assert.equal(await page.evaluate(()=>window.appIdentifierReads??0),scenario.identifierReads);

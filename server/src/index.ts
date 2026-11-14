@@ -1,8 +1,8 @@
 import {setRuntimeHostRoutes,setRuntimeAudienceRoutes} from './setRuntimeRoutes';
-// producer-server — the sovereignty backend for Producer.
+// producer-server — the sovereignty backend for Liveroom.
 //
 // One deployment = one workspace. The desktop app (or a CLI, or an
-// agent) speaks the Producer contract to this worker exactly as it does
+// agent) speaks the Liveroom contract to this worker exactly as it does
 // to Boomin's hosted backend; the difference is WHO runs it. Here: you.
 // D1 is the queue, private R2 is the media store (exposed only through
 // opaque bearer-capability URLs), the every-minute cron is the scheduler,
@@ -48,7 +48,7 @@ app.get("/v1/health", (c) => c.json(serverInfo()));
 // ── Bearer auth for everything else under /v1 ────────────────────────────────
 
 // The code-credentialed family (/v1/connect/*) is called cross-origin by
-// Producer itself: a mod seat is a Producer window talking to someone
+// Liveroom itself: a mod seat is a Liveroom window talking to someone
 // else's server with nothing but the mod code. CORS is open there — the
 // code is the credential and there is no cookie to ride on.
 app.use("/v1/connect/*", async (c, next) => {
@@ -484,7 +484,7 @@ app.post("/v1/jobs/:jobId/retry", async (c) => {
 
 // ── Live rooms + guests (see live.ts) ────────────────────────────────────────
 // Host family (primary token only) at the same paths Boomin serves, so the
-// Producer desktop app speaks to either backend unchanged.
+// Liveroom desktop app speaks to either backend unchanged.
 
 app.route("/v1/app/data-integrations", dataIntegrationRoutes);
 app.route("/v1/app/live", liveHostRoutes);
@@ -516,7 +516,7 @@ app.get("/connect/:platform", async (c) => {
     .bind(nonce, platform)
     .first<{ state: string; expires_at: number }>();
   if (!session || session.expires_at < nowSec()) {
-    return c.html("<h3>This connect link is invalid or expired.</h3><p>Start the connection again from Producer.</p>", 403);
+    return c.html("<h3>This connect link is invalid or expired.</h3><p>Start the connection again from Liveroom.</p>", 403);
   }
   const origin = new URL(c.req.url).origin;
   return c.redirect(authorizeUrl(platform, c.env, `${origin}/oauth/callback/${platform}`, session.state), 302);
@@ -534,7 +534,7 @@ app.get("/oauth/callback/:platform", async (c) => {
     .bind(state, platform, nowSec())
     .run();
   if (!claimed.meta.changes || !code) {
-    return c.html("<h3>This connect attempt is invalid or expired.</h3><p>Start again from Producer.</p>", 403);
+    return c.html("<h3>This connect attempt is invalid or expired.</h3><p>Start again from Liveroom.</p>", 403);
   }
   if (!c.env.TOKEN_ENCRYPTION_KEY) {
     return c.html("<h3>TOKEN_ENCRYPTION_KEY is not configured on this server.</h3>", 503);
@@ -565,7 +565,7 @@ app.get("/oauth/callback/:platform", async (c) => {
   return c.html(
     `<div style="font-family:system-ui;max-width:420px;margin:15vh auto;text-align:center">
        <h2>Connected ✓</h2>
-       <p>${names} is ready in Producer. You can close this window.</p>
+       <p>${names} is ready in Liveroom. You can close this window.</p>
      </div>`,
   );
 });

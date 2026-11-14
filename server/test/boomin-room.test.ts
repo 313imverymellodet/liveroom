@@ -1,4 +1,4 @@
-// Producer's Boomin transport (src/lib/boominRoom.ts): the pure translation
+// Liveroom's Boomin transport (src/lib/boominRoom.ts): the pure translation
 // between Boomin's `{channels, action, payload}` publishes and the frames the
 // host's control loop handles, plus the scene directory and the run window.
 import { describe, expect, it } from "vitest";

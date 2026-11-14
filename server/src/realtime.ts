@@ -15,7 +15,7 @@
 // Subscriptions live ONLY in each socket's serialized attachment (not an
 // instance field) so they survive DO eviction/hibernation. The Worker
 // authenticates the upgrade (short-lived ticket) and passes identity via
-// X-Producer-* headers, which this DO trusts.
+// X-Liveroom-* headers, which this DO trusts.
 import { verifyTicket } from "./ticket";
 import { AudienceRoom } from "./audienceRoom";
 import type { Env } from "./env";
@@ -30,7 +30,7 @@ type SocketState = {
   userId: string;
   roomId: string;
   channels: string[];
-  /** Who this socket is: the host page / the host's Producer, a guest, or a
+  /** Who this socket is: the host page / the host's Liveroom, a guest, or a
    *  control seat (mod). Absent on sockets from before roles = guest. */
   role?: SocketRole;
   /** The participant's grants at CONNECT (from the row, via the Worker).
@@ -129,17 +129,17 @@ export class RealtimeHub {
    *  Separate from fetch() so tests (plain Node, no 101 responses) can drive
    *  the hub without workerd. */
   async acceptUpgrade(request: Request): Promise<WebSocket> {
-    const userId = request.headers.get("X-Producer-User") ?? "";
-    const roomId = request.headers.get("X-Producer-Room") ?? "";
-    const roleHeader = request.headers.get("X-Producer-Role");
+    const userId = request.headers.get("X-Liveroom-User") ?? "";
+    const roomId = request.headers.get("X-Liveroom-Room") ?? "";
+    const roleHeader = request.headers.get("X-Liveroom-Role");
     const role: SocketRole = roleHeader === "host" || roleHeader === "control" || roleHeader === "audience" ? roleHeader : "guest";
 
-    const grants = parseGrantsHeader(request.headers.get("X-Producer-Grants"));
+    const grants = parseGrantsHeader(request.headers.get("X-Liveroom-Grants"));
     const { 0: client, 1: server } = new WebSocketPair();
 
     // Hibernation: accept (don't .accept()/addEventListener) so idle sockets don't bill.
     this.state.acceptWebSocket(server);
-    const socketState: SocketState = { userId, roomId, channels: [], role, roomControl: new URL(request.url).pathname.endsWith("/room-control"), authExpiresAt: Date.now() + (role === "audience" ? 3600000 : 120000), inviteOrigin: new URL(request.url).origin, ...(role === "audience" ? { audienceId: userId, name: request.headers.get("X-Producer-Name") ?? "Viewer" } : {}), audienceHost: role === "host", audienceInvite: role === "control" && (grants ?? []).includes("room.admit"), audienceControl: role === "control" && (grants ?? []).includes("room.remove"), ...(role === "host" ? { publisherId: crypto.randomUUID() } : {}), ...(grants ? { grants } : {}) };
+    const socketState: SocketState = { userId, roomId, channels: [], role, roomControl: new URL(request.url).pathname.endsWith("/room-control"), authExpiresAt: Date.now() + (role === "audience" ? 3600000 : 120000), inviteOrigin: new URL(request.url).origin, ...(role === "audience" ? { audienceId: userId, name: request.headers.get("X-Liveroom-Name") ?? "Viewer" } : {}), audienceHost: role === "host", audienceInvite: role === "control" && (grants ?? []).includes("room.admit"), audienceControl: role === "control" && (grants ?? []).includes("room.remove"), ...(role === "host" ? { publisherId: crypto.randomUUID() } : {}), ...(grants ? { grants } : {}) };
     server.serializeAttachment(socketState);
     // A control seat starts from the host's last published scene list, so a
     // mod who joins mid-show sees the active scene lit without waiting for

@@ -12,9 +12,9 @@ import {SetRuntimeService} from './setRuntimeService';
 //                      snapshot on connect, projected deltas ≤ 4 Hz
 //   host + guests    — the room's RealtimeHub channel (`interaction:host`,
 //                      `interaction:guest`), published from here; the host's
-//                      Producer subscribes on its control socket, the guest
+//                      Liveroom subscribes on its control socket, the guest
 //                      page on its room socket. ≤ 10 Hz to the host.
-//   the set          — never from here. Producer feeds its overlay page from
+//   the set          — never from here. Liveroom feeds its overlay page from
 //                      the host's clock (INTERACTIVE.md decision 1).
 //
 // Worker → DO (trusted, internal fetch):
@@ -22,7 +22,7 @@ import {SetRuntimeService} from './setRuntimeService';
 //   POST /transition  { id, transition, reveal_hold_ms? }
 //   POST /input       { id, identity, kind, value }
 //   GET  /list        → { interactions: Projected[] }   (host view)
-//   GET  /audience-ws (WebSocket upgrade; X-Producer-User = aud sub)
+//   GET  /audience-ws (WebSocket upgrade; X-Liveroom-User = aud sub)
 
 import type { Env } from "./env";
 import { project, type Projected, type ViewerRole } from "./interactions/project";
@@ -351,7 +351,7 @@ export class RoomState {
    *  of everything live goes out first so a reconnecting phone is correct
    *  before the next delta. */
   async acceptAudience(request: Request): Promise<WebSocket> {
-    const id = request.headers.get("X-Producer-User") ?? "";
+    const id = request.headers.get("X-Liveroom-User") ?? "";
     const { 0: client, 1: server } = new WebSocketPair();
     this.state.acceptWebSocket(server);
     server.serializeAttachment({ role: "audience", id } satisfies AudienceSocket);

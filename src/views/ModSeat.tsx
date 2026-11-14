@@ -1,8 +1,8 @@
-// A MOD SEAT (#47): this Producer opened someone else's mod link on an open
+// A MOD SEAT (#47): this Liveroom opened someone else's mod link on an open
 // server. A control seat, not a show — no engine, no sources, nothing on the
 // set. The roster (admit / remove / stage / order) goes through the server
 // with the mod code as the credential; scene cuts travel as frames on the
-// room's control channel and land in the host's Producer as if the host had
+// room's control channel and land in the host's Liveroom as if the host had
 // pressed the scene. The server is the gate; `grants` only hides.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { modSeat, type ModLink } from "../lib/modSeat";
@@ -130,7 +130,7 @@ export function ModSeat({ link, onLeave }: { link: ModLink; onLeave: () => void 
         else if (f.type === "scene.command") {
           const c = f as unknown as { status: string; scene_id: string; error?: string };
           if (c.status === "applied") setScenes((current) => current ? { ...current, active_scene_id: c.scene_id } : current);
-          if (c.status === "failed" || c.status === "expired") setErr(c.error ?? "Producer did not confirm the cut.");
+          if (c.status === "failed" || c.status === "expired") setErr(c.error ?? "Liveroom did not confirm the cut.");
         } else if (f.type === "error") {
           const e = f as { code: string; status?: number };
           setErr(e.code === "forbidden" ? "This seat can't cut scenes." : e.code === "unknown_scene" ? "That scene is gone." : e.code);
@@ -174,7 +174,7 @@ export function ModSeat({ link, onLeave }: { link: ModLink; onLeave: () => void 
 
   const stageToggle = async (guestId: string) => {
     if (pendingStageRef.current) return;
-    if (!sourceProtocol.current) { setErr("The host needs the updated Producer build to confirm stage changes."); return; }
+    if (!sourceProtocol.current) { setErr("The host needs the updated Liveroom build to confirm stage changes."); return; }
     const want = !stageRef.current.includes(guestId);
     const command = controlRef.current?.sourceAction("participant.stage", guestId, want);
     if (!command) { setErr("Reconnect to the host first."); return; }

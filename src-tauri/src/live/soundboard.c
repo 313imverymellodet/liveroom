@@ -32,7 +32,7 @@ OBS_IMPORT uint64_t os_gettime_ns(void);
 static uint64_t ns(uint64_t f) { return f / 48000 * 1000000000ULL + f % 48000 * 1000000000ULL / 48000; }
 static struct clip *find(struct board *s, uint64_t id) { for(int i=0;i<CLIPS;i++) if(s->clips[i].id==id) return &s->clips[i]; return NULL; }
 static bool active(struct board *s,uint64_t id) { for(int i=0;i<VOICES;i++) if(s->voices[i].id==id) return true; return false; }
-static const char *name(void *unused) { (void)unused; return "Producer soundboard"; }
+static const char *name(void *unused) { (void)unused; return "Liveroom soundboard"; }
 static void *create(obs_data_t *settings,obs_source_t *source) { (void)settings;(void)source;struct board *s=calloc(1,sizeof(*s));if(s){LOCK_INIT(&s->lock);s->gain=1;}return s; }
 static void destroy(void *data) { struct board *s=data;if(!s)return;for(int i=0;i<CLIPS;i++)free(s->clips[i].pcm);
 #ifndef _WIN32

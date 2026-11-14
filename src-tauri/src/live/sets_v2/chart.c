@@ -51,7 +51,7 @@ const char *producer_chart_key(obs_source_t *s) {
 }
 static const char *name(void *p) {
   (void)p;
-  return "Producer live chart";
+  return "Liveroom live chart";
 }
 static uint32_t width(void *p) { return ((struct chart *)p)->w; }
 static uint32_t height(void *p) { return ((struct chart *)p)->h; }

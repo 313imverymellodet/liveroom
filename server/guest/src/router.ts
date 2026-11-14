@@ -7,7 +7,7 @@ export type Route =
   | { page: "join"; code: string }
   | { page: "room"; code: string }
   | { page: "render"; id: string }
-  /** A mod link opened in a browser: it belongs in Producer (#47). */
+  /** A mod link opened in a browser: it belongs in Liveroom (#47). */
   | { page: "mod"; code: string }
   /** The audience door: /a/CODE (#51). */
   | { page: "audience"; code: string }

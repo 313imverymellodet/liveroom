@@ -40,7 +40,7 @@ type AccessRoom = { id: string | null; sid: string; name: string };
 /** Rooms this workspace has on its server — the only ones a role can be
  * granted on. The SERVER list is the truth (web, deals and other machines
  * mint rooms too); the local rows lend their names to rooms the server
- * lists without a title (Producer-registered ones) and their config to the
+ * lists without a title (Liveroom-registered ones) and their config to the
  * guest-door controls. Reconciles through the same `syncRooms` Home uses
  * — so a room just created at Home registers and appears here at once —
  * then re-reads on focus, on ROOMS_EVENT and on a workspace switch. */
@@ -530,7 +530,7 @@ function ModsAccess({ endpoint }: { endpoint: EndpointInfo }) {
   return (
     <>
       <div className="cr-sheet-row-sub acc-note">
-        Your server has no accounts. A mod is a capability you hand out: a link another Producer opens to admit, stage, order, remove and cut scenes — never on the set. Revoke the seat and the link dies at its next exchange.
+        Your server has no accounts. A mod is a capability you hand out: a link another Liveroom opens to admit, stage, order, remove and cut scenes — never on the set. Revoke the seat and the link dies at its next exchange.
       </div>
       {srvRooms.length === 0 && (
         <div className="set-list acc-list">

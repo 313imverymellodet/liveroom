@@ -1,11 +1,11 @@
 {
-  "Name": "Producer Sounds",
-  "Description": "Control the soundboard in your active Producer room.",
-  "Author": "Producer",
+  "Name": "Liveroom Sounds",
+  "Description": "Control the soundboard in your active Liveroom room.",
+  "Author": "Liveroom",
   "Version": "1.0.0.0",
-  "UUID": "ai.boomin.producer.sounds",
+  "UUID": "app.liveroom.studio.sounds",
   "Icon": "icon",
-  "Category": "Producer Sounds",
+  "Category": "Liveroom Sounds",
   "CategoryIcon": "icon",
   "CodePath": "plugin.mjs",
   "Nodejs": {
@@ -28,7 +28,7 @@
   "PropertyInspectorPath": "property-inspector.html",
   "Actions": [
     {
-      "UUID": "ai.boomin.producer.sounds.play",
+      "UUID": "app.liveroom.studio.sounds.play",
       "Name": "Play sound",
       "Tooltip": "Play sound",
       "Icon": "icon",
@@ -50,7 +50,7 @@
       "DisableAutomaticStates": true
     },
     {
-      "UUID": "ai.boomin.producer.sounds.stop",
+      "UUID": "app.liveroom.studio.sounds.stop",
       "Name": "Stop all sounds",
       "Tooltip": "Stop all sounds",
       "Icon": "icon",
@@ -72,7 +72,7 @@
       "DisableAutomaticStates": true
     },
     {
-      "UUID": "ai.boomin.producer.sounds.volume",
+      "UUID": "app.liveroom.studio.sounds.volume",
       "Name": "Effects volume",
       "Tooltip": "Effects volume",
       "Icon": "icon",

@@ -68,15 +68,15 @@ export async function djReactiveRoomProof(room:string){
   checks.push({check:'real DJ samples reach native music-reactive renderer',audio,visuals:reacting.map(o=>o.djVisuals)});await report({stage:'live controls'});
   await sleep(700);await until('Set controls settled',async()=>document.querySelector('.set-controls[data-output-busy="false"]')?true:null);
   const beforeCta=await statuses();
-  await click('Producer CTA');
+  await click('Liveroom CTA');
   await sleep(250);
-  const ctaOpen=await until('Producer CTA on both outputs',async()=>{if(!document.querySelector('.set-controls[data-output-busy="false"]'))return null;const s=await statuses();return s.every((o,i)=>o.renderedRevision!==beforeCta[i].renderedRevision&&!o.transitioning)?s:null;});
+  const ctaOpen=await until('Liveroom CTA on both outputs',async()=>{if(!document.querySelector('.set-controls[data-output-busy="false"]'))return null;const s=await statuses();return s.every((o,i)=>o.renderedRevision!==beforeCta[i].renderedRevision&&!o.transitioning)?s:null;});
   const audioDuringCta=await dj.control({kind:'status'});if(audioDuringCta.program?.phase!=='playing'||!audioDuringCta.audio?.playing)throw Error('CTA interrupted DJ playback');
   await click('Back to mix');
   await sleep(250);
   const ctaClosed=await until('Return to mix on both outputs',async()=>{if(!document.querySelector('.set-controls[data-output-busy="false"]'))return null;const s=await statuses();return s.every((o,i)=>o.renderedRevision!==ctaOpen[i].renderedRevision&&!o.transitioning)?s:null;});
   if(ctaClosed.some((o,i)=>o.scene3dContexts!==ready[i].scene3dContexts))throw Error('CTA recreated music-reactive 3D contexts');
-  checks.push({check:'Producer CTA opens and closes on both outputs while DJ audio keeps playing',contexts:ctaClosed.map(o=>o.scene3dContexts)});
+  checks.push({check:'Liveroom CTA opens and closes on both outputs while DJ audio keeps playing',contexts:ctaClosed.map(o=>o.scene3dContexts)});
   checks.push(await verifySoundPopups(room));
   await click('DROP ⚡');await until('Manual Drop on both outputs',async()=>{const s=await statuses();return s.every(o=>o.djVisuals.some(v=>v.role==='stage'&&v.dropActive))?true:null;});
   await click('Get Money 💸');const money=await until('Money rain on both outputs',async()=>{const s=await statuses();return s.every(o=>o.djVisuals.some(v=>v.role==='stage'&&v.moneyParticles===36))?s:null;});

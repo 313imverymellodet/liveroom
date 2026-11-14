@@ -70,7 +70,7 @@ fn folder_files(path: &Path, paths: &mut Vec<PathBuf>, skipped: &mut u64) {
 }
 fn measure(app_dir: &Path, mut paths: Vec<PathBuf>, recording_dir: &Path) -> StorageUsage {
     let mut usage = StorageUsage::default();
-    // Earlier Producer versions did not register recordings in local_recordings.
+    // Earlier Liveroom versions did not register recordings in local_recordings.
     // Include the actual output folder, including renamed files and subfolders.
     if recording_dir.exists() {
         folder_files(recording_dir, &mut paths, &mut usage.unreadable_entries);
@@ -121,7 +121,7 @@ pub async fn producer_storage_usage(
         } else {
             "Movies"
         })
-        .join("Producer");
+        .join("Liveroom");
     let paths = {
         let db = state.db.lock().expect("db mutex poisoned");
         let mut query = db.prepare("SELECT DISTINCT path FROM local_recordings")?;
@@ -163,7 +163,7 @@ mod tests {
     fn legacy_renamed_recordings_are_included_without_database_rows() {
         let root = std::env::temp_dir().join(format!("producer-storage-{}", uuid::Uuid::new_v4()));
         let app = root.join("app");
-        let movies = root.join("Movies/Producer");
+        let movies = root.join("Movies/Liveroom");
         std::fs::create_dir_all(&app).unwrap();
         std::fs::create_dir_all(movies.join("older")).unwrap();
         std::fs::write(app.join("db"), [0; 10]).unwrap();

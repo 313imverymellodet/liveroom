@@ -1,6 +1,6 @@
 //! Studio output (v0.4.37) — "Broadcast the studio".
 //!
-//! The founder wants the ENTIRE Producer window on the stream: their face on
+//! The founder wants the ENTIRE Liveroom window on the stream: their face on
 //! the stage, the scenes rail, guests, chat, the vote. The obvious way (put a
 //! capture of our own window in the room scene) is an infinite mirror, because
 //! the stage shows the program and the program shows the stage.
@@ -11,7 +11,7 @@
 //!   scene stays on output channel 0 — its audio tree, its program thumb, the
 //!   Windows selection outline all read channel 0 and keep working — and a
 //!   hidden STUDIO scene sits on channel [`STUDIO_CHANNEL`] above it: a black
-//!   backdrop plus a cursor-less window capture of Producer's own window,
+//!   backdrop plus a cursor-less window capture of Liveroom's own window,
 //!   fitted to the canvas. Later channels composite on top, so the main mix
 //!   IS the studio; the room underneath costs one scene draw and keeps every
 //!   source active (audio is mixed only from the main view's channel tree).
@@ -54,7 +54,7 @@ pub const STUDIO_CHANNEL: u32 = 2;
 /// not the main texture.
 pub static STUDIO_ON: AtomicBool = AtomicBool::new(false);
 
-/// Producer's own window, a CGWindowID on macOS and HWND on Windows.
+/// Liveroom's own window, a CGWindowID on macOS and HWND on Windows.
 #[derive(Debug, Clone)]
 pub struct StudioSpec {
     pub window_id: usize,
@@ -514,7 +514,7 @@ mod tests {
 
         // Three cycles, the exact gesture from the crash report.
         for _ in 0..3 {
-            m.set_studio(Some((7, "Producer")));
+            m.set_studio(Some((7, "Liveroom")));
             m.set_studio(None);
         }
         let log = m.drain();
@@ -533,7 +533,7 @@ mod tests {
     fn vcam_before_and_after_studio_are_identical() {
         let mut before = Machine::default();
         before.set_virtual_cam(true);
-        before.set_studio(Some((7, "Producer")));
+        before.set_studio(Some((7, "Liveroom")));
         let before_vcam: Vec<_> = before
             .drain()
             .into_iter()
@@ -541,7 +541,7 @@ mod tests {
             .collect();
 
         let mut after = Machine::default();
-        after.set_studio(Some((7, "Producer")));
+        after.set_studio(Some((7, "Liveroom")));
         after.set_virtual_cam(true);
         let after_vcam: Vec<_> = after
             .drain()
@@ -559,10 +559,10 @@ mod tests {
     fn repeat_commands_issue_nothing() {
         let mut m = Machine::default();
         m.set_virtual_cam(true);
-        m.set_studio(Some((7, "Producer")));
+        m.set_studio(Some((7, "Liveroom")));
         m.drain();
         m.set_virtual_cam(true);
-        m.set_studio(Some((7, "Producer")));
+        m.set_studio(Some((7, "Liveroom")));
         assert_eq!(m.drain(), vec![]);
     }
 
@@ -572,7 +572,7 @@ mod tests {
     fn a_video_reset_rebuilds_the_mix_under_the_camera() {
         let mut m = Machine::default();
         m.set_virtual_cam(true);
-        m.set_studio(Some((7, "Producer")));
+        m.set_studio(Some((7, "Liveroom")));
         m.drain();
         m.set_video();
         assert_eq!(

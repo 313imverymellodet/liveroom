@@ -104,7 +104,7 @@ jobs:
               release = matches[0]
           else:
               assert not resume, 'The original stable draft is missing'
-              body = dict(tag_name=tag, target_commitish=sha, name='Producer ' + tag, draft=True, prerelease=False, make_latest='false')
+              body = dict(tag_name=tag, target_commitish=sha, name='Liveroom ' + tag, draft=True, prerelease=False, make_latest='false')
               release = json.loads(subprocess.check_output(['gh', 'api', '--method', 'POST', endpoint, '--input', '-'], input=json.dumps(body), text=True))
           assert release['draft'] and not release['prerelease'] and release['target_commitish'] == sha, 'Release draft belongs to another source or channel'
           with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
@@ -144,7 +144,7 @@ jobs:
           PY
       - uses: actions/download-artifact@v4
         with:
-          name: Producer-macos-arm64-live
+          name: Liveroom-macos-arm64-live
           run-id: ${{ inputs.promote_run }}
           github-token: ${{ github.token }}
           path: candidate
@@ -235,7 +235,7 @@ jobs:
           args: ${{ matrix.args }}
 
 
-  # ── macOS arm64 + Live engine (Producer Live) ──────────────────────────────
+  # ── macOS arm64 + Live engine (Liveroom Live) ──────────────────────────────
   # Ordering is load-bearing (see docs/LIVE-REVIEW.md §5.2/D5):
   #   engine artifact on disk BEFORE tauri build   (build.rs links libobs then;
   #     absent artifact = silent stub build — guarded below with otool)
@@ -355,7 +355,7 @@ jobs:
           ent = profile['Entitlements']
           assert profile['ExpirationDate'] > datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None), 'Provisioning profile expired'
           assert profile['TeamIdentifier'] == [os.environ['NOTARY_TEAM']], 'Wrong provisioning team'
-          assert ent.get('com.apple.application-identifier') == os.environ['NOTARY_TEAM'] + '.ai.boomin.producer', 'Wrong provisioning app'
+          assert ent.get('com.apple.application-identifier') == os.environ['NOTARY_TEAM'] + '.app.liveroom.studio', 'Wrong provisioning app'
           assert ent.get('com.apple.developer.system-extension.install') is True, 'System Extension capability missing'
           PY
 
@@ -386,7 +386,7 @@ jobs:
       - name: Archive matching production symbols
         run: |
           set -euo pipefail
-          APP="src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Producer.app"
+          APP="src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Liveroom.app"
           SYMBOLS="src-tauri/target/aarch64-apple-darwin/release/producer.dSYM"
           # Cargo preserves its artifact hash in the inner DWARF filename.
           # Validate the actual file; the binary/dSYM UUID check below remains authoritative.
@@ -396,9 +396,9 @@ jobs:
           assert len(files) == 1 and files[0].stat().st_size > 0, 'Missing or ambiguous release DWARF file'
           PY
           mkdir -p /tmp/producer-symbols
-          ditto "$SYMBOLS" /tmp/producer-symbols/Producer.app.dSYM
-          xcrun dwarfdump --uuid "$APP/Contents/MacOS/Producer" > /tmp/producer-symbols/binary-uuid.txt
-          xcrun dwarfdump --uuid /tmp/producer-symbols/Producer.app.dSYM > /tmp/producer-symbols/symbol-uuid.txt
+          ditto "$SYMBOLS" /tmp/producer-symbols/Liveroom.app.dSYM
+          xcrun dwarfdump --uuid "$APP/Contents/MacOS/Liveroom" > /tmp/producer-symbols/binary-uuid.txt
+          xcrun dwarfdump --uuid /tmp/producer-symbols/Liveroom.app.dSYM > /tmp/producer-symbols/symbol-uuid.txt
           python3 - <<'PY'
           import pathlib, re
           root = pathlib.Path('/tmp/producer-symbols')
@@ -417,9 +417,9 @@ jobs:
 
       - name: Guard — refuse stub build
         run: |
-          APP="src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Producer.app"
+          APP="src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Liveroom.app"
           test -d "$APP" || { echo "FATAL: app bundle not found" >&2; exit 1; }
-          otool -L "$APP/Contents/MacOS/Producer" | grep -q libobs \
+          otool -L "$APP/Contents/MacOS/Liveroom" | grep -q libobs \
             || { echo "FATAL: binary not linked against libobs — stub build (have_engine cfg absent)" >&2; exit 1; }
           echo "APP=$APP" >> "$GITHUB_ENV"
 
@@ -457,7 +457,7 @@ jobs:
           rm -rf "$ROOT" && mkdir -p "$ROOT"
           cp -R "$APP" "$ROOT/"
           ln -s /Applications "$ROOT/Applications"
-          hdiutil create -volname "Producer" -srcfolder "$ROOT" -ov -format UDZO "$DMG"
+          hdiutil create -volname "Liveroom" -srcfolder "$ROOT" -ov -format UDZO "$DMG"
           if [ -n "${SIGN_IDENT:-}" ]; then
             bash scripts/codesign-with-retry.sh --force --timestamp --sign "$SIGN_IDENT" "$DMG"
             bash scripts/notarize-macos-artifact.sh "$DMG"
@@ -468,7 +468,7 @@ jobs:
       - name: Upload DMG as Actions artifact (dry-run proof)
         uses: actions/upload-artifact@v4
         with:
-          name: Producer-macos-arm64-live
+          name: Liveroom-macos-arm64-live
           path: ${{ env.DMG }}
 
       - name: Stage Apple Silicon installer in the release draft
@@ -494,7 +494,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: Producer-macos-silicon-notary-recovery-${{ github.sha }}
+          name: Liveroom-macos-silicon-notary-recovery-${{ github.sha }}
           path: macos-notary-receipts/
           if-no-files-found: ignore
           retention-days: 14
@@ -585,7 +585,7 @@ jobs:
           ent = profile['Entitlements']
           assert profile['ExpirationDate'] > datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None), 'Provisioning profile expired'
           assert profile['TeamIdentifier'] == [os.environ['NOTARY_TEAM']], 'Wrong provisioning team'
-          assert ent.get('com.apple.application-identifier') == os.environ['NOTARY_TEAM'] + '.ai.boomin.producer', 'Wrong provisioning app'
+          assert ent.get('com.apple.application-identifier') == os.environ['NOTARY_TEAM'] + '.app.liveroom.studio', 'Wrong provisioning app'
           assert ent.get('com.apple.developer.system-extension.install') is True, 'System Extension capability missing'
           PY
 
@@ -616,7 +616,7 @@ jobs:
       - name: Archive matching production symbols
         run: |
           set -euo pipefail
-          APP="src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Producer.app"
+          APP="src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Liveroom.app"
           SYMBOLS="src-tauri/target/x86_64-apple-darwin/release/producer.dSYM"
           # Cargo preserves its artifact hash in the inner DWARF filename.
           # Validate the actual file; the binary/dSYM UUID check below remains authoritative.
@@ -626,9 +626,9 @@ jobs:
           assert len(files) == 1 and files[0].stat().st_size > 0, 'Missing or ambiguous release DWARF file'
           PY
           mkdir -p /tmp/producer-symbols
-          ditto "$SYMBOLS" /tmp/producer-symbols/Producer.app.dSYM
-          xcrun dwarfdump --uuid "$APP/Contents/MacOS/Producer" > /tmp/producer-symbols/binary-uuid.txt
-          xcrun dwarfdump --uuid /tmp/producer-symbols/Producer.app.dSYM > /tmp/producer-symbols/symbol-uuid.txt
+          ditto "$SYMBOLS" /tmp/producer-symbols/Liveroom.app.dSYM
+          xcrun dwarfdump --uuid "$APP/Contents/MacOS/Liveroom" > /tmp/producer-symbols/binary-uuid.txt
+          xcrun dwarfdump --uuid /tmp/producer-symbols/Liveroom.app.dSYM > /tmp/producer-symbols/symbol-uuid.txt
           python3 - <<'PY'
           import pathlib, re
           root = pathlib.Path('/tmp/producer-symbols')
@@ -647,9 +647,9 @@ jobs:
 
       - name: Guard — refuse stub build
         run: |
-          APP="src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Producer.app"
+          APP="src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Liveroom.app"
           test -d "$APP" || { echo "FATAL: app bundle not found" >&2; exit 1; }
-          otool -L "$APP/Contents/MacOS/Producer" | grep -q libobs \
+          otool -L "$APP/Contents/MacOS/Liveroom" | grep -q libobs \
             || { echo "FATAL: binary not linked against libobs — stub build (have_engine cfg absent)" >&2; exit 1; }
           echo "APP=$APP" >> "$GITHUB_ENV"
 
@@ -687,7 +687,7 @@ jobs:
           rm -rf "$ROOT" && mkdir -p "$ROOT"
           cp -R "$APP" "$ROOT/"
           ln -s /Applications "$ROOT/Applications"
-          hdiutil create -volname "Producer" -srcfolder "$ROOT" -ov -format UDZO "$DMG"
+          hdiutil create -volname "Liveroom" -srcfolder "$ROOT" -ov -format UDZO "$DMG"
           if [ -n "${SIGN_IDENT:-}" ]; then
             bash scripts/codesign-with-retry.sh --force --timestamp --sign "$SIGN_IDENT" "$DMG"
             bash scripts/notarize-macos-artifact.sh "$DMG"
@@ -698,7 +698,7 @@ jobs:
       - name: Upload DMG as Actions artifact (dry-run proof)
         uses: actions/upload-artifact@v4
         with:
-          name: Producer-macos-intel-live
+          name: Liveroom-macos-intel-live
           path: ${{ env.DMG }}
 
       - name: Stage Intel installer in the release draft
@@ -724,12 +724,12 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: Producer-macos-intel-notary-recovery-${{ github.sha }}
+          name: Liveroom-macos-intel-notary-recovery-${{ github.sha }}
           path: macos-notary-receipts/
           if-no-files-found: ignore
           retention-days: 14
 
-  # ── Windows x64 + Live engine (Producer Live) ──────────────────────────────
+  # ── Windows x64 + Live engine (Liveroom Live) ──────────────────────────────
   # Mirror of build-macos-arm64-live for the Windows engine. Same rule set:
   #   engine artifact on disk BEFORE tauri build   (build.rs::link_live_engine_windows
   #     sets cfg(have_engine) only when PRODUCER_ENGINE_DIR/bin/obs.dll exists;
@@ -864,7 +864,7 @@ jobs:
         if: ${{ inputs.resume_windows_run == '' && (github.event_name == 'push' || inputs.publish) }}
         uses: actions/upload-artifact@v4
         with:
-          name: Producer-windows-x64-unqualified-${{ github.sha }}
+          name: Liveroom-windows-x64-unqualified-${{ github.sha }}
           path: |
             src-tauri/target/release/bundle/nsis/*.exe
             src-tauri/target/release/bundle/nsis/*.exe.sig
@@ -967,7 +967,7 @@ jobs:
       - name: Upload installers as Actions artifact (dry-run proof)
         uses: actions/upload-artifact@v4
         with:
-          name: Producer-windows-x64-live
+          name: Liveroom-windows-x64-live
           path: dist/*
           if-no-files-found: error
 

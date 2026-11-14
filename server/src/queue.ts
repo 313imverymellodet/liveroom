@@ -222,7 +222,7 @@ export async function publicOrigin(env: Env): Promise<string> {
   if (!row) {
     throw new SendError(
       "retryable",
-      "The server has not learned its public URL yet — open the Producer app (or call any /v1 route) once.",
+      "The server has not learned its public URL yet — open the Liveroom app (or call any /v1 route) once.",
     );
   }
   return row.value;

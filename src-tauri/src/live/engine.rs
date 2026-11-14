@@ -145,7 +145,7 @@ extern "C" fn ui_task_handler(task: ffi::obs_task_t, param: *mut c_void, wait: b
 }
 
 /// Windows has no UI thread to marshal to: OBS_TASK_UI exists for a Qt
-/// frontend and Producer has none. But a handler MUST be set --- obs.c drops
+/// frontend and Liveroom has none. But a handler MUST be set --- obs.c drops
 /// the task and logs "there's no UI task handler!" when it is null --- so run
 /// it inline, which satisfies `wait` trivially and cannot deadlock.
 #[cfg(target_os = "windows")]
@@ -407,7 +407,7 @@ fn bootstrap_inner(
     // flag here reaches CEF with no engine patch.
     //
     // ⚠️ This grant is BLANKET, not per-origin: any browser source can now
-    // capture audio. Acceptable because every browser URL in Producer is one
+    // capture audio. Acceptable because every browser URL in Liveroom is one
     // the user added, but the correct long-term fix is an origin-scoped
     // CefPermissionHandler in our own obs-browser build, allowing only our
     // guest-render origin.
@@ -501,7 +501,7 @@ fn bootstrap_inner(
     // §5.1: OBS UI tasks are marshalled to the macOS main thread from the start.
     unsafe { ffi::obs_set_ui_task_handler(ui_task_handler) };
 
-    // Producer's own filters, registered like a plugin would but from the
+    // Liveroom's own filters, registered like a plugin would but from the
     // shim: Cutout (person mask). Before modules load so it is present
     // whenever a scene config that names it is read.
     unsafe {
@@ -1053,7 +1053,7 @@ pub enum Command {
         path: String,
         reply: std::sync::mpsc::Sender<Result<i64, String>>,
     },
-    /// Start recording to ~/Movies/Producer. `stamp` names the file; the
+    /// Start recording to ~/Movies/Liveroom. `stamp` names the file; the
     /// engine never reads a clock.
     StartRecording {
         stamp: String,
@@ -1093,7 +1093,7 @@ pub enum Command {
         path: String,
     },
     StopStinger,
-    /// Virtual camera output — Producer appears as a webcam in other apps.
+    /// Virtual camera output — Liveroom appears as a webcam in other apps.
     SetVirtualCam {
         on: bool,
         reply: std::sync::mpsc::Sender<Result<bool, String>>,
@@ -2070,7 +2070,7 @@ unsafe fn draw_selection(bw: f32, bh: f32, cx: u32, cy: u32) {
             }
         }
     };
-    // Producer green (#22c55e) for the selection; the stage editor's crop red
+    // Liveroom green (#22c55e) for the selection; the stage editor's crop red
     // (#ff5a5a, App.css .se-edge.cut) for any edge that has been cropped, so a
     // Windows room shows the same "which edges you took off" as macOS does
     // with its webview outline (hidden here under the float-mode preview).
@@ -2639,7 +2639,7 @@ impl LiveProxy {
 /// Upstream modules speak in their own brand and their own UI vocabulary —
 /// mac-virtualcam's "Please allow OBS to install…" is a compiled string we
 /// cannot patch. Every message that can reach a user passes through here, so
-/// nothing says OBS in Producer's window.
+/// nothing says OBS in Liveroom's window.
 pub fn user_facing(message: &str) -> String {
     let m = message.trim();
     let lower = m.to_ascii_lowercase();
@@ -2647,13 +2647,13 @@ pub fn user_facing(message: &str) -> String {
         // Same condition, each platform's own remedy: a system extension to
         // approve on macOS, a DirectShow filter to register on Windows.
         #[cfg(target_os = "macos")]
-        return String::from("The virtual camera isn't installed yet. Approve Producer's camera extension in System Settings › General › Login Items & Extensions › Camera Extensions, then try again.");
+        return String::from("The virtual camera isn't installed yet. Approve Liveroom's camera extension in System Settings › General › Login Items & Extensions › Camera Extensions, then try again.");
         #[cfg(not(target_os = "macos"))]
         return String::from("The virtual camera isn't installed yet. Click Install cam, allow the prompt, then try again.");
     }
-    m.replace("OBS Studio", "Producer")
-        .replace("obs-studio", "Producer")
-        .replace("OBS", "Producer")
+    m.replace("OBS Studio", "Liveroom")
+        .replace("obs-studio", "Liveroom")
+        .replace("OBS", "Liveroom")
 }
 
 pub fn start(
@@ -2969,7 +2969,7 @@ pub fn start(
                         {
                             #[cfg(target_os = "windows")]
                             if ffi::producer_vcam_in_use() != 0 {
-                                "The virtual camera is busy. Close other camera sessions in Producer or OBS, then try again.".to_string()
+                                "The virtual camera is busy. Close other camera sessions in Liveroom or OBS, then try again.".to_string()
                             } else {
                                 "The virtual camera could not start. Check its installation and try again.".to_string()
                             }
@@ -3660,7 +3660,7 @@ pub fn start(
                                 }
                                 // v0.4.48 — STUDIO IS THE WHOLE OUTPUT. The
                                 // virtual camera used to show the room even
-                                // with studio on, so a host using Producer as
+                                // with studio on, so a host using Liveroom as
                                 // their camera in Meet or Zoom sent the stage
                                 // while the stream sent the studio. "Broadcast
                                 // the studio" now means every output.

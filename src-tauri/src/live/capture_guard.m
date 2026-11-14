@@ -22,7 +22,7 @@ static void guarded_start(id capture, SEL selector) {
             NSError *error = nil;
             acquired = [device lockForConfiguration:&error];
             if (!acquired) {
-                NSLog(@"[Producer camera] Startup deferred: %@", error);
+                NSLog(@"[Liveroom camera] Startup deferred: %@", error);
                 return;
             }
         }
@@ -30,7 +30,7 @@ static void guarded_start(id capture, SEL selector) {
     } @catch (NSException *exception) {
         // Leave this camera unavailable, instead of terminating the room.
         // A subsequent device selection recreates the capture session.
-        NSLog(@"[Producer camera] Capture startup failed: %@: %@",
+        NSLog(@"[Liveroom camera] Capture startup failed: %@: %@",
               exception.name, exception.reason);
     } @finally {
         // Preserve a lock owned by OBS's manual-format configuration path.

@@ -1,5 +1,5 @@
 //! Connected-mode bootstrap: Boomin email OTP sign-in. Auth acquisition is
-//! backend-specific (outside the Producer contract); once a token exists the
+//! backend-specific (outside the Liveroom contract); once a token exists the
 //! endpoint is spoken to purely through the contract client. The token flows
 //! response → keychain without ever entering the webview.
 
@@ -9,7 +9,7 @@ use crate::error::{EngineError, EngineResult};
 
 pub const DEFAULT_BOOMIN_API_ROOT: &str = "https://api.boomin.ai";
 
-/// The Producer-contract base for a Boomin API root (D1's lean mount).
+/// The Liveroom-contract base for a Boomin API root (D1's lean mount).
 pub fn producer_base_for_root(api_root: &str) -> String {
     format!("{}/v1/app/producer", api_root.trim_end_matches('/'))
 }

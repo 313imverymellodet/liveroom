@@ -1,11 +1,11 @@
 // ── The server's settings console, delivered at runtime ──────────────────────
-// Producer is open source and bundles no Boomin UI. When the server it is
+// Liveroom is open source and bundles no Boomin UI. When the server it is
 // signed into advertises a console (`server.console` on the session — Boomin
 // does; a self-hosted server may not), this view loads that server's runtime
 // script and mounts `@boomin/components/console` into a shadow root here.
 // Brand settings, Payments (Stripe Connect, wallet, deal funding), members,
 // API keys — all of it ships from the server, so a fix reaches every install
-// without a Producer release.
+// without a Liveroom release.
 //
 // The keychain token never enters this webview: Rust mints a one-time
 // handoff code (POST /v1/app/auth/handoff) and the console exchanges it for
@@ -89,7 +89,7 @@ export function ConsoleHost({ endpoint, section }: { endpoint: EndpointInfo | nu
         }
         webOrigin = new URL(res.console.console).origin;
         if (res.console.contract !== SUPPORTED_CONTRACT) {
-          setStatus({ kind: "error", message: `This server's console needs a newer Producer (contract ${res.console.contract}).`, webOrigin });
+          setStatus({ kind: "error", message: `This server's console needs a newer Liveroom (contract ${res.console.contract}).`, webOrigin });
           return;
         }
         const runtime = await loadRuntime(res.console.runtime);

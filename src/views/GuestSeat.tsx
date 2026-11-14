@@ -1,4 +1,4 @@
-/** The green room — a Producer room in GUEST mode.
+/** The green room — a Liveroom room in GUEST mode.
  *
  * The room view is the guest's own stage (their scene is their camera); this
  * strip above it is the seat: self-view, the host's program return once it

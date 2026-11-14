@@ -1,4 +1,4 @@
-// A MOD SEAT on an open server (#47): Producer opened someone's mod link.
+// A MOD SEAT on an open server (#47): Liveroom opened someone's mod link.
 //
 // No endpoint, no token — the mod code in the URL is the credential, exactly
 // like a guest's invite code, so this talks to /v1/connect/mod/:code/*

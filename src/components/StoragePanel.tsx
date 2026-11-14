@@ -25,7 +25,7 @@ export function StoragePanel({ endpoint }: { endpoint: EndpointInfo | null }) {
   return <div className="set-storage">
     {endpoint ? <HostedStorage key={JSON.stringify([endpoint.id, endpoint.base_url, endpoint.brand_slug])} endpoint={endpoint} /> : <section className="set-storage-card"><h2>Brand storage</h2><p>Connect a workspace to see hosted media usage.</p></section>}
     <section className="set-storage-card"><div className="set-storage-heading"><h2>This Mac</h2><button className="linkish" disabled={busy} onClick={() => void refresh()}>{busy ? "Measuring…" : "Refresh"}</button></div>
-      <strong className="set-storage-total">{local ? bytes(local.total_bytes) : "—"}</strong><p className="set-storage-note">Producer app data and recording files across all workspaces.</p>
+      <strong className="set-storage-total">{local ? bytes(local.total_bytes) : "—"}</strong><p className="set-storage-note">Liveroom app data and recording files across all workspaces.</p>
       {error && <p role="alert">Couldn’t measure local storage. {local && "Showing the last measurement."}</p>}
       {local && <><dl className="set-storage-rows"><div><dt>App data</dt><dd>{bytes(local.app_data_bytes)}</dd></div><div><dt>Recordings <small>{local.recording_count} files</small></dt><dd>{bytes(local.recording_bytes)}</dd></div></dl><p className="set-storage-note">Recordings inside app data are included once in the total.</p>{(local.missing_recordings > 0 || local.unreadable_entries > 0) && <p className="set-storage-note">{local.missing_recordings} missing recordings · {local.unreadable_entries} unreadable items excluded.</p>}</>}
     </section>

@@ -1,4 +1,4 @@
-// Producer Live — Cutout: a person mask from Apple's Vision framework applied
+// Liveroom Live — Cutout: a person mask from Apple's Vision framework applied
 // as a libobs video filter, so any camera or guest tile gets a cutout.
 //
 // Two halves, one file:
@@ -135,7 +135,7 @@ enum pm_mode { PM_OFF = 0, PM_SOFT = 1, PM_CUT = 2 };
 		self = [super init];
 		if (!self)
 			return nil;
-		_queue = dispatch_queue_create("ai.boomin.producer.segmentation", DISPATCH_QUEUE_SERIAL);
+		_queue = dispatch_queue_create("app.liveroom.studio.segmentation", DISPATCH_QUEUE_SERIAL);
 		atomic_init(&_busy, false);
 		atomic_init(&_front, -1);
 		atomic_init(&_seq, 0);

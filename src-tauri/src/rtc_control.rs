@@ -730,7 +730,7 @@ impl Control {
             room_id: r.room_id.clone(),
             run_id: r.run_id.clone(),
             participant_id: r.host_participant_id.clone(),
-            role: Role::Producer,
+            role: Role::Liveroom,
             scope: Scope::Stage,
             private_participant_id: None,
             host_lease_epoch: r.host_lease_epoch,

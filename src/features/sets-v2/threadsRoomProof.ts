@@ -17,7 +17,7 @@ type NativeStatus={renderedRevision:number;renderSerial:number;transitioning:boo
  * No mocked IPC, provider credentials or public publishing. Leaves the dashboard
  * on output for visual review. Never enable while producing content. */
 export async function threadsRoomProof(){
- if(!import.meta.env.DEV||await import('@tauri-apps/api/app').then(m=>m.getIdentifier())!=='ai.boomin.producer.sets-v2-dev')return;
+ if(!import.meta.env.DEV||await import('@tauri-apps/api/app').then(m=>m.getIdentifier())!=='app.liveroom.studio.sets-v2-dev')return;
  const checks:Record<string,unknown>[]=[];
  const report=(stage:string,extra:Record<string,unknown>={})=>invoke('live_set_v2_report',{result:{kind:'threads-native-room',stage,checks,at:new Date().toISOString(),...extra}});
  try{

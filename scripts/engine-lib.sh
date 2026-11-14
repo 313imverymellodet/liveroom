@@ -1,5 +1,5 @@
 #!/bin/bash
-# engine-lib.sh — shared definitions for the Producer engine scripts.
+# engine-lib.sh — shared definitions for the Liveroom engine scripts.
 # The single source of truth for the §5.2 plugin allowlist and artifact layout.
 set -euo pipefail
 

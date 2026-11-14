@@ -338,7 +338,7 @@ pub fn seed_dev_room(db: &rusqlite::Connection, identifier: &str) -> Result<(), 
     if std::env::var("PRODUCER_RTC_ROOM_DEV_FIXTURE").as_deref() != Ok("1") {
         return Ok(());
     }
-    if identifier != "ai.boomin.producer.rtc-pilot" {
+    if identifier != "app.liveroom.studio.rtc-pilot" {
         return Err("RTC development requires its isolated app identifier");
     }
     let bytes = std::fs::read("/private/tmp/producer-rtc-staging/operator.json")

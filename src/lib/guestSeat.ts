@@ -1,4 +1,4 @@
-/** A Producer guest uses the host's existing guest authority and media plane.
+/** A Liveroom guest uses the host's existing guest authority and media plane.
  * Program mode leases the shared bounded program capture, including the local
  * processed mix-minus bus. It never silently substitutes a physical webcam.
  * Native-selected rooms use the same authority-fenced LiveKit owner as guest
@@ -20,7 +20,7 @@ export interface GuestSeatSpec {
  camLabel?:string|null;endpointId:string;dealId?:string;networkRoomId?:string;
  /** Local engine room, distinct from the remote room's endpoint/authority. */
  localRoomId?:string;
- /** Existing callers retain their explicit Producer-camera selection. */
+ /** Existing callers retain their explicit Liveroom-camera selection. */
  videoSource?:GuestVideoSource;
  /** Runtime-only local output ownership; never sent to the remote server. */
  prepareProgram?:()=>Promise<void>;
@@ -54,9 +54,9 @@ export function inviteCodeFromJoinUrl(joinUrl:string):string|null {
   return code&&code.length<=512&&!/[\s/\\\u0000-\u001f]/.test(code)?code:null;
  }catch{return null;}
 }
-/** Preserve reverse-proxy prefixes on independent Producer servers. */
+/** Preserve reverse-proxy prefixes on independent Liveroom servers. */
 export function connectApiBase(apiBase:string):string {
- const u=new URL(apiBase);if(!['https:','http:'].includes(u.protocol)||u.username||u.password)throw Error('Use an HTTP or HTTPS Producer server URL.');
+ const u=new URL(apiBase);if(!['https:','http:'].includes(u.protocol)||u.username||u.password)throw Error('Use an HTTP or HTTPS Liveroom server URL.');
  const version=/\/v1(?:\/|$)/.exec(u.pathname);u.pathname=(version?u.pathname.slice(0,version.index):u.pathname.replace(/\/+$/,''))+'/v1/connect';u.search='';u.hash='';
  return u.toString().replace(/\/$/,'');
 }
@@ -150,7 +150,7 @@ export class GuestSeat {
    if(actual&&actual!==transport)this.teardownCall();
    if(!this.local){
     this.set({phase:'starting',message:''});
-    try{await this.trace.measure(this.state.mediaMode==='program'?'peer.capture.program':'peer.capture.webcam',()=>this.openMedia(grants));}catch{if(this.alive)this.fail(this.state.mediaMode==='program'?'Your program output is unavailable. Start and authorize Producer Virtual Camera, or explicitly choose Webcam when joining.':'Camera or microphone access is unavailable. Check your selected devices and join again.');return;}
+    try{await this.trace.measure(this.state.mediaMode==='program'?'peer.capture.program':'peer.capture.webcam',()=>this.openMedia(grants));}catch{if(this.alive)this.fail(this.state.mediaMode==='program'?'Your program output is unavailable. Start and authorize Liveroom Virtual Camera, or explicitly choose Webcam when joining.':'Camera or microphone access is unavailable. Check your selected devices and join again.');return;}
    }
    if(!this.alive)return;
    if(transport==='livekit'){if(!this.rtc)await this.connectNative(guest.id);}
@@ -169,7 +169,7 @@ export class GuestSeat {
   if(!video&&!audio){this.local=new MediaStream();return;}
   if(this.state.mediaMode==='program'){
    if(this.spec.prepareProgram){this.programPrepared=true;await this.trace.measure('peer.program.prepare',()=>this.spec.prepareProgram!());if(!this.alive)return;}
-   const lease=await sharedProgramCapture.acquire(1,this.spec.camLabel||'Producer Virtual Camera');
+   const lease=await sharedProgramCapture.acquire(1,this.spec.camLabel||'Liveroom Virtual Camera');
    if(!this.alive){lease.release();return;}this.lease=lease;
    this.local=new MediaStream([...(video?[lease.video.clone()]:[]),...(audio?[lease.audio.clone()]:[])]);
    lease.onVideo(async track=>{

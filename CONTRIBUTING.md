@@ -1,6 +1,6 @@
-# Contributing to Producer
+# Contributing to Liveroom
 
-Thanks for being here. Producer is early and moving fast — small, focused
+Thanks for being here. Liveroom is early and moving fast — small, focused
 PRs land quickest.
 
 ## Prerequisites
@@ -39,12 +39,11 @@ The platform senders are the heart of the roadmap — each one (YouTube, X,
 TikTok, …) is a well-scoped module behind a common publish-job interface.
 Check issues labeled `good first issue` and `platform-sender`.
 
-## Contributor License Agreement
+## Licensing of contributions
 
-Producer is AGPL-3.0 with an open-core model. To keep that model workable
-(including letting Boomin reuse contributions in its hosted products), all
-contributors sign a lightweight CLA once, on their first PR — automated by
-a bot, takes a minute. Your code stays yours and stays credited to you.
+Liveroom is AGPL-3.0-only, with no CLA. Contributions are accepted under the
+same license (inbound = outbound). Your code stays yours and stays credited
+to you. Liveroom is a fork of Producer by Boomin; see NOTICE.md.
 
 ## Ground rules
 

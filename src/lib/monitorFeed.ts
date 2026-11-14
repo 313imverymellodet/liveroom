@@ -9,7 +9,7 @@
  * true` on the roster so the host's reconcile never turns it into a guest
  * source (server/guest/src/participants.ts `wantedSourceIds`).
  *
- * Both halves of that leg live HERE, in Producer's own webview — no CEF
+ * Both halves of that leg live HERE, in Liveroom's own webview — no CEF
  * page, no engine item, nothing on the set:
  *
  *   ProgramMonitor  (the seat)  — the guest half of the call, receive-only:
@@ -20,7 +20,7 @@
  *   MonitorSender   (the host)  — the host half, one per monitor row on the
  *                                 roster: the render page's return leg
  *                                 (server/guest/src/GuestRenderPage.tsx)
- *                                 without the page. Captures the Producer
+ *                                 without the page. Captures the Liveroom
  *                                 virtual camera at 640×360 / 15 fps and
  *                                 sends video only — never program audio
  *                                 (echo), never the host mic (a monitor has
@@ -29,7 +29,7 @@
  * TWO PICTURES, so the monitor can never go black (v0.4.30):
  *
  *   1. The video leg — the virtual camera captured as a device. It exists
- *      only while the virtual camera RUNS; the host's Producer starts it the
+ *      only while the virtual camera RUNS; the host's Liveroom starts it the
  *      moment a monitor row appears (Live.tsx) and the sender keeps looking
  *      for the device until it does.
  *   2. The thumb leg — the host's PROGRAM THUMB (the engine's `program`
@@ -589,11 +589,11 @@ export function renderSessionFromUrl(renderUrl: string): { id: string; key: stri
   }
 }
 
-/** Find the Producer virtual camera among the video inputs. Matched by
+/** Find the Liveroom virtual camera among the video inputs. Matched by
  *  LABEL, by prefix: deviceIds are salted per origin and a label can gain a
  *  suffix when macOS disambiguates duplicates. */
 export function pickProgramDevice(devices: readonly MediaDeviceInfo[], label?: string | null): MediaDeviceInfo | null {
-  const want = (label || "Producer Virtual Camera").toLowerCase();
+  const want = (label || "Liveroom Virtual Camera").toLowerCase();
   return (
     devices.find((d) => d.kind === "videoinput" && d.label.toLowerCase().includes(want)) ??
     devices.find((d) => d.kind === "videoinput" && d.label.toLowerCase().includes("producer") && d.label.toLowerCase().includes("virtual camera")) ??

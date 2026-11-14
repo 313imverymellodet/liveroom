@@ -106,7 +106,7 @@ int producer_window_capture_available(void *window)
 static const char *window_capture_name(void *type_data)
 {
     (void)type_data;
-    return "Producer Window Capture";
+    return "Liveroom Window Capture";
 }
 
 static void *window_capture_create(obs_data_t *settings, obs_source_t *source)
@@ -722,7 +722,7 @@ void producer_open_mic_settings(void)
  *   0 idle  1 requested  3 active  4 failed  (5 = unsupported, unused now) */
 #include <shellapi.h>
 
-/* Producer's OWN CLSID -- NOT OBS Studio's {A3FCE0F5-...}. Must equal VIRTUALCAM_GUID in
+/* Liveroom's OWN CLSID -- NOT OBS Studio's {A3FCE0F5-...}. Must equal VIRTUALCAM_GUID in
  * engine/producer-presets.json (producer-windows); scripts/check-engine-lists.sh asserts it. */
 #define PRODUCER_VCAM_CLSID L"{FD88CA2B-8414-4137-966D-34152BE01AF6}"
 
@@ -755,7 +755,7 @@ int producer_vcam_installed(void)
     return vcam_registered();
 }
 
-/* Upstream DirectShow shares one named video queue across OBS and Producer. */
+/* Upstream DirectShow shares one named video queue across OBS and Liveroom. */
 int producer_vcam_in_use(void)
 {
     HANDLE mapping = OpenFileMappingW(FILE_MAP_READ, FALSE, L"OBSVirtualCamVideo");

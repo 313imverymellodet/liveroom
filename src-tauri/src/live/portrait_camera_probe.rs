@@ -138,7 +138,7 @@ pub fn start(app: tauri::AppHandle, report: PathBuf) {
                 live.virtual_cam_mirror(Some(mirrored))?;
                 write(
                     serde_json::json!({"stage":"camera_running", "phase":phase, "mirrored":mirrored,
-                    "camera":"Producer Virtual Camera", "expected_width":if portrait {1080} else {1920},
+                    "camera":"Liveroom Virtual Camera", "expected_width":if portrait {1080} else {1920},
                     "expected_height":if portrait {1920} else {1080}, "switch_guard":true}),
                 );
                 std::thread::sleep(Duration::from_secs(15));

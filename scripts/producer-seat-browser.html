@@ -38,8 +38,8 @@ window.runProducerSeatTest=async()=>{
   if(String(url).endsWith('/session')){firstSessionAt ||= performance.now();return new Response(JSON.stringify({signaling_ticket:'synthetic-ticket',signaling_url:'/media',ice_servers:[]}));}
   return new Response(JSON.stringify({transport:'legacy',guest:{id:'guest-one',status:accepted?'accepted':'waiting',grants:['media.camera','media.mic']}}));
  };
- const seat=new GuestSeat({joinUrl:'https://synthetic.example/connect/guest/gi_local',apiBase:'https://synthetic.example',endpointId:'local-only',hostName:'Synthetic host',title:'Synthetic Producer appearance',producerCam:false,videoSource:'webcam'});
- const wait=async predicate=>{const end=performance.now()+15000;while(!await predicate()){if(performance.now()>end)throw Error('Synthetic Producer media timed out: '+JSON.stringify({sockets:sockets.map(s=>({url:s.url,error:s.error,state:s.host?.connectionState,signal:s.host?.signalingState})),stats:await Promise.all(hosts.map(h=>stats(h))),captureCount,seat:seat.snapshot()}));await new Promise(r=>setTimeout(r,50));}};
+ const seat=new GuestSeat({joinUrl:'https://synthetic.example/connect/guest/gi_local',apiBase:'https://synthetic.example',endpointId:'local-only',hostName:'Synthetic host',title:'Synthetic Liveroom appearance',producerCam:false,videoSource:'webcam'});
+ const wait=async predicate=>{const end=performance.now()+15000;while(!await predicate()){if(performance.now()>end)throw Error('Synthetic Liveroom media timed out: '+JSON.stringify({sockets:sockets.map(s=>({url:s.url,error:s.error,state:s.host?.connectionState,signal:s.host?.signalingState})),stats:await Promise.all(hosts.map(h=>stats(h))),captureCount,seat:seat.snapshot()}));await new Promise(r=>setTimeout(r,50));}};
  const stats=async host=>{const r={frames:0,audioBytes:0};for(const s of(await host.getStats()).values())if(s.type==='inbound-rtp'){if(s.kind==='video')r.frames+=s.framesDecoded??0;if(s.kind==='audio')r.audioBytes+=s.bytesReceived??0;}return r;};
  try{
   await seat.start();if(captureCount||hosts.length)throw Error('Waiting activated media');accepted=true;

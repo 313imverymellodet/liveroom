@@ -17,13 +17,13 @@ window.runReturnTest = async () => {
   const originalCapture = media.getUserMedia.bind(media);
   const originalEnumerate = media.enumerateDevices.bind(media);
   let captureCalls = 0;
-  media.enumerateDevices = async () => [{ kind: 'videoinput', label: 'Producer Virtual Camera', deviceId: 'program-test' }];
+  media.enumerateDevices = async () => [{ kind: 'videoinput', label: 'Liveroom Virtual Camera', deviceId: 'program-test' }];
   media.getUserMedia = async (constraints) => {
     if (constraints.audio) throw new DOMException('Microphone denied', 'NotAllowedError');
     captureCalls++;
     return stream;
   };
-  const feed = new GuestReturnFeed({ pc: host, programLabel: 'Producer Virtual Camera', micLabel: null, enabled: true });
+  const feed = new GuestReturnFeed({ pc: host, programLabel: 'Liveroom Virtual Camera', micLabel: null, enabled: true });
   let requests = 0;
   const requester = new ProgramRequest(guest, () => { requests++; feed.request(); });
   const element = document.getElementById('program');

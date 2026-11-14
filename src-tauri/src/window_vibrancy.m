@@ -1,4 +1,4 @@
-// The Producer window's native glass base coat. Kept separate from the OBS
+// The Liveroom window's native glass base coat. Kept separate from the OBS
 // shim so engine-less development builds have the same rail as release apps.
 #import <AppKit/AppKit.h>
 #import <WebKit/WebKit.h>

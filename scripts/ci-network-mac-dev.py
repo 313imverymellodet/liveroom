@@ -12,7 +12,7 @@ import sys
 
 SOURCE_DEFAULT = '98a2a87fadced029f6adf0ae3df223e63c0992d3'
 ENGINE_PIN = 'f8b2551c9526a0cda2d1a333dcafeff343476589119f19888dfd0cd44030ec8e'
-IDENTIFIER = 'ai.boomin.producer.sets-v2-dev'
+IDENTIFIER = 'app.liveroom.studio.sets-v2-dev'
 DEV_ORIGIN = 'http://localhost:1436'
 FEATURES = ['sets-v2-dev', 'guest-rtc-production']
 DEV_ENTITLEMENTS = {
@@ -61,7 +61,7 @@ def isolated_config(dev, source):
     require(dev['build'].get('frontendDist') in [None, DEV_ORIGIN], 'Unexpected frontend override in the development overlay')
     require('capabilities' not in dev.get('app', {}).get('security', {}), 'Keep the source default capabilities; no inline remote grants are accepted')
     result = json.loads(json.dumps(dev))
-    result['productName'] = 'Producer DJ Test'
+    result['productName'] = 'Liveroom DJ Test'
     # Tauri release builds derive the local app origin from frontendDist, not
     # devUrl. Native sets-v2-dev then navigates to this exact loopback origin.
     # A filesystem frontendDist would make that navigation remote and deny
@@ -70,7 +70,7 @@ def isolated_config(dev, source):
     result['build']['frontendDist'] = DEV_ORIGIN
     for window in result.get('app', {}).get('windows', []):
         require(window.get('label', 'main') == 'main' and window.get('url', 'index.html') in ['index.html', './index.html'], 'Unexpected window or remote navigation in development overlay')
-        window['title'] = 'Producer DJ Test'
+        window['title'] = 'Liveroom DJ Test'
     result['bundle'] = {'targets': ['app'], 'createUpdaterArtifacts': False}
     # This unreleased dev app must not replace itself from the production updater.
     result['plugins'] = {'updater': {'endpoints': []}}
@@ -131,7 +131,7 @@ def receipt(source, app, output, tools):
     notarized = os.environ.get('NOTARIZE', '1') == '1'
     submission = os.environ.get('NOTARY_SUBMISSION_ID', '')
     require(not notarized or re.fullmatch('[A-Fa-f0-9-]{36}', submission), 'Missing accepted notarization receipt')
-    archive = output / 'Producer-DJ-Test-mac-arm64.zip'
+    archive = output / 'Liveroom-DJ-Test-mac-arm64.zip'
     generated_config = Path(os.environ['RUNNER_TEMP']) / 'network-mac-dev-config/candidate.json'
     expected_config = isolated_config(json.loads((source / 'src-tauri/tauri.sets-v2-dev.conf.json').read_text()), source)
     require(json.loads(generated_config.read_text()) == expected_config, 'Generated dev runtime configuration changed')
@@ -166,7 +166,7 @@ def receipt(source, app, output, tools):
         'profile_relative_database': IDENTIFIER + '/sets-v2-dev/producer.db',
         'frontend_scope': 'Dev-only URL frontendDist; native startup loads live Vite 1436, whose working-tree provenance must be captured separately. Production bundled frontend configuration is unchanged.',
         'system_extension_installation': False,
-        'virtual_camera_runtime': 'mac-virtualcam plugin retained for an existing installed ai.boomin.producer.camera-extension provider; installer qualification is outside this dev artifact.',
+        'virtual_camera_runtime': 'mac-virtualcam plugin retained for an existing installed app.liveroom.studio.camera-extension provider; installer qualification is outside this dev artifact.',
         'permissions': 'Existing profile is preserved by identity; macOS TCC/Keychain may prompt after signing/executable changes.',
         'updater_artifacts': False, 'production_updater_endpoints': False, 'public_release': False,
         'application_launched': True, 'native_runtime_acceptance': 'core+custom IPC smoke only; devices and RTC not qualified',
@@ -181,7 +181,7 @@ def self_test():
     import tempfile
     dev = {'identifier': IDENTIFIER, 'build': {'devUrl': DEV_ORIGIN}}
     original_dev = json.dumps(dev, sort_keys=True)
-    production = {'identifier': 'ai.boomin.producer', 'build': {'devUrl': 'http://localhost:1420', 'frontendDist': '../dist'}}
+    production = {'identifier': 'app.liveroom.studio', 'build': {'devUrl': 'http://localhost:1420', 'frontendDist': '../dist'}}
     original_production = json.dumps(production, sort_keys=True)
     config = isolated_config(dev, Path('/candidate'))
     require(config['identifier'] == IDENTIFIER and config['build']['devUrl'] == DEV_ORIGIN and config['build']['frontendDist'] == DEV_ORIGIN, 'Exact dev identity/origin test failed')

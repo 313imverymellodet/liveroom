@@ -1,6 +1,6 @@
 // Participants, grants and track labels — the PURE half of the room model.
 //
-// Shared verbatim by the guest pages (this bundle) and Producer's roster
+// Shared verbatim by the guest pages (this bundle) and Liveroom's roster
 // (src/lib/participants.ts re-exports it), and exercised by server/test so the
 // two ends can never disagree about what a participant may do. DOM-free on
 // purpose: the server's tsconfig has no DOM lib and this file is type-checked
@@ -63,7 +63,7 @@ export const DEFAULT_GRANTS: readonly Grant[] = [
   "input.hand",
 ];
 
-/** A participant as either end sees it: the roster row Producer polls, or the
+/** A participant as either end sees it: the roster row Liveroom polls, or the
  *  `guest` object the guest page reads. Every field optional so a server that
  *  predates the field still resolves. */
 export interface ParticipantLike {
@@ -193,17 +193,17 @@ export const KIND_LABEL: Record<ParticipantKind, string> = {
   host: "Host",
   member: "Member",
   connection: "Connection",
-  producer: "Producer",
+  producer: "Liveroom",
   visitor: "Visitor",
   audience: "Audience",
 };
 
-/** The badge text for a roster row: the kind, and for another Producer the
+/** The badge text for a roster row: the kind, and for another Liveroom the
  *  origin it presented (`producer_ref`, display metadata — never verified). */
 export function kindBadge(p: (ParticipantLike & { producer_ref?: unknown }) | null | undefined): string {
   const kind = participantKind(p);
   const ref = typeof p?.producer_ref === "string" ? p.producer_ref.trim() : "";
-  if (kind === "producer" && ref && ref !== "producer") return `Producer @ ${ref.replace(/^https?:\/\//, "").slice(0, 40)}`;
+  if (kind === "producer" && ref && ref !== "producer") return `Liveroom @ ${ref.replace(/^https?:\/\//, "").slice(0, 40)}`;
   return KIND_LABEL[kind];
 }
 
@@ -252,7 +252,7 @@ export function labelForStream(labels: ReadonlyMap<string, TrackLabel>, streamId
 
 // ── Host peers on one signaling channel ──────────────────────────────────────
 //
-// Producer renders a guest's camera and screen as two browser sources, so two
+// Liveroom renders a guest's camera and screen as two browser sources, so two
 // host pages share the guest's signaling channel. Each frame names the peer it
 // belongs to; a frame without one is from a page older than screen share and
 // belongs to the main (camera) peer.
@@ -264,9 +264,9 @@ export function peerOf(payload: unknown): HostPeer {
   return p === "screen" || p === "program" ? p : "main";
 }
 
-// ── Producer source ids ──────────────────────────────────────────────────────
+// ── Liveroom source ids ──────────────────────────────────────────────────────
 //
-// Producer names a guest's browser sources from the guest id: the camera
+// Liveroom names a guest's browser sources from the guest id: the camera
 // source is `guest-<8 chars>` (unchanged since guests existed — slot bindings
 // and scene looks reference it), and the screen source hangs a suffix off it.
 // Pure so the roster and the reconcile loop can never disagree.
@@ -437,8 +437,8 @@ export function seatRoleLabel(input: {
 // ── Room role, from the access route ─────────────────────────────────────────
 //
 // `GET /v1/app/live/rooms/:id/access` (api #380) says what THIS token may do
-// in a room. Producer feature-detects it: a 404 means the server predates the
-// route (or is self-hosted, where the primary token IS the host), and Producer
+// in a room. Liveroom feature-detects it: a 404 means the server predates the
+// route (or is self-hosted, where the primary token IS the host), and Liveroom
 // behaves exactly as it did before — as the host. The DTO is read tolerantly
 // because the contract owner is still settling it; every field is optional.
 
@@ -452,7 +452,7 @@ export interface RoomAccessResult {
   access?: unknown;
 }
 
-/** The capability set Producer renders — the api's `can` object, verbatim
+/** The capability set Liveroom renders — the api's `can` object, verbatim
  *  (services/live/room-access.ts `roomCapabilities`). A badge and a guard
  *  read the same flags, so they can never disagree. */
 export interface RoomCan {
@@ -577,7 +577,7 @@ export function setEditingAllowed(info: Pick<RoomAccessInfo, "role">, pending = 
   return !pending && info.role === "host";
 }
 
-/** Should THIS Producer apply the room document to its OWN engine — local
+/** Should THIS Liveroom apply the room document to its OWN engine — local
  *  scenes, the camera, a screen capture, the mic, the virtual camera? Only
  *  the seat that runs the show. On a Boomin room the access route decides:
  *  until it has answered (or three misses assume the host) nothing local is

@@ -1,5 +1,5 @@
-import assert from'node:assert/strict';import{readFile}from'node:fs/promises';import{homedir}from'node:os';import{join}from'node:path';import WebSocket from'../tools/producer-streamdeck/ai.boomin.producer.sounds.sdPlugin/node_modules/ws/wrapper.mjs';
-const profile=process.env.PRODUCER_SOUND_PROFILE??join(homedir(),'Library/Application Support/ai.boomin.producer.sets-v2-dev');
+import assert from'node:assert/strict';import{readFile}from'node:fs/promises';import{homedir}from'node:os';import{join}from'node:path';import WebSocket from'../tools/producer-streamdeck/app.liveroom.studio.sounds.sdPlugin/node_modules/ws/wrapper.mjs';
+const profile=process.env.PRODUCER_SOUND_PROFILE??join(homedir(),'Library/Application Support/app.liveroom.studio.sets-v2-dev');
 const token=await readFile(join(profile,'soundboard/controller-token'),'utf8');const url='ws://127.0.0.1:17955';
 const bad=new WebSocket(url);await new Promise((resolve,reject)=>{const t=setTimeout(()=>reject(Error('Unauthorized socket not closed')),6000);bad.on('open',()=>bad.send(JSON.stringify({token:'0'.repeat(64)})));bad.on('close',()=>{clearTimeout(t);resolve()});bad.on('error',reject)});
 const ws=new WebSocket(url),pending=new Map();let counter=0;let pairedResolve;const paired=new Promise(r=>pairedResolve=r);

@@ -540,7 +540,7 @@ pub async fn soundboard_import(
             .path()
             .audio_dir()
             .map_err(|e| e.to_string())?
-            .join("Producer/Sounds");
+            .join("Liveroom/Sounds");
         std::fs::create_dir_all(&permanent).map_err(|e| e.to_string())?;
         let permanent = permanent.canonicalize().map_err(|e| e.to_string())?;
         let _g = STORE.lock().map_err(|e| e.to_string())?;

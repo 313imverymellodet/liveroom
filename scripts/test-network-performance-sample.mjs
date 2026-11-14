@@ -3,25 +3,25 @@ import {parseArguments,parsePs,parseWindows,processFamily,windowsCpu,makeSample,
 
 let count=0;
 function test(label,fn){fn();count++;console.log('PASS '+label);}
-const row=(pid,ppid,extra={})=>({pid,ppid,comm:'Producer',rss_bytes:1024,cpu_seconds:1,cpu_reported_core_percent:10,started_at:null,...extra});
+const row=(pid,ppid,extra={})=>({pid,ppid,comm:'Liveroom',rss_bytes:1024,cpu_seconds:1,cpu_reported_core_percent:10,started_at:null,...extra});
 const config={pid:100,platform:'win32',logicalCores:8};
 const args=['--pid','100','--duration','10','--interval','1000','--out','/tmp/producer-test.jsonl','--stage','cold-open'];
 
 test('explicit bounded CLI options only; no discovery default',()=>{
   const options=parseArguments(args);assert.equal(options.pid,100);assert.equal(options.duration,10);assert.equal(options.interval,1000);assert.equal(options.stage,'cold-open');assert.deepEqual(parseArguments(['--help']),{help:true});
-  for(const input of [[],args.slice(0,-2),[...args,'--name','Producer'],[...args,'--pid','100'],['--pid'],args.map(v=>v==='10'?'121':v),args.map(v=>v==='1000'?'999':v),args.map(v=>v==='100'?'0':v),args.map(v=>v==='cold-open'?'room token/secret':v),args.map(v=>v==='10'?'Infinity':v)])assert.throws(()=>parseArguments(input));
+  for(const input of [[],args.slice(0,-2),[...args,'--name','Liveroom'],[...args,'--pid','100'],['--pid'],args.map(v=>v==='10'?'121':v),args.map(v=>v==='1000'?'999':v),args.map(v=>v==='100'?'0':v),args.map(v=>v==='cold-open'?'room token/secret':v),args.map(v=>v==='10'?'Infinity':v)])assert.throws(()=>parseArguments(input));
   assert.equal(parseArguments(args.map(v=>v==='10'?'120':v)).duration,120);
 });
 test('ps parser handles paths with spaces, CRLF and comma decimal locales',()=>{
-  const {rows,rejected_rows}=parsePs(' 100 1 123.4 200 /Applications/Producer DJ Test.app/Contents/MacOS/producer\r\n 101 100 1,5 10 CEF Helper (Renderer)\r\n');
-  assert.equal(rejected_rows,0);assert.equal(rows[0].comm,'/Applications/Producer DJ Test.app/Contents/MacOS/producer');assert.equal(rows[0].rss_bytes,204800);assert.equal(rows[1].cpu_reported_core_percent,1.5);assert.equal(rows[1].comm,'CEF Helper (Renderer)');
+  const {rows,rejected_rows}=parsePs(' 100 1 123.4 200 /Applications/Liveroom DJ Test.app/Contents/MacOS/producer\r\n 101 100 1,5 10 CEF Helper (Renderer)\r\n');
+  assert.equal(rejected_rows,0);assert.equal(rows[0].comm,'/Applications/Liveroom DJ Test.app/Contents/MacOS/producer');assert.equal(rows[0].rss_bytes,204800);assert.equal(rows[1].cpu_reported_core_percent,1.5);assert.equal(rows[1].comm,'CEF Helper (Renderer)');
 });
 test('ps parser rejects headers, malformed counters, duplicate PIDs and unsafe numeric values',()=>{
   const result=parsePs('PID PPID CPU RSS COMM\n100 1 NaN 10 x\n100 1 1 10 producer\n100 1 2 10 duplicate\n102 100 -1 10 x\n103 100 1 99999999999999999 x\n');
   assert.equal(result.rows.length,1);assert.equal(result.rejected_rows,5);assert.throws(()=>parsePs('x'.repeat(8*1024*1024+1)));assert.deepEqual(parsePs(''),{rows:[],rejected_rows:0});
 });
 test('Windows allowlist supports singleton, array, BOM, empty and unknown counters',()=>{
-  const raw={pid:100,ppid:1,comm:'Producer DJ Test.exe',rss_bytes:1048576,cpu_seconds:2.5,started_at:'2026-11-08T10:00:00-07:00',argv:'SECRET',token:'SECRET'};
+  const raw={pid:100,ppid:1,comm:'Liveroom DJ Test.exe',rss_bytes:1048576,cpu_seconds:2.5,started_at:'2026-11-08T10:00:00-07:00',argv:'SECRET',token:'SECRET'};
   const one=parseWindows('\uFEFF'+JSON.stringify(raw));assert.equal(one.rows[0].started_at,'2026-11-08T17:00:00.000Z');assert.equal(one.rows[0].cpu_seconds,2.5);assert.ok(!JSON.stringify(one).includes('SECRET'));
   assert.equal(parseWindows(JSON.stringify([raw])).rows.length,1);assert.deepEqual(parseWindows('null'),{rows:[],rejected_rows:0});assert.equal(parseWindows(JSON.stringify({...raw,cpu_seconds:null})).rows[0].cpu_seconds,null);
   assert.equal(parseWindows(JSON.stringify({...raw,cpu_seconds:'2,5'})).rows[0].cpu_seconds,null);assert.throws(()=>parseWindows('invalid JSON'));
@@ -31,7 +31,7 @@ test('Windows invalid identities and working sets are rejected without coercing 
   assert.equal(result.rejected_rows,3);assert.equal(result.rows[0].cpu_seconds,null);
 });
 test('ownership follows true ancestry, not names, old children or process order',()=>{
-  const rows=[row(104,103),row(777,1,{comm:'Producer CEF'}),row(103,101),row(100,1),row(101,100),row(888,777)];
+  const rows=[row(104,103),row(777,1,{comm:'Liveroom CEF'}),row(103,101),row(100,1),row(101,100),row(888,777)];
   assert.deepEqual(processFamily(rows,100).map(r=>r.pid),[100,101,103,104]);assert.deepEqual(processFamily(rows,999),[]);
   assert.deepEqual(processFamily([row(100,1),row(101,1)],100).map(r=>r.pid),[100]);
 });

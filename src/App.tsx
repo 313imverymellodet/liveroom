@@ -19,7 +19,7 @@ function App() {
     if (!entryReviewRequested) return;
     let alive = true;
     void import('@tauri-apps/api/app').then(app => app.getIdentifier()).then(id => {
-      if (alive) setEntryReview(id === 'ai.boomin.producer.sets-v2-dev' || id === 'ai.boomin.producer.windows-network-dev' ? 'open' : 'closed');
+      if (alive) setEntryReview(id === 'app.liveroom.studio.sets-v2-dev' || id === 'app.liveroom.studio.windows-network-dev' ? 'open' : 'closed');
     }).catch(() => { if (alive) setEntryReview('closed'); });
     return () => { alive = false; };
   }, [entryReviewRequested]);
@@ -30,7 +30,7 @@ function App() {
     void (async()=>{
       const probe=await invoke<boolean>('live_set_v2_smoke_enabled');
       const studio=import.meta.env.DEV&&(import.meta.env.VITE_SCENE3D_STUDIO==='1'||['1','review'].includes(import.meta.env.VITE_AUTHORING_DESKTOP_PROOF))&&
-        await import('@tauri-apps/api/app').then(app=>app.getIdentifier())==='ai.boomin.producer.sets-v2-dev';
+        await import('@tauri-apps/api/app').then(app=>app.getIdentifier())==='app.liveroom.studio.sets-v2-dev';
       setSetsDevelopment(probe||studio);
     })().catch(()=>{});
   },[]);

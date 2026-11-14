@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>ai.boomin.producer.mac-virtualcam</string>
+	<string>app.liveroom.studio.mac-virtualcam</string>
 	<key>CFBundleName</key>
 	<string>mac-virtualcam</string>
 	<key>CFBundleExecutable</key>

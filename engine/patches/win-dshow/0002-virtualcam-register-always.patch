@@ -7,7 +7,7 @@ index 2f7aac9..03f65c7 100644
  	return true;
  }
 +
-+/* Producer patch: the output is registered whether or not the filter is
++/* Liveroom patch: the output is registered whether or not the filter is
 + * installed yet, so an install performed while the host runs (an elevated
 + * regsvr32 from the app) takes effect without restarting the process. The
 + * start path checks the filter instead. */
@@ -36,7 +36,7 @@ index 0fbf04b..c6bb80e 100644
  #include "util/threading.h"
  #include "shared-memory-queue.h"
  
-+/* Producer patch: dshow-plugin.cpp; true when the filter CLSID is registered */
++/* Liveroom patch: dshow-plugin.cpp; true when the filter CLSID is registered */
 +extern bool vcam_filter_installed(void);
 +
  struct virtualcam_data {

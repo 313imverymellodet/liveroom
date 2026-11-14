@@ -29,7 +29,7 @@ console.log('PASS local program admission: exact room, cancellation during reads
 
 // Execute the production seat bootstrap, not a facsimile: a cached access
 // receipt must settle the actual restore flags without starting the host poll.
-const live=readSource('../src/views/Live.tsx'),bootstrapStart=live.indexOf('  // A Producer appearance renders its own room'),bootstrapEnd=live.indexOf('  useEffect(() => {\n    refresh();',bootstrapStart);
+const live=readSource('../src/views/Live.tsx'),bootstrapStart=live.indexOf('  // A Liveroom appearance renders its own room'),bootstrapEnd=live.indexOf('  useEffect(() => {\n    refresh();',bootstrapStart);
 assert(bootstrapStart>0&&bootstrapEnd>bootstrapStart);
 const bootstrapCode=ts.transpileModule(live.slice(bootstrapStart,bootstrapEnd),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;
 function bootstrap({receipt,read=async()=>hostAccess}={}){

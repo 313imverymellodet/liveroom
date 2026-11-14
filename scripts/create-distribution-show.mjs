@@ -25,7 +25,7 @@ const beats=[
  ['hook','The hook','YOUR AUDIENCE.\nYOUR BUSINESS.','Build something you can take with you.'],
  ['platforms','Platform dependency','THE PLATFORM\nIS THE GATEKEEPER.','A subscription there is a relationship there.'],
  ['audience','Direct audience','FOLLOWERS ≠\nDIRECT ACCESS.','Build an audience that can follow you anywhere.'],
- ['distribution','Many destinations','ONE SHOW.\nMANY DESTINATIONS.','Producer sends your show to multiple live platforms.'],
+ ['distribution','Many destinations','ONE SHOW.\nMANY DESTINATIONS.','Liveroom sends your show to multiple live platforms.'],
  ['checkout','Your business','YOUR PRODUCT.\nYOUR CHECKOUT.','Send people to a storefront you control.'],
  ['open','Open source','BUILD YOUR\nOWN CHANNEL.','I open-sourced the studio. Now build with me.'],
 ];

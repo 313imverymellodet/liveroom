@@ -15,7 +15,7 @@ window.runAudienceTest = async () => {
   const draw=setInterval(()=>{context.fillStyle=++frame%2?'#ea9841':'#334455';context.fillRect(0,0,320,180);},66);
   const program=canvas.captureStream(15), media=navigator.mediaDevices;
   const originalCapture=media.getUserMedia.bind(media), originalEnumerate=media.enumerateDevices.bind(media), originalTauri=window.__TAURI_INTERNALS__;
-  media.enumerateDevices=async()=>[{kind:'videoinput',deviceId:'program-test',label:'Producer Virtual Camera'}];
+  media.enumerateDevices=async()=>[{kind:'videoinput',deviceId:'program-test',label:'Liveroom Virtual Camera'}];
   media.getUserMedia=async constraints=>{if(constraints.audio)throw new Error('Raw microphone must never be captured');captures++;return program;};
   window.__TAURI_INTERNALS__={invoke:async command=>{
     if(command==='live_program_video_wanted')return;

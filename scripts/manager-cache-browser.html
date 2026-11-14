@@ -51,7 +51,7 @@ try {
   await until(()=>document.querySelector(".pm-stage-card"),"stages");
   let main=document.querySelector(".pm-main"); main.scrollTop=240;main.dispatchEvent(new Event("scroll"));
   await pause(); const beforeReturn=total();
-  root.render(React.createElement("p",null,"Outside Producer")); await pause();mount();
+  root.render(React.createElement("p",null,"Outside Liveroom")); await pause();mount();
   await until(()=>document.querySelector(".pm-stage-card"),"restored stages");
   check(total()===beforeReturn,"tab return fetched inventory again");
   check(document.querySelector(".pm-main").scrollTop>=200,"stage scroll position was not restored");
@@ -108,11 +108,11 @@ try {
   await until(()=>document.querySelector(".pm-monitor-list button"),"monitor posts");
   document.querySelector(".pm-monitor-list button").click();
   await until(()=>document.querySelector("#pm-unit-tab-comments"),"monitor unit tabs");
-  root.render(React.createElement("p",null,"Outside Producer"));await pause();
+  root.render(React.createElement("p",null,"Outside Liveroom"));await pause();
   const session=peekManagerSession(endpoint);
   session.saveNavigation({...session.navigation,location:{view:"post",socialPostId:"post-0",returnTo:{view:"overview"}}});
   mount();await until(()=>document.querySelector("#pm-unit-tab-overview"),"legacy published navigation restored to unit");
-  root.render(React.createElement("p",null,"Outside Producer"));await pause();
+  root.render(React.createElement("p",null,"Outside Liveroom"));await pause();
   localRecordings=[{id:"capture",unit_id:"unit-1",collection_id:"collection",endpoint_id:"browser",room_id:"room",room_name:"Room",status:"ready",started_at:"2026-09-28T12:00:00Z",duration_ms:6000,path:"/tmp/mock.mp4"}];
   mount("capture");await until(()=>document.querySelector(".pm-preview-caption")?.textContent==="Unit 1","explicit recording target");
   document.getElementById("result").textContent="PASS: cache, published history and Monitor tabs, individual destinations, legacy navigation and recording target";
