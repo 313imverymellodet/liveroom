@@ -41,13 +41,13 @@
     {
       "dir": "engine/patches",
       "target": "plugins/obs-browser",
-      "sha256": "1581c351ed25c2fbd83a8c1b394fd90a48374102095e10270a2375eb79008438",
+      "sha256": "09a106f8a86e4f15d833a2c82fe46d518b8643e7f8e26a02dada0f928f6edb21",
       "note": "obs-browser: libdispatch main-thread pump for hosts without a QApplication (macOS), Qt guarded on ENABLE_BROWSER_QT_LOOP (both); Windows: CEF helper exe named by BROWSER_HELPER_OUTPUT_NAME (plugin spawns it by the same name)"
     },
     {
       "dir": "engine/patches/win-dshow",
       "target": ".",
-      "sha256": "e8e444c32953d9a1cc9c2d887c57f5383d476939370b66df27673c817c29311c",
+      "sha256": "06a4ea1586ccd29cc355fc7e89d2c8d243ff0513f97b98b30fe8ec80d9cb7a6b",
       "note": "win-dshow virtual camera: the DirectShow filter's user-visible name is Liveroom Virtual Camera, not OBS Virtual Camera; output registered unconditionally, filter checked at start (install without restart)"
     },
     {
