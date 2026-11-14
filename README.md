@@ -74,7 +74,7 @@ with nothing in the middle:
 - On Windows, guests need Liveroom allowed through the firewall.
 - Auto-update follows this repo's GitHub releases, signed with the
   Liveroom updater key.
-- Release builds are signed and notarized for Apple team `2ZHTMG2292`.
+- Release builds are signed and notarized for Apple team `J2432VGY7S`.
   Forks building their own releases must use their own team ID.
 
 ## Develop

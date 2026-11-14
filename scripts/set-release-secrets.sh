@@ -33,9 +33,19 @@ for f in "$P12" "$PROFILE" "$UPDATER_KEY" "$UPDATER_PW_FILE"; do
   [[ -f "$f" ]] || die "Missing $f (see the top of this script)"
 done
 
-# ── Signing identity and team, read from the keychain ──────────────────────
-IDENTITY="$(security find-identity -v -p codesigning | sed -n 's/.*"\(Developer ID Application: [^"]*\)".*/\1/p' | head -1)"
-[[ -n "$IDENTITY" ]] || die "No Developer ID Application certificate in your keychain"
+# ── Signing identity and team, read from the .p12's own certificate ────────
+# (Not from the keychain: it may hold Developer ID certificates of other teams.)
+P12_PW_FILE="${P12_PW_FILE:-$DIR/developer-id-p12-password.txt}"
+if [[ -f "$P12_PW_FILE" ]]; then
+  P12_PW="$(cat "$P12_PW_FILE")"
+else
+  read -r -s -p "Password you set when exporting developer-id.p12: " P12_PW; echo
+fi
+CERT_SUBJECT="$(openssl pkcs12 -in "$P12" -passin "pass:$P12_PW" -nokeys -clcerts 2>/dev/null | openssl x509 -noout -subject 2>/dev/null)" \
+  || die "That password does not open $P12"
+IDENTITY="$(sed -n 's#.*CN=\(Developer ID Application: [^/]*\).*#\1#p' <<<"$CERT_SUBJECT")"
+[[ -n "$IDENTITY" ]] || die "$P12 does not hold a Developer ID Application certificate"
+ok "certificate password works"
 TEAM="$(sed -n 's/.*(\([A-Z0-9]\{10\}\))$/\1/p' <<<"$IDENTITY")"
 [[ -n "$TEAM" ]] || die "Could not read the team ID from: $IDENTITY"
 ok "identity: $IDENTITY"
@@ -56,13 +66,6 @@ if problems:
     print("✘ provisioning profile: " + "; ".join(problems), file=sys.stderr); sys.exit(1)
 print("✓ provisioning profile matches", f"{team}.{app}")
 PY
-
-# ── Certificate password: check it actually opens the .p12 ─────────────────
-read -r -s -p "Password you set when exporting developer-id.p12: " P12_PW; echo
-openssl pkcs12 -in "$P12" -passin "pass:$P12_PW" -nokeys -legacy >/dev/null 2>&1 \
-  || openssl pkcs12 -in "$P12" -passin "pass:$P12_PW" -nokeys >/dev/null 2>&1 \
-  || die "That password does not open $P12"
-ok "certificate password works"
 
 # ── Notarization login ─────────────────────────────────────────────────────
 read -r -p "Apple ID email (for notarization): " APPLE_ID
