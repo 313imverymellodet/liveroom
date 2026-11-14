@@ -25,7 +25,7 @@ jobs:
       - name: Validate release version
         run: |
           [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
-          echo "DMG=Producer_${VERSION}_x64.dmg" >> "$GITHUB_ENV"
+          echo "DMG=Liveroom_${VERSION}_x64.dmg" >> "$GITHUB_ENV"
       - name: Download the existing signed installer
         run: gh release download "v$VERSION" --pattern "$DMG"
       - name: Notarize, staple and assess installer

@@ -12,7 +12,7 @@ Time: ~20 minutes for the server, plus ~10 minutes per platform app.
 
 - A free [Cloudflare account](https://dash.cloudflare.com/sign-up)
 - [Node.js](https://nodejs.org) ≥ 20 (for `npm`/`npx`)
-- This repo: `git clone https://github.com/Boomin-Ai/producer && cd producer/server && npm install` (the server lives in the `server/` directory of the Liveroom repo; the old `producer-server` repo is archived)
+- This repo: `git clone https://github.com/313imverymellodet/liveroom && cd liveroom/server && npm install` (the server lives in the `server/` directory of the Liveroom repo; the old `producer-server` repo is archived)
 
 ## 2. Create the database and bucket
 
@@ -24,6 +24,10 @@ npx wrangler r2 bucket create producer-media
 
 Copy the `database_id` that `d1 create` prints into `wrangler.toml`
 (replace `REPLACE_WITH_YOUR_D1_ID`).
+
+Tip: to keep your `database_id` out of git, copy `wrangler.toml` to
+`wrangler.deploy.toml` (already gitignored), put the id there, and add
+`--config wrangler.deploy.toml` to every `wrangler` command below.
 
 ## 3. Set your secrets
 

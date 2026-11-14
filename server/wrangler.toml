@@ -1,7 +1,7 @@
 # producer-server — deploy with `wrangler deploy` after `wrangler d1 create producer`
 # and `wrangler r2 bucket create producer-media` (SELF_HOSTING.md walks every step).
 
-name = "producer-server"
+name = "liveroom-server"
 main = "src/index.ts"
 compatibility_date = "2026-08-01"
 

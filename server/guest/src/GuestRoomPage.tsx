@@ -616,7 +616,7 @@ export default function GuestRoomPage({ code }: { code: string }) {
         </p>
         <p className="guest-room-fine" style={S.fine}>
           Powered by{" "}
-          <a href="https://producer.dev" target="_blank" rel="noreferrer" style={S.plug}>Liveroom</a>
+          <a href="https://github.com/313imverymellodet/liveroom" target="_blank" rel="noreferrer" style={S.plug}>Liveroom</a>
         </p>
       </div>
       {/* Host mic only — never the program mix, which would carry your own

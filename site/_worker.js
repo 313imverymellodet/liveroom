@@ -3,7 +3,7 @@
 // so users never leave the site. Public handles use Boomin's anonymous identity;
 // published Sets are visibility-gated by the API. Other paths use static assets.
 
-const REPO = "Boomin-Ai/producer";
+const REPO = "313imverymellodet/liveroom";
 
 const PLATFORMS = {
   "macos": [/aarch64.*\.dmg$/i],

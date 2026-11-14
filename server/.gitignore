@@ -6,3 +6,6 @@ dist/
 node_modules/
 .wrangler/
 .dev.vars*
+
+# Your account-specific deploy config (database_id). Deploy with: npx wrangler deploy --config wrangler.deploy.toml
+wrangler.deploy.toml

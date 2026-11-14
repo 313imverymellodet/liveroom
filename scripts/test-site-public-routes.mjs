@@ -249,8 +249,8 @@ test('room assets stay a fixed Boomin proxy and reject upstream HTML',async()=>{
 });
 
 const release={tag_name:'v0.4.88',draft:false,prerelease:false,assets:[
- {id:10,name:'Producer_aarch64.dmg',size:123,browser_download_url:'https://github.com/Boomin-Ai/producer/releases/download/v0.4.88/Producer_aarch64.dmg'},
- {id:11,name:'Liveroom-setup.exe',size:456,browser_download_url:'https://github.com/Boomin-Ai/producer/releases/download/v0.4.88/Liveroom-setup.exe'},
+ {id:10,name:'Liveroom_aarch64.dmg',size:123,browser_download_url:'https://github.com/313imverymellodet/liveroom/releases/download/v0.4.88/Liveroom_aarch64.dmg'},
+ {id:11,name:'Liveroom-setup.exe',size:456,browser_download_url:'https://github.com/313imverymellodet/liveroom/releases/download/v0.4.88/Liveroom-setup.exe'},
 ]};
 test('stable installer downloads and metadata keep precedence and their existing envelopes',async()=>{
  const upstream=url=>String(url).endsWith('/releases/latest')?json(release):new Response('INSTALLER');

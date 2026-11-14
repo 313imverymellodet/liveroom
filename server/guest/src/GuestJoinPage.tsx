@@ -416,7 +416,7 @@ export default function GuestJoinPage({ code }: { code: string }) {
         </p>
         <p className="guest-room-fine" style={S.fine}>
           Powered by{" "}
-          <a href="https://producer.dev" target="_blank" rel="noreferrer" style={S.plug}>Liveroom</a>
+          <a href="https://github.com/313imverymellodet/liveroom" target="_blank" rel="noreferrer" style={S.plug}>Liveroom</a>
         </p>
       </div>
       {/* The host's voice. Separate element so the preview above stays muted and

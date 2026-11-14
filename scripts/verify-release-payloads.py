@@ -41,10 +41,10 @@ assets = {a['name']: a for a in release['assets'] if a['state'] == 'uploaded'}
 
 # Build one manifest from the completed platform artifacts. Parallel jobs
 # never create drafts or write latest.json. Keep the existing updater aliases.
-arm = f'Producer_{version}_aarch64.app.tar.gz'
-intel = 'Producer_x64.app.tar.gz'
-nsis = f'Producer_{version}_x64-setup.exe'
-appimage = f'Producer_{version}_amd64.AppImage'
+arm = f'Liveroom_{version}_aarch64.app.tar.gz'
+intel = 'Liveroom_x64.app.tar.gz'
+nsis = f'Liveroom_{version}_x64-setup.exe'
+appimage = f'Liveroom_{version}_amd64.AppImage'
 platforms = {
     'darwin-aarch64': arm, 'darwin-aarch64-app': arm,
     'darwin-x86_64': intel, 'darwin-x86_64-app': intel,
@@ -54,8 +54,8 @@ platforms = {
 if windows_only:
     platforms = {key: value for key, value in platforms.items() if key.startswith('windows-')}
 for platform, name in {
-    'windows-x86_64-msi': f'Producer_{version}_x64_en-US.msi',
-    'linux-x86_64-deb': f'Producer_{version}_amd64.deb',
+    'windows-x86_64-msi': f'Liveroom_{version}_x64_en-US.msi',
+    'linux-x86_64-deb': f'Liveroom_{version}_amd64.deb',
     'linux-x86_64-rpm': f'Liveroom-{version}-1.x86_64.rpm',
 }.items():
     if name in assets and (not windows_only or platform.startswith('windows-')):
@@ -95,7 +95,7 @@ for platform, name in platforms.items():
     encoded, sha256 = verified[name]
     manifest['platforms'][platform] = {'signature': encoded, 'url': f'https://github.com/{repo}/releases/download/{tag}/{name}'}
     checks.append({'platform': platform, 'asset': name, 'sha256': sha256, 'signatureVerified': True})
-for name in ([] if windows_only else [f'Producer_{version}_aarch64.dmg', f'Producer_{version}_x64.dmg']):
+for name in ([] if windows_only else [f'Liveroom_{version}_aarch64.dmg', f'Liveroom_{version}_x64.dmg']):
     _, sha256 = checked_asset(name)
     checks.append({'asset': name, 'sha256': sha256})
 receipt = {'version': version, 'sha': sha, 'releaseId': int(release_id), 'checks': checks}

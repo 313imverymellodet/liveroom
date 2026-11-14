@@ -23,8 +23,8 @@ for node in tree.body:
 code = compile(ast.Module(body=selection, type_ignores=[]), str(root), "exec")
 version = "0.4.88"
 optional = {
-    f"Producer_{version}_x64_en-US.msi": {},
-    f"Producer_{version}_amd64.deb": {},
+    f"Liveroom_{version}_x64_en-US.msi": {},
+    f"Liveroom_{version}_amd64.deb": {},
     f"Liveroom-{version}-1.x86_64.rpm": {},
 }
 for windows_only in (False, True):
@@ -32,15 +32,15 @@ for windows_only in (False, True):
         state = dict(version=version, assets=assets, windows_only=windows_only)
         exec(code, state)
         platforms = state["platforms"]
-        assert platforms["windows-x86_64"] == f"Producer_{version}_x64-setup.exe"
+        assert platforms["windows-x86_64"] == f"Liveroom_{version}_x64-setup.exe"
         assert platforms["windows-x86_64-nsis"] == platforms["windows-x86_64"]
         assert ("windows-x86_64-msi" in platforms) == bool(assets)
         if windows_only:
             assert all(name.startswith("windows-") for name in platforms)
         else:
-            assert platforms["darwin-aarch64"] == f"Producer_{version}_aarch64.app.tar.gz"
-            assert platforms["darwin-x86_64"] == "Producer_x64.app.tar.gz"
-            assert platforms["linux-x86_64"] == f"Producer_{version}_amd64.AppImage"
+            assert platforms["darwin-aarch64"] == f"Liveroom_{version}_aarch64.app.tar.gz"
+            assert platforms["darwin-x86_64"] == "Liveroom_x64.app.tar.gz"
+            assert platforms["linux-x86_64"] == f"Liveroom_{version}_amd64.AppImage"
             assert ("linux-x86_64-deb" in platforms) == bool(assets)
 
 workflow = (root / ".github/workflows/release.yml").read_text(encoding="utf-8")
@@ -54,7 +54,7 @@ assert 'runs-on: macos-15-intel' in intel_job
 assert 'Prepare complete pinned Intel live engine' in intel_job
 assert 'PRODUCER_REQUIRE_ENGINE:' in intel_job and '--features guest-rtc-production' in intel_job
 assert 'scripts/check-macos-engine.sh' in intel_job and 'scripts/check-camera-bundle.py' in intel_job
-assert 'UPD="Producer_x64.app.tar.gz"' in intel_job
+assert 'UPD="Liveroom_x64.app.tar.gz"' in intel_job
 assert 'Stage notarized Intel updater archive' in intel_job
 assert '--features guest-rtc-production' in (root / 'scripts/dev.sh').read_text()
 assert '--features guest-rtc-production' in (root / '.github/workflows/intel-dev.yml').read_text()

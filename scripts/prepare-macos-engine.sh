@@ -1,6 +1,10 @@
 #!/bin/bash
 # Reuse the exact engine lock for this architecture. Never select a stale engine.
 set -euo pipefail
+# Prebuilt engine artifacts come from this repo's engine.yml runs. Until
+# Liveroom's own engine CI has run, ENGINE_REPO=Boomin-Ai/producer also works
+# (same OBS engine source).
+ENGINE_REPO="${ENGINE_REPO:-313imverymellodet/liveroom}"
 [[ $(uname -s) == Darwin ]] || { echo 'This setup target is for macOS; see CONTRIBUTING.md for other platforms.' >&2; exit 1; }
 source "$(dirname "${BASH_SOURCE[0]}")/engine-lib.sh"
 ARCH="$(uname -m)"
@@ -23,8 +27,8 @@ elif [[ $ARCH == arm64 ]]; then
   mkdir -p "$CACHE_DIR"
   DOWNLOAD="$(mktemp -d "$CACHE_DIR/engine-download.XXXXXX")"
   FOUND=''
-  for run in $(gh run list --repo Boomin-Ai/producer --workflow engine.yml --status success --limit 10 --json databaseId -q '.[].databaseId'); do
-    if gh run download "$run" --repo Boomin-Ai/producer -n producer-libobs-macos-arm64 -D "$DOWNLOAD/$run" 2>/dev/null \
+  for run in $(gh run list --repo "$ENGINE_REPO" --workflow engine.yml --status success --limit 10 --json databaseId -q '.[].databaseId'); do
+    if gh run download "$run" --repo "$ENGINE_REPO" -n producer-libobs-macos-arm64 -D "$DOWNLOAD/$run" 2>/dev/null \
       && [[ -f "$DOWNLOAD/$run/$NAME.tar.zst" ]]; then FOUND="$run"; break; fi
   done
   [[ -n $FOUND ]] || { echo "No CI engine matches $NAME; build engine.yml for this lock first." >&2; exit 1; }
