@@ -17,7 +17,7 @@ SRC="${PRODUCER_OBS_SOURCE:-$REPO_ROOT/engine/obs-studio}/plugins/mac-virtualcam
 OUT_DIR="$REPO_ROOT/engine/camera-extension"
 
 EXT_ID="${PRODUCER_VCAM_EXTENSION_ID:-app.liveroom.studio.camera-extension}"
-TEAM_ID="${PRODUCER_TEAM_ID:-REPLACE_WITH_TEAM_ID}"
+TEAM_ID="${PRODUCER_TEAM_ID:-2ZHTMG2292}"
 DEVICE_NAME="${PRODUCER_VCAM_NAME:-Liveroom Virtual Camera}"
 
 # 🔑 These UUIDs are the rendezvous with the obs-plugin half: mac-virtualcam

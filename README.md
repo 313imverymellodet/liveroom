@@ -72,10 +72,10 @@ with nothing in the middle:
 - Guest media is STUN-only. Some guests behind strict NAT won't connect
   until you configure a TURN server (`ICE_SERVERS`).
 - On Windows, guests need Liveroom allowed through the firewall.
-- Auto-update is off until Liveroom has its own signed release feed
-  (see `UPDATES_ENABLED` in [src/brand.ts](src/brand.ts)).
-- macOS signing and the virtual camera need your own Apple Developer team:
-  replace `REPLACE_WITH_TEAM_ID` in `scripts/` and `.github/macos/`.
+- Auto-update follows this repo's GitHub releases, signed with the
+  Liveroom updater key.
+- Release builds are signed and notarized for Apple team `2ZHTMG2292`.
+  Forks building their own releases must use their own team ID.
 
 ## Develop
 

@@ -58,7 +58,7 @@ elif [[ -d "$STAGE/SystemExtensions" ]]; then
     plutil -replace CFBundleIdentifier -string "$VCAM_EXT_ID" "$new_ext/Contents/Info.plist"
     plutil -replace CFBundleExecutable -string "$VCAM_EXT_ID" "$new_ext/Contents/Info.plist"
     plutil -replace CMIOExtension.CMIOExtensionMachServiceName \
-      -string "REPLACE_WITH_TEAM_ID.$VCAM_EXT_ID" "$new_ext/Contents/Info.plist"
+      -string "2ZHTMG2292.$VCAM_EXT_ID" "$new_ext/Contents/Info.plist"
     # The old signature covers the old names — it must be replaced wholesale.
     rm -rf "$new_ext/Contents/_CodeSignature"
   done

@@ -85,7 +85,7 @@ else
 
     xcrun notarytool store-credentials "$PROFILE" \\
       --apple-id "<your-apple-id-email>" \\
-      --team-id "REPLACE_WITH_TEAM_ID" \\
+      --team-id "2ZHTMG2292" \\
       --password "<app-specific-password>"
 
 EOF

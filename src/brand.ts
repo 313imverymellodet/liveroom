@@ -10,8 +10,7 @@ export const REPO_SLUG = REPO_URL.replace("https://github.com/", "");
 export const SELF_HOSTING_GUIDE_URL = `${REPO_URL}/blob/main/server/SELF_HOSTING.md`;
 export const SERVER_NAME = "liveroom-server";
 
-/** Auto-update is off until Liveroom publishes its own signed release feed.
- * To turn it on: generate a key with `tauri signer generate`, put the public
- * key and your latest.json URL under plugins.updater in
- * src-tauri/tauri.conf.json, then set this to true. */
-export const UPDATES_ENABLED = false;
+/** Auto-update reads latest.json from this repo's newest GitHub release,
+ * verified with the public key under plugins.updater in
+ * src-tauri/tauri.conf.json (private key: TAURI_SIGNING_PRIVATE_KEY). */
+export const UPDATES_ENABLED = true;
